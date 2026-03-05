@@ -6,13 +6,10 @@ import DashboardAdmin from './components/DashboardAdmin';
 import GestionRecursos from './components/GestionRecursos';
 import AsignacionRoles from './components/AsignacionRoles';
 import Infraestructura from './components/Infraestructura';
-import Equipamientos from './components/steps/Equipamientos'; // Este es el de Gestión (Admin)
 import HomeEfector from './components/HomeEfector';
 import EquipamientosConfig from './components/EquipamientosConfig';
 import RecursosHumanosConfig from './components/RecursosHumanosConfig';
 import JefeServicioConfig from './components/JefeServicioConfig';
-
-
 
 const theme = createTheme({
   palette: {
@@ -28,6 +25,7 @@ function App() {
       <CssBaseline /> 
       <Router>
         <Routes>
+          {/* RUTAS ADMINISTRADOR */}
           <Route path="/" element={<DashboardAdmin />} />
           <Route path="/clicsalud-backoffice/asignar-rol" element={<AsignacionRoles />} />
           <Route path="/clicsalud-backoffice/gestion-recursos" element={<GestionRecursos />} />
@@ -36,8 +34,10 @@ function App() {
           <Route path="/clicsalud-backoffice/gestion-recursos/recursos-humanos" element={<RecursosHumanosConfig />} />
           <Route path="/clicsalud-backoffice/gestion-recursos/jefe-servicio" element={<JefeServicioConfig />} />
 
+          {/* RUTA EFECTOR: Usamos /* para que HomeEfector maneje sus sub-rutas internamente */}
           <Route path="/home-efector/*" element={<HomeEfector />} />
           
+          {/* FALLBACK: Solo si no entra en ninguna de las de arriba */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

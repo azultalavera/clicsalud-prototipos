@@ -79,7 +79,7 @@ const ModalHabilitacion = ({ open, onClose }) => {
             </Select>
           </FormControl>
 
-          <Typography variant="body2" sx={{ mb: 2, color: '#555' }}> Antes de iniciar, revisar la información con respecto a la infraestructura requerida y la NO requerida correspondiente a dicha tipología: </Typography>
+          <Typography variant="body2"  sx={{ mb: 2, color: '#555' }}> Antes de iniciar, revisar la información con respecto a la infraestructura requerida y la NO requerida correspondiente a dicha tipología para evitar que su trámite sea rechazado: </Typography>
 
           {/* ALERTAS DE AYUDA TÉCNICA */}
           {tipologia && requisitos[tipologia] && (
