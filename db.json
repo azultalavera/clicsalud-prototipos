@@ -119,14 +119,14 @@
     }
   ],
   "equipamientos": [
-    { "id": 1, "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "CARDIODESFIBRILADOR", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 2, "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "ELECTROCARDIÓGRAFO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 3, "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "OXÍMETRO DE PULSO/MONITOR MULTIPARAMÉTRICO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 4, "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "EQUIPO PARA NEBULIZACIONES", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 5, "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "CARRO DE PARO COMPLETO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
+    { "id": 1, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "CARDIODESFIBRILADOR", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
+    { "id": 2, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "ELECTROCARDIÓGRAFO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
+    { "id": 3, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "OXÍMETRO DE PULSO/MONITOR MULTIPARAMÉTRICO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
+    { "id": 4, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "EQUIPO PARA NEBULIZACIONES", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
+    { "id": 5, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "CARRO DE PARO COMPLETO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
     
-    { "id": 6, "origen": "UNIDADES DE CUIDADOS INTERMEDIOS", "tipo": "CAMA", "equipamiento": "OXÍGENO Y ASPIRACIÓN CENTRAL CON BOCA INDIVIDUAL", "tipoRegla": "PROPORCIONAL", "base": 2, "cantidadMinima": 1, "requiereMarca": false, "requiereModelo": false, "requiereSerie": false },
-    { "id": 7, "origen": "UNIDADES DE CUIDADOS INTERMEDIOS", "tipo": "CAMA", "equipamiento": "ASPIRADOR ELÉCTRICO", "tipoRegla": "PROPORCIONAL", "base": 3, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
+    { "id": 6, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDADES DE CUIDADOS INTERMEDIOS", "tipo": "CAMA", "equipamiento": "OXÍGENO Y ASPIRACIÓN CENTRAL CON BOCA INDIVIDUAL", "tipoRegla": "PROPORCIONAL", "base": 2, "cantidadMinima": 1, "requiereMarca": false, "requiereModelo": false, "requiereSerie": false },
+    { "id": 7, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDADES DE CUIDADOS INTERMEDIOS", "tipo": "CAMA", "equipamiento": "ASPIRADOR ELÉCTRICO", "tipoRegla": "PROPORCIONAL", "base": 3, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
     
     { "id": 8, "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)", "tipo": "SERVICIO", "equipamiento": "CARRO DE URGENCIA CON EQUIPOS DE INTUBACIÓN", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
     { "id": 9, "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)", "tipo": "SERVICIO", "equipamiento": "ELECTROCARDIÓGRAFO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
@@ -181,7 +181,8 @@
     { "id": 51, "origen": "HEMODINAMIA", "tipo": "SERVICIO COMPLEMENTARIO", "equipamiento": "INYECTORA DE CONTRASTE", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
 
     { "id": 52, "origen": "HOSPITAL DE DÍA", "tipo": "SERVICIO", "equipamiento": "SILLÓN DE ONCOLOGÍA", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 53, "origen": "HOSPITAL DE DÍA", "tipo": "SERVICIO", "equipamiento": "BOMBA DE INFUSIÓN", "tipoRegla": "PROPORCIONAL", "base": 2, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true }
+    { "id": 53, "origen": "HOSPITAL DE DÍA", "tipo": "SERVICIO", "equipamiento": "BOMBA DE INFUSIÓN", "tipoRegla": "PROPORCIONAL", "base": 2, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
+    { "id": 54, "equipamiento": "OTRO"}
   ],  
   "infraestructura": [
     {

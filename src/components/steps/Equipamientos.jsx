@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
   Box, Typography, Paper, TextField, Button, IconButton, List,
   ListItemButton, ListItemText, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, Collapse, Stack, Grid
+  TableContainer, TableHead, TableRow, Collapse, Stack, Autocomplete, Divider
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -10,11 +10,13 @@ import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
   AddCircleOutline as AddCircleOutlineIcon,
+  LibraryAdd as LibraryAddIcon 
 } from "@mui/icons-material";
 
 const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
   const [activeIdx, setActiveIdx] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const [isExtraMode, setIsExtraMode] = useState(false);
   const [requisitosDB, setRequisitosDB] = useState([]);
   const [cargados, setCargados] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
@@ -24,6 +26,7 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
     subId: null,
     origen: "",
     equipamiento: "",
+    otroEquipo: "", 
     marca: "",
     modelo: "",
     serie: "",
@@ -34,6 +37,11 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
     const infra = Object.keys(infraSelection || {}).filter((key) => !!infraSelection[key]);
     return [...new Set([...servicios, ...infra])];
   }, [selectedServices, infraSelection]);
+
+  const listaEquiposUnicos = useMemo(() => {
+    const nombres = requisitosDB.map(r => r.equipamiento);
+    return [...new Set(nombres), "OTRO"];
+  }, [requisitosDB]);
 
   useEffect(() => {
     const fetchEquipamientos = async () => {
@@ -52,9 +60,7 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
             return { ...eq, cantidadFinalCalculada: totalNecesario };
           });
         setRequisitosDB(calculados);
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     };
     if (serviceNames.length > 0) fetchEquipamientos();
   }, [serviceNames, infraSelection]);
@@ -83,22 +89,37 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
       serie: previo.serie || "",
     });
     setIsEditing(true);
+    setIsExtraMode(false);
   };
 
-  const agregarExtra = (req) => {
-    const idsCargados = cargados.filter((c) => c.id === req.id).map((c) => c.subId);
-    const maxSubId = idsCargados.length > 0 ? Math.max(...idsCargados) : req.cantidadFinalCalculada - 1;
-    prepararCarga(req, maxSubId + 1, true);
+  const habilitarCargaExtraLibre = () => {
+    setForm({
+      id: `extra-${Date.now()}`,
+      subId: 0,
+      origen: "",
+      equipamiento: "",
+      otroEquipo: "",
+      marca: "",
+      modelo: "",
+      serie: "",
+    });
+    setIsExtraMode(true);
+    setIsEditing(true);
   };
 
   const handleActualizar = () => {
-    if (form.id === null) return;
+    const nombreEquipoFinal = form.equipamiento === "OTRO" ? form.otroEquipo : form.equipamiento;
+    if (!form.origen || !nombreEquipoFinal || !form.marca) {
+        alert("Complete los campos obligatorios (Origen, Equipo y Marca)");
+        return;
+    }
     setCargados((prev) => {
       const sinEsteSlot = prev.filter((c) => !(c.id === form.id && c.subId === form.subId));
-      return [...sinEsteSlot, { ...form }];
+      return [...sinEsteSlot, { ...form, equipamiento: nombreEquipoFinal }];
     });
-    setForm({ id: null, subId: null, origen: "", equipamiento: "", marca: "", modelo: "", serie: "" });
+    setForm({ id: null, subId: null, origen: "", equipamiento: "", otroEquipo: "", marca: "", modelo: "", serie: "" });
     setIsEditing(false);
+    setIsExtraMode(false);
   };
 
   const itemsDelServicio = requisitosDB.filter((r) => r.origen === serviceNames[activeIdx]);
@@ -107,50 +128,71 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
     <Box sx={{ p: 1.5, display: "flex", flexDirection: "column", gap: 1 }}>
       <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#25ade6' }}>EQUIPAMIENTOS</Typography>
       
-      {/* FORMULARIO SUPERIOR - DISTRIBUCIÓN TOTAL */}
-      <Paper variant="outlined" sx={{ p: 2, mb: 1, borderRadius: "8px", bgcolor: "#fff" }}>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end', width: '100%' }}>
-          <TextField label="Origen" variant="standard" disabled value={form.origen} sx={{ flex: 1.5 }}
-            InputLabelProps={{ shrink: true, sx: { fontSize: "0.85rem", color: '#005596' } }}
-            inputProps={{ style: { fontSize: "0.95rem", backgroundColor: '#f9f9f9', paddingLeft: '4px' } }} />
-          
-          <TextField label="Equipo" variant="standard" disabled value={form.equipamiento} sx={{ flex: 2.5 }}
-            InputLabelProps={{ shrink: true, sx: { fontSize: "0.85rem", color: '#005596' } }}
-            inputProps={{ style: { fontSize: "0.95rem", backgroundColor: '#f9f9f9', paddingLeft: '4px' } }} />
-
-          <TextField label="Marca" variant="standard" value={form.marca} sx={{ flex: 2.5 }}
-            onChange={(e) => setForm({ ...form, marca: e.target.value.toUpperCase() })}
-            InputLabelProps={{ shrink: true, sx: { fontSize: "0.85rem" } }} inputProps={{ style: { fontSize: "1rem" } }} />
-
-          <TextField label="Modelo" variant="standard" value={form.modelo} sx={{ flex: 2.5 }}
-            onChange={(e) => setForm({ ...form, modelo: e.target.value.toUpperCase() })}
-            InputLabelProps={{ shrink: true, sx: { fontSize: "0.85rem" } }} inputProps={{ style: { fontSize: "1rem" } }} />
-
-          <TextField label="N° Serie" variant="standard" value={form.serie} sx={{ flex: 2 }}
-            onChange={(e) => setForm({ ...form, serie: e.target.value.toUpperCase() })}
-            InputLabelProps={{ shrink: true, sx: { fontSize: "0.85rem" } }} inputProps={{ style: { fontSize: "1rem" } }} />
-
-          <Button variant="contained" disabled={!isEditing} onClick={handleActualizar}
-            sx={{ bgcolor: "#005596", minWidth: "100px", height: "36px", fontSize: "0.85rem", fontWeight: "bold" }}>
-            OK
-          </Button>
-        </Box>
+      {/* FORMULARIO SUPERIOR */}
+      <Paper variant="outlined" sx={{ p: 2, mb: 1, borderRadius: "8px", bgcolor: isExtraMode ? "#ffffff" : "#fff", border: isExtraMode ? "2px solid #c2edff" : "1px solid #c2edff" }}>
+        <Stack spacing={2}>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start', width: '100%' }}>
+            <Autocomplete
+              sx={{ flex: 1.5 }}
+              options={serviceNames}
+              disabled={!isExtraMode}
+              value={form.origen || null}
+              onChange={(e, v) => setForm({...form, origen: v})}
+              renderInput={(params) => <TextField {...params} label="Origen" variant="standard" />}
+            />
+            <Autocomplete
+              sx={{ flex: 2 }}
+              options={listaEquiposUnicos}
+              disabled={!isExtraMode}
+              value={form.equipamiento || null}
+              onChange={(e, v) => setForm({...form, equipamiento: v, otroEquipo: ""})}
+              renderInput={(params) => <TextField {...params} label="Tipo Equipo" variant="standard" />}
+            />
+            {form.equipamiento?.includes("OTRO") && (
+              <TextField 
+                label="Nombre Equipo" 
+                variant="standard" 
+                sx={{ flex: 2 }}
+                value={form.otroEquipo}
+                onChange={(e) => setForm({...form, otroEquipo: e.target.value.toUpperCase()})}
+                autoFocus
+              />
+            )}
+            <TextField label="Marca" variant="standard" value={form.marca} sx={{ flex: 1.5 }}
+              onChange={(e) => setForm({ ...form, marca: e.target.value.toUpperCase() })} />
+            <TextField label="Modelo" variant="standard" value={form.modelo} sx={{ flex: 1.5 }}
+              onChange={(e) => setForm({ ...form, modelo: e.target.value.toUpperCase() })} />
+            <TextField label="N° Serie" variant="standard" value={form.serie} sx={{ flex: 1.5 }}
+              onChange={(e) => setForm({ ...form, serie: e.target.value.toUpperCase() })} />
+            <Button variant="contained" disabled={!isEditing} onClick={handleActualizar}
+              sx={{ bgcolor: "#005596", height: "36px", fontWeight: "bold", px: 4 }}>AGREGAR EQUIPO</Button>
+          </Box>
+        </Stack>
       </Paper>
 
       <Box sx={{ display: "flex", gap: 2 }}>
         {/* LISTA IZQUIERDA */}
-        <Paper variant="outlined" sx={{ width: 260, borderRadius: "8px", height: "65vh", overflow: "auto" }}>
-          <List dense>
-            {serviceNames.map((s, i) => (
-              <ListItemButton key={s} selected={activeIdx === i} onClick={() => setActiveIdx(i)}>
-                <ListItemText primary={`${s} ${infraSelection[s] ? `(x${infraSelection[s]})` : ""}`}
-                  primaryTypographyProps={{ fontSize: "0.85rem", fontWeight: 700 }} />
-              </ListItemButton>
-            ))}
-          </List>
+        <Paper variant="outlined" sx={{ width: 280, borderRadius: "8px", height: "65vh", display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ p: 1 }}>
+            <Button fullWidth variant="outlined" startIcon={<LibraryAddIcon />} onClick={habilitarCargaExtraLibre}
+              sx={{ color: '#005596', borderColor: '#005596', fontWeight: 'bold' }}>AGREGAR EQUIPO EXTRA</Button>
+          </Box>
+          <Box sx={{ flex: 1, overflow: "auto" }}>
+            <List dense>
+              <Typography variant="caption" sx={{ px: 2, py: 1, display: 'block', fontWeight: 'bold', color: '#64748b' }}>SERVICIOS DECLARADOS</Typography>
+              {serviceNames.map((s, i) => (
+                <ListItemButton key={s} selected={activeIdx === i && !isExtraMode} onClick={() => { setActiveIdx(i); setIsExtraMode(false); }}>
+                  <ListItemText primary={s} secondary={infraSelection[s] ? `${infraSelection[s]} unidades` : ""}
+                    primaryTypographyProps={{ fontSize: "0.85rem", fontWeight: 700 }} />
+                </ListItemButton>
+              ))}
+            </List>
+          </Box>
+          <Divider />
+          
         </Paper>
 
-        {/* TABLA CON FILAS EXPANDIBLES COMPACTAS */}
+        {/* TABLA CENTRAL EXPANDIBLE */}
         <TableContainer component={Paper} variant="outlined" sx={{ flex: 1, borderRadius: "8px", height: "65vh" }}>
           <Table size="small" stickyHeader>
             <TableHead>
@@ -173,7 +215,6 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
                       </IconButton>
                     </TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell colSpan={3} style={{ padding: 0 }}>
                       <Collapse in={expandedRow === req.id} timeout="auto" unmountOnExit>
@@ -181,11 +222,7 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
                           <Table size="small" sx={{ bgcolor: "white", border: "1px solid #e2e8f0" }}>
                             <TableHead>
                               <TableRow sx={{ bgcolor: "#f1f5f9", "& th": { py: 0.5, fontSize: "0.75rem", fontWeight: "bold", color: "#64748b" } }}>
-                                <TableCell>EQUIPO</TableCell>
-                                <TableCell>MARCA</TableCell>
-                                <TableCell>MODELO</TableCell>
-                                <TableCell>SERIE</TableCell>
-                                <TableCell align="center">ACCIONES</TableCell>
+                                <TableCell>UNIDAD</TableCell><TableCell>MARCA</TableCell><TableCell>MODELO</TableCell><TableCell>SERIE</TableCell><TableCell align="center">ACCIONES</TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
@@ -194,18 +231,15 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
                                 for (let i = 0; i < req.cantidadFinalCalculada; i++) entries.push({ idx: i, extra: false });
                                 cargados.filter(c => c.id === req.id && c.subId >= req.cantidadFinalCalculada)
                                        .forEach(c => entries.push({ idx: c.subId, extra: true }));
-
                                 return entries.map((entry) => {
-                                  const data = cargados.find(c => c.id === req.id && c.subId === entry.idx);
-                                  const isFull = !!data?.marca;
+                                  const itemCargado = cargados.find(c => c.id === req.id && c.subId === entry.idx);
+                                  const isFull = !!itemCargado?.marca;
                                   return (
                                     <TableRow key={entry.idx} sx={{ bgcolor: isFull ? "#f0fdf4" : "transparent", "& td": { py: 0.4 } }}>
-                                      <TableCell sx={{ fontSize: "0.8rem", fontWeight: 600 }}>
-                                        {req.equipamiento} {entry.extra ? "(EXTRA)" : `#${entry.idx + 1}`}
-                                      </TableCell>
-                                      <TableCell sx={{ fontSize: "0.8rem" }}>{data?.marca || "-"}</TableCell>
-                                      <TableCell sx={{ fontSize: "0.8rem" }}>{data?.modelo || "-"}</TableCell>
-                                      <TableCell sx={{ fontSize: "0.8rem" }}>{data?.serie || "-"}</TableCell>
+                                      <TableCell sx={{ fontSize: "0.8rem", fontWeight: 600 }}>{entry.extra ? "(EXTRA)" : `#${entry.idx + 1}`}</TableCell>
+                                      <TableCell sx={{ fontSize: "0.8rem" }}>{itemCargado?.marca || "-"}</TableCell>
+                                      <TableCell sx={{ fontSize: "0.8rem" }}>{itemCargado?.modelo || "-"}</TableCell>
+                                      <TableCell sx={{ fontSize: "0.8rem" }}>{itemCargado?.serie || "-"}</TableCell>
                                       <TableCell align="center">
                                         <IconButton size="small" onClick={(e) => { e.stopPropagation(); prepararCarga(req, entry.idx, entry.extra); }} sx={{ p: 0.2 }}>
                                           {isFull ? <EditIcon sx={{ fontSize: "1rem", color: "#005596" }} /> : <AddIcon sx={{ fontSize: "1rem", color: "#16a34a" }} />}
@@ -217,12 +251,6 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
                               })()}
                             </TableBody>
                           </Table>
-                          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-                            <Button startIcon={<AddCircleOutlineIcon sx={{ fontSize: '0.9rem' }} />} variant="text" size="small"
-                              onClick={() => agregarExtra(req)} sx={{ fontSize: "0.75rem", fontWeight: 800, color: "#005596" }}>
-                              AGREGAR EQUIPO EXTRA
-                            </Button>
-                          </Box>
                         </Box>
                       </Collapse>
                     </TableCell>
@@ -233,12 +261,10 @@ const EquipamientosLabV3 = ({ selectedServices, infraSelection }) => {
           </Table>
         </TableContainer>
 
-        {/* REVISIÓN */}
+        {/* PANEL DE REVISIÓN */}
         <Box sx={{ width: 300 }}>
           <Paper variant="outlined" sx={{ border: "2px solid #005596", borderRadius: "8px", height: "65vh", display: "flex", flexDirection: "column" }}>
-            <Box sx={{ p: 1.2, bgcolor: "#005596", color: "white" }}>
-              <Typography variant="body2" fontWeight="bold" textAlign="center">REVISIÓN</Typography>
-            </Box>
+            <Box sx={{ p: 1.2, bgcolor: "#005596", color: "white" }}><Typography variant="body2" fontWeight="bold" textAlign="center">REVISIÓN</Typography></Box>
             <Box sx={{ p: 1.5, flex: 1, overflowY: "auto" }}>
               {datosRevisionAgrupados.map((item, i) => {
                 const ok = item.actual >= item.total;

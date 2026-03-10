@@ -118,7 +118,7 @@ const EquipamientosConfig = () => {
     <Layout>
       <Paper elevation={0} sx={{ borderRadius: '4px', border: '1px solid #e0e0e0', mb: 8, mx: 'auto', maxWidth: '1750px', overflow: 'hidden' }}>
         <Box sx={{ backgroundColor: '#005596', color: 'white', py: 2, textAlign: 'center' }}>
-          <Typography variant="h5" sx={{ fontWeight: 500 }}>Gestión de Equipamiento</Typography>
+          <Typography variant="h5" sx={{ fontWeight: 500 }}>Gestión de Equipamientos</Typography>
         </Box>
 
         <Box sx={{ p: 4, bgcolor: 'white' }}>
@@ -251,7 +251,7 @@ const EquipamientosConfig = () => {
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <FormControl variant="standard" fullWidth>
                   <InputLabel>Regla</InputLabel>
-                  <Select value={currentItem.tipoRegla} onChange={(e) => setCurrentItem({...currentItem, tipoRegla: e.target.value})}>
+                  <Select  onChange={(e) => setCurrentItem({...currentItem, tipoRegla: e.target.value})}>
                     {opcionesRegla.map(r => <MenuItem key={r} value={r}>{r}</MenuItem>)}
                   </Select>
                 </FormControl>
