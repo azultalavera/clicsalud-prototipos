@@ -3,7 +3,7 @@ import { Box, Typography, Grid, Card, CardActionArea } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
-import Layout from './Layout';
+import Layout from '../ui/Layout';
 
 const DashboardAdmin = () => {
   const navigate = useNavigate();

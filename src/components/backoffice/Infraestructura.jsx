@@ -25,7 +25,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckIcon from "@mui/icons-material/Check";
-import Layout from "./Layout";
+import Layout from "../ui/Layout";
 
 // --- CONSTANTES ---
 const opcionesTipologia = ["CLÍNICAS, SANATORIOS Y HOSPITALES", "GERIÁTRICOS"];

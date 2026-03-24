@@ -32,7 +32,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckIcon from "@mui/icons-material/Check";
 import SearchIcon from "@mui/icons-material/Search";
-import Layout from "./Layout";
+import Layout from "../ui/Layout";
 
 const styleModal = {
   position: "absolute",

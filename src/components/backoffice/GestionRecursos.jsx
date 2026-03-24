@@ -5,7 +5,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import PeopleIcon from '@mui/icons-material/People'; 
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import Layout from './Layout';
+import Layout from '../ui/Layout';
 
 const GestionRecursos = () => {
   const navigate = useNavigate();

@@ -15,14 +15,14 @@ import {
 import { Routes, Route, useNavigate, useLocation, Navigate, Link } from "react-router-dom";
 
 // Componentes
-import Layout from "./Layout";
+import Layout from "../ui/Layout";
 import ServicesStep from "./steps/ServicesStep";
 import Equipamientos from "./steps/Equipamientos"; // Asegúrate que el archivo se llame así
 import RRHHStep from "./steps/RRHHStep";
 import JefeServicioStep from "./steps/JefeServicioStep";
-import ModalHabilitacion from "./ModalHabilitacion";
+import ModalHabilitacion from "../ui/ModalHabilitacion";
 import ObservarTramite from "./ObservarTramite";
-import ActaInspeccion from "./ActaInspeccion";
+import ActaInspeccion from "../inspeccion/ActaInspeccion";
 
 // --- ESTILOS STEPPER ---
 const QontoConnector = styled(StepConnector)(() => ({ // Quitamos 'theme' porque no se usaba

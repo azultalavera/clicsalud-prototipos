@@ -4,7 +4,7 @@ import {
   TableCell, TableContainer, TableHead, TableRow, Switch, Select, MenuItem, FormControl
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import Layout from './Layout';
+import Layout from '../ui/Layout';
 
 const GestionRecursos = () => {
   const rows = [

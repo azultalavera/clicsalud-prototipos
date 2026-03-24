@@ -12,7 +12,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import InboxIcon from '@mui/icons-material/Inbox';
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
-import fondoOndas from '../assets/fondo.webp';
+import fondoOndas from '../../assets/fondo.webp';
 
 const drawerWidthFull = 320;
 const drawerWidthMini = 70;

@@ -2,14 +2,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
 // Importaciones de tus componentes
-import DashboardAdmin from './components/DashboardAdmin';
-import GestionRecursos from './components/GestionRecursos';
-import AsignacionRoles from './components/AsignacionRoles';
-import Infraestructura from './components/Infraestructura';
-import HomeEfector from './components/HomeEfector';
-import EquipamientosConfig from './components/EquipamientosConfig';
-import RecursosHumanosConfig from './components/RecursosHumanosConfig';
-import JefeServicioConfig from './components/JefeServicioConfig';
+import DashboardAdmin from './components/backoffice/DashboardAdmin';
+import GestionRecursos from './components/backoffice/GestionRecursos';
+import AsignacionRoles from './components/backoffice/AsignacionRoles';
+import Infraestructura from './components/backoffice/Infraestructura';
+import HomeEfector from './components/efector/HomeEfector';
+import EquipamientosConfig from './components/backoffice/EquipamientosConfig';
+import RecursosHumanosConfig from './components/backoffice/RecursosHumanosConfig';
+import JefeServicioConfig from './components/backoffice/JefeServicioConfig';
 
 const theme = createTheme({
   palette: {
