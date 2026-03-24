@@ -64,6 +64,7 @@ const EquipamientosConfig = () => {
 
   // FILTROS
   const [filtroTipologia, setFiltroTipologia] = useState(null);
+  const [filtroTipoOrigen, setFiltroTipoOrigen] = useState(null);
   const [filtroOrigen, setFiltroOrigen] = useState(null);
   const [filtroEquipamiento, setFiltroEquipamiento] = useState(null);
   const [filtroRegla, setFiltroRegla] = useState(null);
@@ -71,14 +72,14 @@ const EquipamientosConfig = () => {
   const [currentItem, setCurrentItem] = useState({
     tipologia: "",
     origen: "",
-    tipo: "SERVICIO",
+    tipo: "",
     equipamiento: "",
     tipoRegla: "UNICO",
     base: 1,
     cantidadMinima: 1,
-    requiereMarca: true,
-    requiereModelo: true,
-    requiereSerie: true,
+    requiereMarca: false,
+    requiereModelo: false,
+    requiereSerie: false,
     soloExistencia: false,
   });
 
@@ -103,12 +104,20 @@ const EquipamientosConfig = () => {
     return data.filter((item) => {
       return (
         (!filtroTipologia || item.tipologia === filtroTipologia) &&
+        (!filtroTipoOrigen || item.tipo === filtroTipoOrigen) &&
         (!filtroOrigen || item.origen === filtroOrigen) &&
         (!filtroEquipamiento || item.equipamiento === filtroEquipamiento) &&
         (!filtroRegla || item.tipoRegla === filtroRegla)
       );
     });
-  }, [data, filtroTipologia, filtroOrigen, filtroEquipamiento, filtroRegla]);
+  }, [
+    data,
+    filtroTipologia,
+    filtroTipoOrigen,
+    filtroOrigen,
+    filtroEquipamiento,
+    filtroRegla,
+  ]);
 
   const formatTrazabilidad = (row) => {
     if (row.soloExistencia) return "SÓLO EXISTENCIA";
@@ -139,6 +148,7 @@ const EquipamientosConfig = () => {
     const finalPayload = {
       ...currentItem,
       tipologia: currentItem.tipologia?.trim().toUpperCase(),
+      tipo: currentItem.tipo?.trim().toUpperCase(),
       origen: currentItem.origen?.trim().toUpperCase(),
       equipamiento: currentItem.equipamiento?.trim().toUpperCase(),
     };
@@ -248,9 +258,32 @@ const EquipamientosConfig = () => {
                     )}
                   />
                 </Box>
+                <Box sx={{ flex: "1 1 50%" }} />
+              </Box>
+
+              <Box sx={{ display: "flex", gap: 4, width: "100%" }}>
                 <Box sx={{ flex: "1 1 50%" }}>
                   <Autocomplete
-                    options={[...new Set(data.map((i) => i.origen))].sort()}
+                    options={[...new Set(data.map((i) => i.tipo))]
+                      .filter(Boolean)
+                      .sort()}
+                    value={filtroTipoOrigen}
+                    onChange={(e, v) => setFiltroTipoOrigen(v)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Tipo de Origen"
+                        variant="standard"
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Box>
+                <Box sx={{ flex: "1 1 50%" }}>
+                  <Autocomplete
+                    options={[...new Set(data.map((i) => i.origen))]
+                      .filter(Boolean)
+                      .sort()}
                     value={filtroOrigen}
                     onChange={(e, v) => setFiltroOrigen(v)}
                     renderInput={(params) => (
@@ -268,9 +301,9 @@ const EquipamientosConfig = () => {
               <Box sx={{ display: "flex", gap: 4, width: "100%" }}>
                 <Box sx={{ flex: "1 1 50%" }}>
                   <Autocomplete
-                    options={[
-                      ...new Set(data.map((i) => i.equipamiento)),
-                    ].sort()}
+                    options={[...new Set(data.map((i) => i.equipamiento))]
+                      .filter(Boolean)
+                      .sort()}
                     value={filtroEquipamiento}
                     onChange={(e, v) => setFiltroEquipamiento(v)}
                     renderInput={(params) => (
@@ -291,7 +324,7 @@ const EquipamientosConfig = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Tipo de Regla"
+                        label="Regla"
                         variant="standard"
                         fullWidth
                       />
@@ -313,6 +346,7 @@ const EquipamientosConfig = () => {
                   variant="outlined"
                   onClick={() => {
                     setFiltroTipologia(null);
+                    setFiltroTipoOrigen(null);
                     setFiltroOrigen(null);
                     setFiltroEquipamiento(null);
                     setFiltroRegla(null);
@@ -346,14 +380,14 @@ const EquipamientosConfig = () => {
                 setCurrentItem({
                   tipologia: "",
                   origen: "",
-                  tipo: "SERVICIO",
+                  tipo: "",
                   equipamiento: "",
                   tipoRegla: "UNICO",
                   base: 1,
                   cantidadMinima: 1,
-                  requiereMarca: true,
-                  requiereModelo: true,
-                  requiereSerie: true,
+                  requiereMarca: false,
+                  requiereModelo: false,
+                  requiereSerie: false,
                   soloExistencia: false,
                 });
                 setIsEditing(false);
@@ -472,58 +506,144 @@ const EquipamientosConfig = () => {
           </Box>
           <Box sx={{ p: 4 }}>
             <Stack spacing={2.5}>
-              <TextField
-                label="Tipología"
-                variant="standard"
-                fullWidth
-                value={currentItem.tipologia}
-                onChange={(e) =>
-                  setCurrentItem({ ...currentItem, tipologia: e.target.value })
+              <Autocomplete
+                freeSolo
+                forcePopupIcon
+                options={[...new Set(data.map((i) => i.tipologia))]
+                  .filter(Boolean)
+                  .sort()}
+                value={currentItem.tipologia || ""}
+                onChange={(e, newValue) =>
+                  setCurrentItem({ ...currentItem, tipologia: newValue || "" })
                 }
-              />
-              <TextField
-                label="Origen"
-                variant="standard"
-                fullWidth
-                value={currentItem.origen}
-                onChange={(e) =>
-                  setCurrentItem({ ...currentItem, origen: e.target.value })
-                }
-              />
-              <TextField
-                label="Equipamiento"
-                variant="standard"
-                fullWidth
-                value={currentItem.equipamiento}
-                onChange={(e) =>
+                onInputChange={(e, newInputValue) =>
                   setCurrentItem({
                     ...currentItem,
-                    equipamiento: e.target.value,
+                    tipologia: newInputValue || "",
                   })
                 }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Tipología"
+                    variant="standard"
+                    fullWidth
+                    required
+                  />
+                )}
+              />
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Box sx={{ flex: "1 1 50%" }}>
+                  <Autocomplete
+                    freeSolo
+                    forcePopupIcon
+                    disabled={!currentItem.tipologia}
+                    options={[...new Set(data.map((i) => i.tipo))]
+                      .filter(Boolean)
+                      .sort()}
+                    value={currentItem.tipo || ""}
+                    onChange={(e, newValue) =>
+                      setCurrentItem({ ...currentItem, tipo: newValue || "" })
+                    }
+                    onInputChange={(e, newInputValue) =>
+                      setCurrentItem({
+                        ...currentItem,
+                        tipo: newInputValue || "",
+                      })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Tipo de Origen"
+                        variant="standard"
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Box>
+                <Box sx={{ flex: "1 1 50%" }}>
+                  <Autocomplete
+                    freeSolo
+                    forcePopupIcon
+                    disabled={!currentItem.tipologia}
+                    options={[...new Set(data.map((i) => i.origen))]
+                      .filter(Boolean)
+                      .sort()}
+                    value={currentItem.origen || ""}
+                    onChange={(e, newValue) =>
+                      setCurrentItem({ ...currentItem, origen: newValue || "" })
+                    }
+                    onInputChange={(e, newInputValue) =>
+                      setCurrentItem({
+                        ...currentItem,
+                        origen: newInputValue || "",
+                      })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Origen"
+                        variant="standard"
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Box>
+              </Box>
+              <Autocomplete
+                freeSolo
+                forcePopupIcon
+                disabled={!currentItem.tipologia}
+                options={[...new Set(data.map((i) => i.equipamiento))]
+                  .filter(Boolean)
+                  .sort()}
+                value={currentItem.equipamiento || ""}
+                onChange={(e, newValue) =>
+                  setCurrentItem({
+                    ...currentItem,
+                    equipamiento: newValue || "",
+                  })
+                }
+                onInputChange={(e, newInputValue) =>
+                  setCurrentItem({
+                    ...currentItem,
+                    equipamiento: newInputValue || "",
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Tipo de Equipo"
+                    variant="standard"
+                    fullWidth
+                  />
+                )}
               />
 
               <Box sx={{ display: "flex", gap: 2 }}>
-                <FormControl variant="standard" fullWidth>
-                  <InputLabel>Regla</InputLabel>
-                  <Select
-                    value={currentItem.tipoRegla}
-                    onChange={(e) =>
-                      setCurrentItem({
-                        ...currentItem,
-                        tipoRegla: e.target.value,
-                      })
-                    }
-                  >
-                    {opcionesRegla.map((r) => (
-                      <MenuItem key={r} value={r}>
-                        {r}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Autocomplete
+                  disabled={!currentItem.tipologia}
+                  options={opcionesRegla}
+                  value={currentItem.tipoRegla || "UNICO"}
+                  onChange={(e, newValue) =>
+                    setCurrentItem({
+                      ...currentItem,
+                      tipoRegla: newValue || "UNICO",
+                    })
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Regla"
+                      variant="standard"
+                      fullWidth
+                    />
+                  )}
+                  sx={{ flexGrow: 1 }}
+                />
                 {currentItem.tipoRegla === "PROPORCIONAL" && (
                   <TextField
+                    disabled={!currentItem.tipologia}
                     label="Base"
                     type="number"
                     variant="standard"
@@ -535,6 +655,7 @@ const EquipamientosConfig = () => {
                   />
                 )}
                 <TextField
+                  disabled={!currentItem.tipologia}
                   label="Mínimo"
                   type="number"
                   variant="standard"
@@ -551,6 +672,7 @@ const EquipamientosConfig = () => {
 
               <Box sx={{ mt: 1 }}>
                 <Autocomplete
+                  disabled={!currentItem.tipologia}
                   multiple
                   options={opcionesTrazabilidad}
                   getOptionLabel={(option) => option.label}
@@ -580,24 +702,11 @@ const EquipamientosConfig = () => {
                       placeholder="Seleccione..."
                     />
                   )}
-                  renderTags={(tagValue, getTagProps) =>
-                    tagValue.map((option, index) => {
-                      const { key, ...tagProps } = getTagProps({ index });
-                      return (
-                        <Chip
-                          key={key}
-                          label={option.label}
-                          {...tagProps}
-                          size="small"
-                          sx={{
-                            bgcolor: "white",
-                            border: "1px solid #ccc",
-                            fontWeight: "bold",
-                          }}
-                        />
-                      );
-                    })
-                  }
+                  renderTags={(tagValue, getTagProps) => (
+                    <Typography sx={{ fontSize: "1rem", ml: 1 }}>
+                      {tagValue.map((opt) => opt.label).join(", ")}
+                    </Typography>
+                  )}
                 />
               </Box>
             </Stack>

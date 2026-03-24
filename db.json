@@ -1,7 +1,7 @@
 {
   "recursos-humanos": [
     {
-      "id": 1,
+      "id": "1",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "GUARDIA",
       "tipoPlantel": "MÉDICO",
@@ -9,7 +9,7 @@
       "minimo": "1 cada 30 pacientes"
     },
     {
-      "id": 2,
+      "id": "2",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "INTERNACIÓN GENERAL",
       "tipoPlantel": "ENFERMERÍA",
@@ -17,7 +17,7 @@
       "minimo": "1 cada 12 camas"
     },
     {
-      "id": 3,
+      "id": "3",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "INTERNACIÓN GENERAL",
       "tipoPlantel": "ENFERMERÍA",
@@ -25,7 +25,7 @@
       "minimo": "1 cada 14 camas"
     },
     {
-      "id": 4,
+      "id": "4",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UCI (CUIDADOS INTERMEDIOS)",
       "tipoPlantel": "ENFERMERÍA",
@@ -33,7 +33,7 @@
       "minimo": "1 cada 4 camas"
     },
     {
-      "id": 5,
+      "id": "5",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UTI (TERAPIA INTENSIVA ADULTOS)",
       "tipoPlantel": "MÉDICO",
@@ -41,7 +41,7 @@
       "minimo": "1 cada 10 camas"
     },
     {
-      "id": 6,
+      "id": "6",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UTI (TERAPIA INTENSIVA ADULTOS)",
       "tipoPlantel": "ENFERMERÍA",
@@ -49,7 +49,7 @@
       "minimo": "1 cada 4 camas por turno"
     },
     {
-      "id": 7,
+      "id": "7",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDAD CORONARIA",
       "tipoPlantel": "MÉDICO",
@@ -57,7 +57,7 @@
       "minimo": "1 cada 10 camas"
     },
     {
-      "id": 8,
+      "id": "8",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDAD CORONARIA",
       "tipoPlantel": "ENFERMERÍA",
@@ -65,7 +65,7 @@
       "minimo": "1 cada 2 camas (hasta 4) / 1 cada 4 subsiguientes"
     },
     {
-      "id": 9,
+      "id": "9",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "NEONATOLOGÍA (UTIN)",
       "tipoPlantel": "MÉDICO",
@@ -73,7 +73,7 @@
       "minimo": "1 cada 8 unidades"
     },
     {
-      "id": 10,
+      "id": "10",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "ALIMENTACIÓN",
       "tipoPlantel": "TÉCNICO",
@@ -83,35 +83,35 @@
   ],
   "jefe-servicio": [
     {
-      "id": 1,
+      "id": "1",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UCI (CUIDADOS INTERMEDIOS)",
       "tipoPlantel": "MÉDICO",
       "especialidad": "ESPECIALISTA TERAPIA INTENSIVA"
     },
     {
-      "id": 2,
+      "id": "2",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UTI (TERAPIA INTENSIVA ADULTOS)",
       "tipoPlantel": "MÉDICO",
       "especialidad": "ESPECIALISTA TERAPIA INTENSIVA (3HS DIARIAS)"
     },
     {
-      "id": 3,
+      "id": "3",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDAD CORONARIA",
       "tipoPlantel": "MÉDICO",
       "especialidad": "CARDIOLOGÍA"
     },
     {
-      "id": 4,
+      "id": "4",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "NEONATOLOGÍA (UTIN)",
       "tipoPlantel": "MÉDICO",
       "especialidad": "NEONATÓLOGO"
     },
     {
-      "id": 5,
+      "id": "5",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "HEMODINAMIA",
       "tipoPlantel": "MÉDICO",
@@ -119,74 +119,657 @@
     }
   ],
   "equipamientos": [
-    { "id": 1, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "CARDIODESFIBRILADOR", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 2, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "ELECTROCARDIÓGRAFO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 3, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "OXÍMETRO DE PULSO/MONITOR MULTIPARAMÉTRICO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 4, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "EQUIPO PARA NEBULIZACIONES", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 5, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "GUARDIA", "tipo": "SERVICIO", "equipamiento": "CARRO DE PARO COMPLETO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    
-    { "id": 6, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDADES DE CUIDADOS INTERMEDIOS", "tipo": "CAMA", "equipamiento": "OXÍGENO Y ASPIRACIÓN CENTRAL CON BOCA INDIVIDUAL", "tipoRegla": "PROPORCIONAL", "base": 2, "cantidadMinima": 1, "requiereMarca": false, "requiereModelo": false, "requiereSerie": false },
-    { "id": 7, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDADES DE CUIDADOS INTERMEDIOS", "tipo": "CAMA", "equipamiento": "ASPIRADOR ELÉCTRICO", "tipoRegla": "PROPORCIONAL", "base": 3, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    
-    { "id": 8, "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)", "tipo": "SERVICIO", "equipamiento": "CARRO DE URGENCIA CON EQUIPOS DE INTUBACIÓN", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 9, "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)", "tipo": "SERVICIO", "equipamiento": "ELECTROCARDIÓGRAFO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 10, "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)", "tipo": "SERVICIO", "equipamiento": "EQUIPO COMPLETO PARA INTUBACIÓN Y CANALIZACIÓN", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 11, "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)", "tipo": "SERVICIO", "equipamiento": "EQUIPO PARA PUNCIÓN RAQUÍDEA, TORÁCICA Y ABDOMINAL", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 12, "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)", "tipo": "SERVICIO", "equipamiento": "STOCK DE MEDICAMENTOS Y MATERIAL DESCARTABLE", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": false, "requiereModelo": false, "requiereSerie": false },
-
-    { "id": 13, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "ELECTROBISTURÍ", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 14, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "MÁQUINA DE ANESTESIA", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 15, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "SISTEMA DE ASPIRACIÓN AUTOMÁTICA", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 16, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "LARINGOSCOPIO Y TUBOS ENDOTRAQUEALES", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 17, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "CAJA DE TRAQUEOTOMÍA", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 18, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "MESA DE CIRUGÍA TIPO MAYO", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 19, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "MONITOR MULTIPARAMÉTRICO", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 20, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "CAMA O CAMILLA QUIRÚRGICA REGULABLE", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 21, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "CARDIODESFIBRILADOR", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 22, "origen": "QUIRÓFANO", "tipo": "SALA", "equipamiento": "LÁMPARA CIÁLITICA", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-
-    { "id": 23, "origen": "SALA DE PARTOS", "tipo": "SALA", "equipamiento": "CAMA DE PARTOS CON RUEDAS", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 24, "origen": "SALA DE PARTOS", "tipo": "SALA", "equipamiento": "MESA DE INSTRUMENTAL OBSTÉTRICO", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 25, "origen": "SALA DE PARTOS", "tipo": "SALA", "equipamiento": "MESA PARA ANESTESISTA", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 26, "origen": "SALA DE PARTOS", "tipo": "SALA", "equipamiento": "LÁMPARA PORTÁTIL REGULABLE", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 27, "origen": "SALA DE PARTOS", "tipo": "SALA", "equipamiento": "BALANZA PARA RECIÉN NACIDO", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 28, "origen": "SALA DE PARTOS", "tipo": "SALA", "equipamiento": "MONITOR FETAL PORTÁTIL", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-
-    { "id": 29, "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)", "tipo": "SERVICIO", "equipamiento": "MARCAPASO TRANSITORIO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 30, "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)", "tipo": "SERVICIO", "equipamiento": "CARRO DE URGENCIA", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 31, "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)", "tipo": "SERVICIO", "equipamiento": "TENSIÓMETRO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 32, "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)", "tipo": "SERVICIO", "equipamiento": "EQUIPO DE ASPIRACIÓN", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 33, "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)", "tipo": "SERVICIO", "equipamiento": "RESPIRADOR MECÁNICO VOLUMÉTRICO", "tipoRegla": "PROPORCIONAL", "base": 3, "cantidadMinima": 2, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 34, "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)", "tipo": "SERVICIO", "equipamiento": "EQUIPO DE DESFIBRILACIÓN Y SINCRONIZADOR", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 2, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 35, "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)", "tipo": "SERVICIO", "equipamiento": "BOMBA DE INFUSIÓN CONTINUA", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 2, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 36, "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)", "tipo": "SERVICIO", "equipamiento": "OXÍMETRO DE PULSO PORTÁTIL", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 2, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 37, "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)", "tipo": "SERVICIO", "equipamiento": "ELECTROCARDIÓGRAFO", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 2, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-
-    { "id": 38, "origen": "UNIDAD CORONARIA", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "RESPIRADOR MECÁNICO DE RESGUARDO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 39, "origen": "UNIDAD CORONARIA", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "ECOCARDIÓGRAFO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 40, "origen": "UNIDAD CORONARIA", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "EQUIPO DE ASPIRACIÓN", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 41, "origen": "UNIDAD CORONARIA", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "RESPIRADOR MECÁNICO VOLUMÉTRICO", "tipoRegla": "PROPORCIONAL", "base": 3, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 42, "origen": "UNIDAD CORONARIA", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "MARCAPASO TRANSITORIO CON 2 CATÉTERES", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 2, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 43, "origen": "UNIDAD CORONARIA", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "BOMBA DE INFUSIÓN", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 2, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-
-    { "id": 44, "origen": "UNIDAD DE TERAPIA INTENSIVA PEDIÁTRICA", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "MARCAPASO TRANSITORIO", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 45, "origen": "UNIDAD DE TERAPIA INTENSIVA PEDIÁTRICA", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "INCUBADORA PORTÁTIL", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 46, "origen": "UNIDAD DE TERAPIA INTENSIVA PEDIÁTRICA", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "RESPIRADOR MECÁNICO VOLUMÉTRICO", "tipoRegla": "PROPORCIONAL", "base": 3, "cantidadMinima": 2, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-
-    { "id": 47, "origen": "UNIDAD DE TERAPIA INTENSIVA NEONATAL", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "SINCRONIZADOR DESFIBRILADOR NEONATAL", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 48, "origen": "UNIDAD DE TERAPIA INTENSIVA NEONATAL", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "INCUBADORA A SERVOCONTROL", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 49, "origen": "UNIDAD DE TERAPIA INTENSIVA NEONATAL", "tipo": "SERVICIO CON INTERNACIÓN", "equipamiento": "CUNA", "tipoRegla": "PROPORCIONAL", "base": 4, "cantidadMinima": 2, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-
-    { "id": 50, "origen": "HEMODINAMIA", "tipo": "SERVICIO COMPLEMENTARIO", "equipamiento": "ARCO EN C O PARALELOGRAMO DEFORMABLE", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 51, "origen": "HEMODINAMIA", "tipo": "SERVICIO COMPLEMENTARIO", "equipamiento": "INYECTORA DE CONTRASTE", "tipoRegla": "UNICO", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-
-    { "id": 52, "origen": "HOSPITAL DE DÍA", "tipo": "SERVICIO", "equipamiento": "SILLÓN DE ONCOLOGÍA", "tipoRegla": "LINEAL", "base": 1, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": false },
-    { "id": 53, "origen": "HOSPITAL DE DÍA", "tipo": "SERVICIO", "equipamiento": "BOMBA DE INFUSIÓN", "tipoRegla": "PROPORCIONAL", "base": 2, "cantidadMinima": 1, "requiereMarca": true, "requiereModelo": true, "requiereSerie": true },
-    { "id": 54, "equipamiento": "OTRO"}
-  ],  
+    {
+      "id": "1",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "GUARDIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "CARDIODESFIBRILADOR",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "2",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "GUARDIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "ELECTROCARDIÓGRAFO",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "3",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "GUARDIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "OXÍMETRO DE PULSO/MONITOR MULTIPARAMÉTRICO",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "4",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "GUARDIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "EQUIPO PARA NEBULIZACIONES",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "5",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "GUARDIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "CARRO DE PARO COMPLETO",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "6",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDADES DE CUIDADOS INTERMEDIOS",
+      "tipo": "CAMA",
+      "equipamiento": "OXÍGENO Y ASPIRACIÓN CENTRAL CON BOCA INDIVIDUAL",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 2,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false
+    },
+    {
+      "id": "7",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDADES DE CUIDADOS INTERMEDIOS",
+      "tipo": "CAMA",
+      "equipamiento": "ASPIRADOR ELÉCTRICO",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 3,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "8",
+      "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "CARRO DE URGENCIA CON EQUIPOS DE INTUBACIÓN",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "9",
+      "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "ELECTROCARDIÓGRAFO",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "10",
+      "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "EQUIPO COMPLETO PARA INTUBACIÓN Y CANALIZACIÓN",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "11",
+      "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "EQUIPO PARA PUNCIÓN RAQUÍDEA, TORÁCICA Y ABDOMINAL",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "12",
+      "origen": "UNIDADES DE CUIDADOS INTERMEDIOS (UCI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "STOCK DE MEDICAMENTOS Y MATERIAL DESCARTABLE",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false
+    },
+    {
+      "id": "13",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "ELECTROBISTURÍ",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "14",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "MÁQUINA DE ANESTESIA",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "15",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "SISTEMA DE ASPIRACIÓN AUTOMÁTICA",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "16",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "LARINGOSCOPIO Y TUBOS ENDOTRAQUEALES",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "17",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "CAJA DE TRAQUEOTOMÍA",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "18",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "MESA DE CIRUGÍA TIPO MAYO",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "19",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "MONITOR MULTIPARAMÉTRICO",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "20",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "CAMA O CAMILLA QUIRÚRGICA REGULABLE",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "21",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "CARDIODESFIBRILADOR",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "22",
+      "origen": "QUIRÓFANO",
+      "tipo": "SALA",
+      "equipamiento": "LÁMPARA CIÁLITICA",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "23",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SALA",
+      "equipamiento": "CAMA DE PARTOS CON RUEDAS",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "24",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SALA",
+      "equipamiento": "MESA DE INSTRUMENTAL OBSTÉTRICO",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "25",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SALA",
+      "equipamiento": "MESA PARA ANESTESISTA",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "26",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SALA",
+      "equipamiento": "LÁMPARA PORTÁTIL REGULABLE",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "27",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SALA",
+      "equipamiento": "BALANZA PARA RECIÉN NACIDO",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "28",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SALA",
+      "equipamiento": "MONITOR FETAL PORTÁTIL",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "29",
+      "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "MARCAPASO TRANSITORIO",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "30",
+      "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "CARRO DE URGENCIA",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "31",
+      "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "TENSIÓMETRO",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "32",
+      "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "EQUIPO DE ASPIRACIÓN",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "33",
+      "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "RESPIRADOR MECÁNICO VOLUMÉTRICO",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 3,
+      "cantidadMinima": 2,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "34",
+      "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "EQUIPO DE DESFIBRILACIÓN Y SINCRONIZADOR",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 2,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "35",
+      "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "BOMBA DE INFUSIÓN CONTINUA",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 2,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "36",
+      "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "OXÍMETRO DE PULSO PORTÁTIL",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 2,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "37",
+      "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO (UTI)",
+      "tipo": "SERVICIO",
+      "equipamiento": "ELECTROCARDIÓGRAFO",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 2,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "38",
+      "origen": "UNIDAD CORONARIA",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "RESPIRADOR MECÁNICO DE RESGUARDO",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "39",
+      "origen": "UNIDAD CORONARIA",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "ECOCARDIÓGRAFO",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "40",
+      "origen": "UNIDAD CORONARIA",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "EQUIPO DE ASPIRACIÓN",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "41",
+      "origen": "UNIDAD CORONARIA",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "RESPIRADOR MECÁNICO VOLUMÉTRICO",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 3,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "42",
+      "origen": "UNIDAD CORONARIA",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "MARCAPASO TRANSITORIO CON 2 CATÉTERES",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 2,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "43",
+      "origen": "UNIDAD CORONARIA",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "BOMBA DE INFUSIÓN",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 2,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "44",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA PEDIÁTRICA",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "MARCAPASO TRANSITORIO",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "45",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA PEDIÁTRICA",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "INCUBADORA PORTÁTIL",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "46",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA PEDIÁTRICA",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "RESPIRADOR MECÁNICO VOLUMÉTRICO",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 3,
+      "cantidadMinima": 2,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "47",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA NEONATAL",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "SINCRONIZADOR DESFIBRILADOR NEONATAL",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "48",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA NEONATAL",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "INCUBADORA A SERVOCONTROL",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "49",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA NEONATAL",
+      "tipo": "SERVICIO CON INTERNACIÓN",
+      "equipamiento": "CUNA",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 2,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "50",
+      "origen": "HEMODINAMIA",
+      "tipo": "SERVICIO COMPLEMENTARIO",
+      "equipamiento": "ARCO EN C O PARALELOGRAMO DEFORMABLE",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "51",
+      "origen": "HEMODINAMIA",
+      "tipo": "SERVICIO COMPLEMENTARIO",
+      "equipamiento": "INYECTORA DE CONTRASTE",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "52",
+      "origen": "HOSPITAL DE DÍA",
+      "tipo": "SERVICIO",
+      "equipamiento": "SILLÓN DE ONCOLOGÍA",
+      "tipoRegla": "LINEAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": false
+    },
+    {
+      "id": "53",
+      "origen": "HOSPITAL DE DÍA",
+      "tipo": "SERVICIO",
+      "equipamiento": "BOMBA DE INFUSIÓN",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 2,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true
+    },
+    {
+      "id": "54",
+      "equipamiento": "OTRO"
+    }
+  ],
   "infraestructura": [
     {
-      "id": 1,
+      "id": "1",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "GUARDIA",
       "tipo": "Servicio",
@@ -195,7 +778,7 @@
       "minimo": "1"
     },
     {
-      "id": 2,
+      "id": "2",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "GUARDIA",
       "tipo": "Servicio",
@@ -204,7 +787,7 @@
       "minimo": "1"
     },
     {
-      "id": 3,
+      "id": "3",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDAD DE CUIDADOS INTERMEDIOS",
       "tipo": "Servicio",
@@ -213,7 +796,7 @@
       "minimo": "4"
     },
     {
-      "id": 4,
+      "id": "4",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "QUIRÓFANO",
       "tipo": "Sala",
@@ -222,7 +805,7 @@
       "minimo": "1"
     },
     {
-      "id": 5,
+      "id": "5",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "SALA DE PARTO",
       "tipo": "Sala",
@@ -231,34 +814,34 @@
       "minimo": "1"
     },
     {
-      "id": 6,
+      "id": "6",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO",
-      "tipo": "Servicio",
+      "tipo": "Servicio Complementario",
       "requerida": "CIRUGÍA GENERAL",
       "tipoInfra": "SERVICIO",
       "minimo": "1"
     },
     {
-      "id": 7,
+      "id": "7",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO",
-      "tipo": "Servicio",
+      "tipo": "Servicio Complementario",
       "requerida": "ANESTESIOLOGÍA",
       "tipoInfra": "SERVICIO",
       "minimo": "1"
     },
     {
-      "id": 8,
+      "id": "8",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO",
-      "tipo": "Servicio",
+      "tipo": "Servicio Complementario",
       "requerida": "HEMOTERAPIA",
       "tipoInfra": "SERVICIO COMPLEMENTARIO",
       "minimo": "1"
     },
     {
-      "id": 9,
+      "id": "9",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO",
       "tipo": "Servicio",
@@ -267,7 +850,7 @@
       "minimo": "1"
     },
     {
-      "id": 10,
+      "id": "10",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO",
       "tipo": "Servicio",
@@ -276,7 +859,7 @@
       "minimo": "1"
     },
     {
-      "id": 11,
+      "id": "11",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO",
       "tipo": "Servicio",
@@ -285,7 +868,7 @@
       "minimo": "1"
     },
     {
-      "id": 12,
+      "id": "12",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDADES DE TERAPIA INTENSIVA ADULTO",
       "tipo": "Servicio",
@@ -294,7 +877,7 @@
       "minimo": "1"
     },
     {
-      "id": 13,
+      "id": "13",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDAD CORONARIA",
       "tipo": "Servicio con internación",
@@ -303,7 +886,7 @@
       "minimo": "1"
     },
     {
-      "id": 14,
+      "id": "14",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDAD DE TERAPIA INTENSIVA PEDIÁTRICA",
       "tipo": "Servicio con internación",
@@ -312,7 +895,7 @@
       "minimo": "1"
     },
     {
-      "id": 15,
+      "id": "15",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "UNIDAD DE TERAPIA INTENSIVA NEONATAL",
       "tipo": "Servicio con internación",
@@ -321,7 +904,7 @@
       "minimo": "4"
     },
     {
-      "id": 16,
+      "id": "16",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "HEMODINAMIA",
       "tipo": "Servicio Complementario",
@@ -330,7 +913,7 @@
       "minimo": "1"
     },
     {
-      "id": 17,
+      "id": "17",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "HEMODINAMIA",
       "tipo": "Servicio Complementario",
@@ -339,12 +922,21 @@
       "minimo": "1"
     },
     {
-      "id": 18,
+      "id": "18",
       "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
       "origen": "HOSPITAL DE DIA",
       "tipo": "Servicio",
       "requerida": "USO TRANSITORIO (Guardia, Onco, CA Quirurg)",
       "tipoInfra": "SALA",
+      "minimo": "1"
+    },
+    {
+      "id": "dd2e",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "PEDIATRÍA",
+      "tipo": "SERVICIO",
+      "requerida": "PEDIATRÍA",
+      "tipoInfra": "CAMAS",
       "minimo": "1"
     }
   ],
@@ -355,7 +947,7 @@
     },
     {
       "id": "COMPLEMENTARIO",
-      "nombre": "Servicios Complementarios"
+      "nombre": "Servicio Complementario"
     },
     {
       "id": "INTERNACION",
@@ -372,699 +964,763 @@
   ],
   "origenes": [
     {
-      "id": 1,
+      "id": "1",
       "nombre": "ADOLESCENCIA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "ambos"
     },
     {
-      "id": 2,
+      "id": "2",
       "nombre": "ALERGIA E INMUNOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "ambos"
     },
     {
-      "id": 3,
+      "id": "3",
       "nombre": "ANATOMÍA PATOLÓGICA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "ambos"
     },
     {
-      "id": 4,
+      "id": "4",
       "nombre": "ANATOMÍA PATOLÓGICA PEDIÁTRICA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "ambos"
     },
     {
-      "id": 5,
+      "id": "5",
       "nombre": "ANESTESIOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "ambos"
     },
-    { "id": 6, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDAD DE TERAPIA INTENSIVA", "tipo": "Servicio", "requerida": "CIRUGÍA GENERAL", "tipoInfra": "SERVICIO", "minimo": "1" },
-    { "id": 7, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDAD DE TERAPIA INTENSIVA", "tipo": "Servicio", "requerida": "ANESTESIOLOGÍA", "tipoInfra": "SERVICIO", "minimo": "1" },
-    { "id": 8, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDAD DE TERAPIA INTENSIVA", "tipo": "Servicio", "requerida": "HEMOTERAPIA", "tipoInfra": "SERVICIO COMPLEMENTARIO", "minimo": "1" },
-    { "id": 9, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDAD DE TERAPIA INTENSIVA", "tipo": "Servicio", "requerida": "LABORATORIO ANÁLISIS CLÍNICOS", "tipoInfra": "SERVICIO COMPLEMENTARIO", "minimo": "1" },
-    { "id": 10, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDAD DE TERAPIA INTENSIVA", "tipo": "Servicio", "requerida": "DIAGNÓSTICO X IMÁGENES", "tipoInfra": "SERVICIO COMPLEMENTARIO", "minimo": "1" },
-    { "id": 11, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDAD DE TERAPIA INTENSIVA", "tipo": "Servicio", "requerida": "KINESIOLOGÍA", "tipoInfra": "SERVICIO", "minimo": "1" },
-    { "id": 12, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDAD DE TERAPIA INTENSIVA", "tipo": "Servicio", "requerida": "INTERNACIÓN CRÓNICA", "tipoInfra": "SERVICIO", "minimo": "1" },
-    { "id": 13, "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES", "origen": "UNIDAD DE TERAPIA INTENSIVA", "tipo": "Servicio", "requerida": "TERAPIA INTENSIVA ADULTOS", "tipoInfra": "CAMA", "minimo": "1" },
     {
-      "id": 14,
+      "id": "6",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA",
+      "tipo": "Servicio",
+      "requerida": "CIRUGÍA GENERAL",
+      "tipoInfra": "SERVICIO",
+      "minimo": "1"
+    },
+    {
+      "id": "7",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA",
+      "tipo": "Servicio",
+      "requerida": "ANESTESIOLOGÍA",
+      "tipoInfra": "SERVICIO",
+      "minimo": "1"
+    },
+    {
+      "id": "8",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA",
+      "tipo": "Servicio",
+      "requerida": "HEMOTERAPIA",
+      "tipoInfra": "SERVICIO COMPLEMENTARIO",
+      "minimo": "1"
+    },
+    {
+      "id": "9",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA",
+      "tipo": "Servicio",
+      "requerida": "LABORATORIO ANÁLISIS CLÍNICOS",
+      "tipoInfra": "SERVICIO COMPLEMENTARIO",
+      "minimo": "1"
+    },
+    {
+      "id": "10",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA",
+      "tipo": "Servicio",
+      "requerida": "DIAGNÓSTICO X IMÁGENES",
+      "tipoInfra": "SERVICIO COMPLEMENTARIO",
+      "minimo": "1"
+    },
+    {
+      "id": "11",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA",
+      "tipo": "Servicio",
+      "requerida": "KINESIOLOGÍA",
+      "tipoInfra": "SERVICIO",
+      "minimo": "1"
+    },
+    {
+      "id": "12",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA",
+      "tipo": "Servicio",
+      "requerida": "INTERNACIÓN CRÓNICA",
+      "tipoInfra": "SERVICIO",
+      "minimo": "1"
+    },
+    {
+      "id": "13",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UNIDAD DE TERAPIA INTENSIVA",
+      "tipo": "Servicio",
+      "requerida": "TERAPIA INTENSIVA ADULTOS",
+      "tipoInfra": "CAMA",
+      "minimo": "1"
+    },
+    {
+      "id": "14",
       "nombre": "CIRUGÍA INFANTIL (CIRUG. PEDIÁTRICA)",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 15,
+      "id": "15",
       "nombre": "CIRUGÍA PLÁSTICA Y REPARADORA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 16,
+      "id": "16",
       "nombre": "CIRUGÍA PLÁSTICA/REPARAD (POSBÁSICA)",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 17,
+      "id": "17",
       "nombre": "CIRUGÍA VASCULAR PERIFÉRICA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 18,
+      "id": "18",
       "nombre": "CIRUGÍA/TRAUMBUCO-MAXILO-FACIAL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 19,
+      "id": "19",
       "nombre": "CLÍNICA MÉDICA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 20,
+      "id": "20",
       "nombre": "COLOPROCTOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 21,
+      "id": "21",
       "nombre": "DERMATOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 22,
+      "id": "22",
       "nombre": "DERMATOLOGÍA PEDIÁTRICA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 23,
+      "id": "23",
       "nombre": "EMERGENTOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 24,
+      "id": "24",
       "nombre": "ENDOCRINOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 25,
+      "id": "25",
       "nombre": "ENDOCRINOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 26,
+      "id": "26",
       "nombre": "ENFERMERÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 27,
+      "id": "27",
       "nombre": "FARMACOLOGÍA CLÍNICA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 28,
+      "id": "28",
       "nombre": "FERTILIZACIÓN ASISTIDA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 29,
+      "id": "29",
       "nombre": "FISIATRÍA (MEDICINA FÍSICA/REHABILITACIÓN)",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 30,
+      "id": "30",
       "nombre": "FONOAUDIOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 31,
+      "id": "31",
       "nombre": "GASTROENTEROLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 32,
+      "id": "32",
       "nombre": "GASTROENTEROLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 33,
+      "id": "33",
       "nombre": "GENÉTICA MÉDICA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 34,
+      "id": "34",
       "nombre": "GERIATRÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 35,
+      "id": "35",
       "nombre": "GINECOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 36,
+      "id": "36",
       "nombre": "GUARDIA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 37,
+      "id": "37",
       "nombre": "HEMATOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 38,
+      "id": "38",
       "nombre": "HEMATOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 39,
+      "id": "39",
       "nombre": "HOSPITAL DE DIA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 40,
+      "id": "40",
       "nombre": "INFECTOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 41,
+      "id": "41",
       "nombre": "INFECTOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 42,
+      "id": "42",
       "nombre": "INMUNIZACIONES",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 43,
+      "id": "43",
       "nombre": "INMUNOLOGÍA PEDIÁTRICA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 44,
+      "id": "44",
       "nombre": "INTERDISCIPLINARIA EDUCACIÓN PARA LA SALUD",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 45,
+      "id": "45",
       "nombre": "INTERDISCIPLINARIA EN CUIDADOS PALIATIVOS",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 46,
+      "id": "46",
       "nombre": "INTERDISCIPLINARIA EN GERONTOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 47,
+      "id": "47",
       "nombre": "INTERNACIÓN DOMICILIARIA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 48,
+      "id": "48",
       "nombre": "KINESIOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 49,
+      "id": "49",
       "nombre": "KINESIOLOGÍA PEDIATRÍA Y NEONATOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 50,
+      "id": "50",
       "nombre": "MASTOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 51,
+      "id": "51",
       "nombre": "MEDICINA DEL DEPORTE",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 52,
+      "id": "52",
       "nombre": "MEDICINA DEL TRABAJO",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 53,
+      "id": "53",
       "nombre": "MEDICINA GENERAL/MEDICINA DE FAMILIA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 54,
+      "id": "54",
       "nombre": "MEDICINA LEGAL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 55,
+      "id": "55",
       "nombre": "MEDICINA NUCLEAR",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 56,
+      "id": "56",
       "nombre": "MUSICOTERAPIA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 57,
+      "id": "57",
       "nombre": "NEFROLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 58,
+      "id": "58",
       "nombre": "NEFROLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 59,
+      "id": "59",
       "nombre": "NEONATOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 60,
+      "id": "60",
       "nombre": "NEUMONOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 61,
+      "id": "61",
       "nombre": "NEUMONOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 62,
+      "id": "62",
       "nombre": "NEUROCIRUGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 63,
+      "id": "63",
       "nombre": "NEUROLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 64,
+      "id": "64",
       "nombre": "NEUROLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 65,
+      "id": "65",
       "nombre": "NUTRICIÓN",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 66,
+      "id": "66",
       "nombre": "NUTRICIÓN INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 67,
+      "id": "67",
       "nombre": "NUTRICIONISTA-DIETISTA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 68,
+      "id": "68",
       "nombre": "OBSTETRICIA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 69,
+      "id": "69",
       "nombre": "ODONTOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 70,
+      "id": "70",
       "nombre": "ODONTOPEDIATRÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 71,
+      "id": "71",
       "nombre": "OFTALMOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 72,
+      "id": "72",
       "nombre": "ONCOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 73,
+      "id": "73",
       "nombre": "ONCOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 74,
+      "id": "74",
       "nombre": "ORTOPEDIA Y TRAUMATOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 75,
+      "id": "75",
       "nombre": "ORTOPEDIA Y TRAUMATOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 76,
+      "id": "76",
       "nombre": "OTORRINOLARINGOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 77,
+      "id": "77",
       "nombre": "OTORRINOLARINGOLOGÍA PEDIÁTRICA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 78,
+      "id": "78",
       "nombre": "OTRAS PRESTACIONES",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 79,
+      "id": "79",
       "nombre": "PEDIATRÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 80,
+      "id": "80",
       "nombre": "PSICOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 81,
+      "id": "81",
       "nombre": "PSICOLOGÍA CLÍNICA INFANTO-JUVENIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 82,
+      "id": "82",
       "nombre": "PSICOPEDAGOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 83,
+      "id": "83",
       "nombre": "PSIQUIATRÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 84,
+      "id": "84",
       "nombre": "PSIQUIATRÍA INFANTO-JUVENIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 85,
+      "id": "85",
       "nombre": "RADIOTERAPIA O TERAPIA RADIANTE",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 86,
+      "id": "86",
       "nombre": "REUMATOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 87,
+      "id": "87",
       "nombre": "REUMATOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 88,
+      "id": "88",
       "nombre": "TERAPIA INTENSIVA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 89,
+      "id": "89",
       "nombre": "TERAPIA INTENSIVA INFANTIL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 90,
+      "id": "90",
       "nombre": "TERAPIA OCUPACIONAL",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 91,
+      "id": "91",
       "nombre": "TOCOGINECOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 92,
+      "id": "92",
       "nombre": "TOXICOLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 93,
+      "id": "93",
       "nombre": "TRASLADOS SANITARIOS",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 94,
+      "id": "94",
       "nombre": "UROLOGÍA",
       "categoriaId": "SERVICIO",
       "reconocimiento": "provincial"
     },
     {
-      "id": 100,
+      "id": "100",
       "nombre": "DIAGNÓSTICO X IMÁGENES",
       "categoriaId": "COMPLEMENTARIO",
       "reconocimiento": "nacional"
     },
     {
-      "id": 101,
+      "id": "101",
       "nombre": "DIÁLISIS",
       "categoriaId": "COMPLEMENTARIO",
       "reconocimiento": "nacional"
     },
     {
-      "id": 102,
+      "id": "102",
       "nombre": "FARMACIA",
       "categoriaId": "COMPLEMENTARIO",
       "reconocimiento": "nacional"
     },
     {
-      "id": 103,
+      "id": "103",
       "nombre": "HEMODINAMIA",
       "categoriaId": "COMPLEMENTARIO",
       "reconocimiento": "nacional"
     },
     {
-      "id": 104,
+      "id": "104",
       "nombre": "HEMOTERAPIA",
       "categoriaId": "COMPLEMENTARIO",
       "reconocimiento": "nacional"
     },
     {
-      "id": 105,
+      "id": "105",
       "nombre": "LABORATORIO ANÁLISIS CLÍNICOS",
       "categoriaId": "COMPLEMENTARIO",
       "reconocimiento": "nacional"
     },
     {
-      "id": 200,
+      "id": "200",
       "nombre": "UNIDAD DE TERAPIA INTENSIVA",
       "categoriaId": "INTERNACION",
       "reconocimiento": "provincial"
     },
     {
-      "id": 201,
+      "id": "201",
       "nombre": "UNIDAD CORONARIA",
       "categoriaId": "INTERNACION",
       "reconocimiento": "provincial"
     },
     {
-      "id": 202,
+      "id": "202",
       "nombre": "UNIDAD DE CUIDADOS INTERMEDIOS",
       "categoriaId": "INTERNACION",
       "reconocimiento": "provincial"
     },
     {
-      "id": 203,
+      "id": "203",
       "nombre": "INTERNACIÓN CRÓNICA",
       "categoriaId": "INTERNACION",
       "reconocimiento": "provincial"
     },
     {
-      "id": 204,
+      "id": "204",
       "nombre": "UNIDAD DE TERAPIA INTENSIVA NEONATAL",
       "categoriaId": "INTERNACION",
       "reconocimiento": "provincial"
     },
     {
-      "id": 205,
+      "id": "205",
       "nombre": "UNIDAD DE TERAPIA INTENSIVA PEDIÁTRICA",
       "categoriaId": "INTERNACION",
       "reconocimiento": "provincial"
     },
     {
-      "id": 300,
+      "id": "300",
       "nombre": "SALA DE PROCEDIMIENTO",
       "categoriaId": "SALA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 301,
+      "id": "301",
       "nombre": "SALA DE PARTO",
       "categoriaId": "SALA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 302,
+      "id": "302",
       "nombre": "SALA DE ENDOSCOPÍA",
       "categoriaId": "SALA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 303,
+      "id": "303",
       "nombre": "QUIRÓFANO",
       "categoriaId": "SALA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 304,
+      "id": "304",
       "nombre": "QUIRÓFANO PARA HEMODINAMIA",
       "categoriaId": "SALA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 400,
+      "id": "400",
       "nombre": "INTERNACIÓN GENERAL",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 401,
+      "id": "401",
       "nombre": "TERAPIA INTENSIVA PEDIÁTRICA",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 402,
+      "id": "402",
       "nombre": "INTERNACIÓN PROLONGADA",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 403,
+      "id": "403",
       "nombre": "TERAPIA INTENSIVA ADULTOS",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 404,
+      "id": "404",
       "nombre": "PEDIATRÍA",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 405,
+      "id": "405",
       "nombre": "UNIDAD CORONARIA",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 406,
+      "id": "406",
       "nombre": "NEONATOLOGÍA",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 407,
+      "id": "407",
       "nombre": "UNIDAD CUIDADOS INTERMEDIOS",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 408,
+      "id": "408",
       "nombre": "HEMODIÁLISIS",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 409,
+      "id": "409",
       "nombre": "USO TRANSITORIO (Guardia, Onco, CA Quirurg)",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 410,
+      "id": "410",
       "nombre": "MATERNIDAD",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     },
     {
-      "id": 411,
+      "id": "411",
       "nombre": "SHOCK ROOM",
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
