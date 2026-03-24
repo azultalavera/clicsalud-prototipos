@@ -63,6 +63,8 @@ const Infraestructura = () => {
   const [filtroOrigen, setFiltroOrigen] = useState(null);
   const [filtroTipoInfra, setFiltroTipoInfra] = useState(null);
   const [filtroRequerida, setFiltroRequerida] = useState(null);
+  const [mostrarResultados, setMostrarResultados] = useState(false);
+  const [filtrosAplicados, setFiltrosAplicados] = useState({});
 
   const [currentItem, setCurrentItem] = useState({
     tipologia: null,
@@ -70,7 +72,7 @@ const Infraestructura = () => {
     tipo: null,
     requerida: "",
     tipoInfra: null,
-    minimo: "",
+    minimo: 1,
   });
 
   const cargarTodo = async () => {
@@ -134,25 +136,23 @@ const Infraestructura = () => {
   );
 
   const dataFiltrada = useMemo(() => {
+    if (!mostrarResultados) return [];
     return data.filter((item) => {
       return (
-        (!filtroTipologia || item.tipologia === filtroTipologia) &&
-        (!filtroOrigen || item.origen === filtroOrigen) &&
-        (!filtroRequerida || item.requerida === filtroRequerida) &&
-        (!filtroTipoOrigen ||
-          item.tipo?.toUpperCase() === filtroTipoOrigen?.toUpperCase()) &&
-        (!filtroTipoInfra ||
-          item.tipoInfra?.toUpperCase() === filtroTipoInfra?.toUpperCase())
+        (!filtrosAplicados.tipologia ||
+          item.tipologia === filtrosAplicados.tipologia) &&
+        (!filtrosAplicados.origen || item.origen === filtrosAplicados.origen) &&
+        (!filtrosAplicados.requerida ||
+          item.requerida === filtrosAplicados.requerida) &&
+        (!filtrosAplicados.tipoOrigen ||
+          item.tipo?.toUpperCase() ===
+            filtrosAplicados.tipoOrigen?.toUpperCase()) &&
+        (!filtrosAplicados.tipoInfra ||
+          item.tipoInfra?.toUpperCase() ===
+            filtrosAplicados.tipoInfra?.toUpperCase())
       );
     });
-  }, [
-    data,
-    filtroTipologia,
-    filtroOrigen,
-    filtroRequerida,
-    filtroTipoOrigen,
-    filtroTipoInfra,
-  ]);
+  }, [data, mostrarResultados, filtrosAplicados]);
 
   const handleGuardar = async () => {
     const method = isEditing ? "PUT" : "POST";
@@ -208,7 +208,7 @@ const Infraestructura = () => {
               variant="h6"
               sx={{ color: "#0090d0", mb: 3, fontWeight: "bold" }}
             >
-              Filtros de configuración
+              Filtros de configuración de infraestructura
             </Typography>
 
             <Stack spacing={2}>
@@ -242,11 +242,12 @@ const Infraestructura = () => {
                       {...params}
                       label="Tipo de Origen"
                       variant="standard"
+                      fullWidth
                     />
                   )}
                 />
                 <Autocomplete
-                  sx={{ flex: 2 }}
+                  sx={{ flex: 1 }}
                   options={listadoOrigenesFiltro}
                   value={filtroOrigen || null}
                   onChange={(e, v) => setFiltroOrigen(v)}
@@ -257,7 +258,12 @@ const Infraestructura = () => {
                       : "Cargando..."
                   }
                   renderInput={(params) => (
-                    <TextField {...params} label="Origen" variant="standard" />
+                    <TextField
+                      {...params}
+                      label="Origen"
+                      variant="standard"
+                      fullWidth
+                    />
                   )}
                 />
               </Stack>
@@ -277,11 +283,12 @@ const Infraestructura = () => {
                       {...params}
                       label="Tipo de Infraestructura"
                       variant="standard"
+                      fullWidth
                     />
                   )}
                 />
                 <Autocomplete
-                  sx={{ flex: 2 }}
+                  sx={{ flex: 1 }}
                   options={listadoRequeridaFiltro}
                   value={filtroRequerida || null}
                   onChange={(e, v) => setFiltroRequerida(v)}
@@ -295,6 +302,7 @@ const Infraestructura = () => {
                       {...params}
                       label="Infraestructura Requerida"
                       variant="standard"
+                      fullWidth
                     />
                   )}
                 />
@@ -316,6 +324,8 @@ const Infraestructura = () => {
                     setFiltroOrigen(null);
                     setFiltroTipoInfra(null);
                     setFiltroRequerida(null);
+                    setFiltrosAplicados({});
+                    setMostrarResultados(false);
                   }}
                   sx={{
                     color: "#29b6f6",
@@ -329,6 +339,16 @@ const Infraestructura = () => {
                 <Button
                   variant="contained"
                   startIcon={<SearchIcon />}
+                  onClick={() => {
+                    setFiltrosAplicados({
+                      tipologia: filtroTipologia,
+                      tipoOrigen: filtroTipoOrigen,
+                      origen: filtroOrigen,
+                      tipoInfra: filtroTipoInfra,
+                      requerida: filtroRequerida,
+                    });
+                    setMostrarResultados(true);
+                  }}
                   sx={{ backgroundColor: "#29b6f6", px: 4, fontWeight: "bold" }}
                 >
                   CONSULTAR
@@ -337,7 +357,20 @@ const Infraestructura = () => {
             </Stack>
           </Paper>
 
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3,
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ color: "#0090d0", fontWeight: "bold" }}
+            >
+              Infraestructura
+            </Typography>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
@@ -348,7 +381,7 @@ const Infraestructura = () => {
                   tipo: null,
                   requerida: "",
                   tipoInfra: null,
-                  minimo: "",
+                  minimo: 1,
                 });
                 setIsEditing(false);
                 setOpen(true);
@@ -437,6 +470,21 @@ const Infraestructura = () => {
                     </TableCell>
                   </TableRow>
                 ))}
+                {dataFiltrada.length === 0 && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={5}
+                      sx={{
+                        textAlign: "center",
+                        py: 6,
+                        color: "rgba(0, 0, 0, 0.3)",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      NO SE ENCUENTRAN RESULTADOS PARA MOSTRAR
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -455,7 +503,7 @@ const Infraestructura = () => {
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              {isEditing ? "EDITAR CONFIGURACIÓN" : "NUEVA CONFIGURACIÓN"}
+              {isEditing ? "EDITAR REGLA" : "NUEVA REGLA"}
             </Typography>
           </Box>
           <Box sx={{ p: 4 }}>
@@ -469,7 +517,7 @@ const Infraestructura = () => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="TIPOLOGÍA"
+                    label="Tipología *"
                     variant="standard"
                     fullWidth
                   />
@@ -477,21 +525,28 @@ const Infraestructura = () => {
               />
               <Stack direction="row" spacing={2}>
                 <Autocomplete
+                  disabled={!currentItem.tipologia}
                   sx={{ flex: 1 }}
                   options={categoriasMapper.map((c) => c.label)}
                   value={currentItem.tipo}
                   onChange={(e, v) =>
-                    setCurrentItem({ ...currentItem, tipo: v, origen: "" })
+                    setCurrentItem({
+                      ...currentItem,
+                      tipo: v,
+                      origen: "",
+                      minimo: (v?.includes("SERVICIO") || currentItem.tipoInfra?.includes("SERVICIO")) ? 1 : currentItem.minimo || 1
+                    })
                   }
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="TIPO DE ORIGEN"
+                      label="Tipo de Origen"
                       variant="standard"
                     />
                   )}
                 />
                 <Autocomplete
+                  disabled={!currentItem.tipologia}
                   sx={{ flex: 2 }}
                   freeSolo
                   forcePopupIcon
@@ -503,7 +558,7 @@ const Infraestructura = () => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="ORIGEN"
+                      label="Origen"
                       variant="standard"
                       placeholder="Seleccione..."
                     />
@@ -512,6 +567,7 @@ const Infraestructura = () => {
               </Stack>
               <Stack direction="row" spacing={2}>
                 <Autocomplete
+                  disabled={!currentItem.tipologia}
                   sx={{ flex: 1 }}
                   options={categoriasMapper.map((c) => c.label)}
                   value={currentItem.tipoInfra}
@@ -520,17 +576,19 @@ const Infraestructura = () => {
                       ...currentItem,
                       tipoInfra: v,
                       requerida: "",
+                      minimo: (currentItem.tipo?.includes("SERVICIO") || v?.includes("SERVICIO")) ? 1 : currentItem.minimo || 1
                     })
                   }
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="TIPO DE INFRAESTRUCTURA"
+                      label="Tipo de Infraestructura"
                       variant="standard"
                     />
                   )}
                 />
                 <Autocomplete
+                  disabled={!currentItem.tipologia}
                   sx={{ flex: 2 }}
                   freeSolo
                   forcePopupIcon
@@ -545,7 +603,7 @@ const Infraestructura = () => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="INFRAESTRUCTURA REQUERIDA"
+                      label="Infraestructura Requerida"
                       variant="standard"
                       placeholder="Seleccione..."
                     />
@@ -553,10 +611,15 @@ const Infraestructura = () => {
                 />
               </Stack>
               <TextField
-                label="MÍNIMO"
+                disabled={
+                  !currentItem.tipologia ||
+                  currentItem.tipo?.includes("SERVICIO") ||
+                  currentItem.tipoInfra?.includes("SERVICIO")
+                }
+                label="Mínimo"
                 type="number"
                 variant="standard"
-                sx={{ width: "30%" }}
+                sx={{ width: "33%" }}
                 value={currentItem.minimo}
                 onChange={(e) =>
                   setCurrentItem({ ...currentItem, minimo: e.target.value })

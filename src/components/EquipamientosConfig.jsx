@@ -68,6 +68,8 @@ const EquipamientosConfig = () => {
   const [filtroOrigen, setFiltroOrigen] = useState(null);
   const [filtroEquipamiento, setFiltroEquipamiento] = useState(null);
   const [filtroRegla, setFiltroRegla] = useState(null);
+  const [mostrarResultados, setMostrarResultados] = useState(false);
+  const [filtrosAplicados, setFiltrosAplicados] = useState({});
 
   const [currentItem, setCurrentItem] = useState({
     tipologia: "",
@@ -101,23 +103,20 @@ const EquipamientosConfig = () => {
   }, []);
 
   const dataFiltrada = useMemo(() => {
+    if (!mostrarResultados) return [];
     return data.filter((item) => {
       return (
-        (!filtroTipologia || item.tipologia === filtroTipologia) &&
-        (!filtroTipoOrigen || item.tipo === filtroTipoOrigen) &&
-        (!filtroOrigen || item.origen === filtroOrigen) &&
-        (!filtroEquipamiento || item.equipamiento === filtroEquipamiento) &&
-        (!filtroRegla || item.tipoRegla === filtroRegla)
+        (!filtrosAplicados.tipologia ||
+          item.tipologia === filtrosAplicados.tipologia) &&
+        (!filtrosAplicados.tipoOrigen ||
+          item.tipo === filtrosAplicados.tipoOrigen) &&
+        (!filtrosAplicados.origen || item.origen === filtrosAplicados.origen) &&
+        (!filtrosAplicados.equipamiento ||
+          item.equipamiento === filtrosAplicados.equipamiento) &&
+        (!filtrosAplicados.regla || item.tipoRegla === filtrosAplicados.regla)
       );
     });
-  }, [
-    data,
-    filtroTipologia,
-    filtroTipoOrigen,
-    filtroOrigen,
-    filtroEquipamiento,
-    filtroRegla,
-  ]);
+  }, [data, mostrarResultados, filtrosAplicados]);
 
   const formatTrazabilidad = (row) => {
     if (row.soloExistencia) return "SÓLO EXISTENCIA";
@@ -253,7 +252,7 @@ const EquipamientosConfig = () => {
                         {...params}
                         label="Tipología"
                         variant="standard"
-                        fullWidth
+                        sx={{ maxWidth: "100%" }}
                       />
                     )}
                   />
@@ -350,6 +349,8 @@ const EquipamientosConfig = () => {
                     setFiltroOrigen(null);
                     setFiltroEquipamiento(null);
                     setFiltroRegla(null);
+                    setFiltrosAplicados({});
+                    setMostrarResultados(false);
                   }}
                   sx={{
                     color: "#29b6f6",
@@ -363,6 +364,16 @@ const EquipamientosConfig = () => {
                 <Button
                   variant="contained"
                   startIcon={<SearchIcon />}
+                  onClick={() => {
+                    setFiltrosAplicados({
+                      tipologia: filtroTipologia,
+                      tipoOrigen: filtroTipoOrigen,
+                      origen: filtroOrigen,
+                      equipamiento: filtroEquipamiento,
+                      regla: filtroRegla,
+                    });
+                    setMostrarResultados(true);
+                  }}
                   sx={{ backgroundColor: "#29b6f6", px: 5, fontWeight: "bold" }}
                 >
                   CONSULTAR
@@ -371,7 +382,20 @@ const EquipamientosConfig = () => {
             </Box>
           </Paper>
 
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3,
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ color: "#0090d0", fontWeight: "bold" }}
+            >
+              EQUIPOS
+            </Typography>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
@@ -403,35 +427,42 @@ const EquipamientosConfig = () => {
             sx={{ border: "1px solid #eee", borderRadius: "4px" }}
           >
             <Table size="small" stickyHeader>
-              <TableHead>
-                <TableRow
-                  sx={{
-                    "& th": {
-                      backgroundColor: "white",
-                      borderBottom: "2px solid #005596",
-                      color: "#005596",
-                      fontWeight: "bold",
-                      py: 2,
-                    },
-                  }}
-                >
-                  <TableCell>TIPOLOGÍA</TableCell>
-                  <TableCell>ORIGEN</TableCell>
-                  <TableCell>TIPO DE EQUIPO</TableCell>
-                  <TableCell align="center">REGLA</TableCell>
-                  <TableCell align="center">MÍNIMO</TableCell>
-                  <TableCell align="center">TRAZABILIDAD</TableCell>
-                  <TableCell align="center">ACCIONES</TableCell>
-                </TableRow>
-              </TableHead>
+              {dataFiltrada.length > 0 && (
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      "& th": {
+                        backgroundColor: "white",
+                        borderBottom: "2px solid #005596",
+                        color: "#005596",
+                        fontWeight: "bold",
+                        py: 2,
+                      },
+                    }}
+                  >
+                    <TableCell>TIPOLOGÍA</TableCell>
+                    <TableCell>ORIGEN</TableCell>
+                    <TableCell>TIPO DE EQUIPO</TableCell>
+                    <TableCell align="center">REGLA</TableCell>
+                    <TableCell align="center">MÍNIMO</TableCell>
+                    <TableCell align="center">TRAZABILIDAD</TableCell>
+                    <TableCell align="center">ACCIONES</TableCell>
+                  </TableRow>
+                </TableHead>
+              )}
               <TableBody>
                 {dataFiltrada.map((row) => (
                   <TableRow key={row.id} hover>
                     <TableCell sx={{ fontSize: "0.75rem", color: "#666" }}>
                       {row.tipologia || "-"}
                     </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }}>
-                      {row.origen}
+                    <TableCell>
+                      <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                        {row.origen}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        {row.tipo}
+                      </Typography>
                     </TableCell>
                     <TableCell>{row.equipamiento}</TableCell>
                     <TableCell align="center">
@@ -484,6 +515,21 @@ const EquipamientosConfig = () => {
                     </TableCell>
                   </TableRow>
                 ))}
+                {dataFiltrada.length === 0 && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={7}
+                      sx={{
+                        textAlign: "center",
+                        py: 6,
+                        color: "rgba(0, 0, 0, 0.3)",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      NO SE ENCUENTRAN RESULTADOS PARA MOSTRAR
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -698,8 +744,7 @@ const EquipamientosConfig = () => {
                     <TextField
                       {...params}
                       variant="standard"
-                      label="Configuración de Trazabilidad"
-                      placeholder="Seleccione..."
+                      label="Trazabilidad"
                     />
                   )}
                   renderTags={(tagValue, getTagProps) => (

@@ -765,6 +765,20 @@
     {
       "id": "54",
       "equipamiento": "OTRO"
+    },
+    {
+      "id": "30e4",
+      "tipologia": "",
+      "origen": "",
+      "tipo": "",
+      "equipamiento": "",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": false
     }
   ],
   "infraestructura": [
@@ -928,15 +942,6 @@
       "tipo": "Servicio",
       "requerida": "USO TRANSITORIO (Guardia, Onco, CA Quirurg)",
       "tipoInfra": "SALA",
-      "minimo": "1"
-    },
-    {
-      "id": "dd2e",
-      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
-      "origen": "PEDIATRÍA",
-      "tipo": "SERVICIO",
-      "requerida": "PEDIATRÍA",
-      "tipoInfra": "CAMAS",
       "minimo": "1"
     }
   ],
