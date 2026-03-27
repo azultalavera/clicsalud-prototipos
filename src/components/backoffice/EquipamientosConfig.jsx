@@ -46,6 +46,65 @@ const styleModal = {
   overflow: "hidden",
 };
 
+const equiposSoloExistencia = [
+  "CARRO DE PARO COMPLETO",
+  "EQUIPO PARA NEBULIZACIONES",
+  "MESA DE CATETERISMO CON PLANO DESLIZANTE",
+  "TUBO DE RAYOS X",
+  "BALANZA DE USO CLÍNICO",
+  "COLCHÓN ANTIESCARAS DE CORRESPONDER",
+  "ESTETOSCOPIO",
+  "OXÍMETRO DE PULSO",
+  "SILLÓN DE ONCOLOGÍA",
+  "CAJA DE TRAQUEOTOMÍA",
+  "CAMA O CAMILLA QUIRÚRGICA REGULABLE",
+  "LARINGOSCOPIO Y TUBOS ENDOTRAQUEALES",
+  "MESA DE CIRUGÍA TIPO \"MAYO\" O SIMILAR",
+  "SISTEMA DE ASPIRACIÓN AUTOMÁTICA",
+  "BALANZA PARA RECIÉN NACIDO",
+  "CAMA DE PARTOS CON RUEDAS (GINECOLÓGICA/OBSTÉTRICA)",
+  "MESA AUXILIAR",
+  "MESA DE INSTRUMENTAL OBSTÉTRICO",
+  "MESA PARA ANESTESISTA",
+  "CARRO DE URGENCIA CON EQUIPOS DE INTUBACIÓN COMPLETO",
+  "EQUIPO COMPLETO PARA INTUBACIÓN/SONDAJE/CANALIZACIÓN",
+  "MARCAPASO TRANSITORIO CON 2 CATÉTERES",
+  "RESPIRADOR MECÁNICO DE RESGUARDO",
+  "SISTEMA PORTÁTIL DE ASPIRACIÓN PARA DRENAJE",
+  "ASPIRACIÓN AUTOMÁTICA",
+  "ASPIRADOR REGULABLE CON MANÓMETRO",
+  "BALANZA ELECTRÓNICA",
+  "BALANZA PARA PAÑALES",
+  "COLCHÓN TÉRMICO NEONATAL",
+  "CUNA",
+  "ELECTROBISTURÍ",
+  "EQUIPO DE REANIMACIÓN",
+  "MESA CENTRAL",
+  "PEDIÓMETRO",
+  "RESPIRADOR AUTOMÁTICO NEONATAL",
+  "RESPIRADOR NEONATAL SINCRONIZADO (SIMV/INV)",
+  "TENSIÓMETRO NEONATAL (EFECTO DOPPLER)",
+  "CARRO DE URGENCIA",
+  "EQUIPO DE INTUBACIÓN TRAQUEAL",
+  "MARCAPASO TRANSITORIO",
+  "NEBULIZADOR",
+  "OXÍMETRO DE PULSO PORTÁTIL",
+  "RESPIRADOR MECÁNICO VOLUMÉTRICO CON PRESIÓN POSITIVA",
+  "TENSIÓMETRO"
+];
+
+const checkSoloExistencia = (nombreEquipo) => {
+  if (!nombreEquipo) return false;
+  const normalize = (s) =>
+    s.trim().toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\"\']/g, "");
+  
+  const normInput = normalize(nombreEquipo);
+  return equiposSoloExistencia.some((eq) => {
+    const normEq = normalize(eq);
+    return normInput === normEq || normInput.includes(normEq) || normEq.includes(normInput);
+  });
+};
+
 const EquipamientosConfig = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -644,18 +703,38 @@ const EquipamientosConfig = () => {
                   .filter(Boolean)
                   .sort()}
                 value={currentItem.equipamiento || ""}
-                onChange={(e, newValue) =>
+                onChange={(e, newValue) => {
+                  const val = newValue || "";
+                  const esSoloExistencia = checkSoloExistencia(val);
                   setCurrentItem({
                     ...currentItem,
-                    equipamiento: newValue || "",
-                  })
-                }
-                onInputChange={(e, newInputValue) =>
+                    equipamiento: val,
+                    ...(esSoloExistencia
+                      ? {
+                          requiereMarca: false,
+                          requiereModelo: false,
+                          requiereSerie: false,
+                          soloExistencia: true,
+                        }
+                      : {}),
+                  });
+                }}
+                onInputChange={(e, newInputValue) => {
+                  const val = newInputValue || "";
+                  const esSoloExistencia = checkSoloExistencia(val);
                   setCurrentItem({
                     ...currentItem,
-                    equipamiento: newInputValue || "",
-                  })
-                }
+                    equipamiento: val,
+                    ...(esSoloExistencia
+                      ? {
+                          requiereMarca: false,
+                          requiereModelo: false,
+                          requiereSerie: false,
+                          soloExistencia: true,
+                        }
+                      : {}),
+                  });
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}

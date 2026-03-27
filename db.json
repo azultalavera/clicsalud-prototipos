@@ -130,7 +130,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "2",
@@ -143,7 +144,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "3",
@@ -154,9 +156,10 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "4",
@@ -167,9 +170,10 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "5",
@@ -180,9 +184,10 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "6",
@@ -195,7 +200,8 @@
       "cantidadMinima": 1,
       "requiereMarca": false,
       "requiereModelo": false,
-      "requiereSerie": false
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "7",
@@ -208,7 +214,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "8",
@@ -218,9 +225,11 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "soloExistencia": true
     },
     {
       "id": "9",
@@ -232,7 +241,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "10",
@@ -242,9 +252,10 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "11",
@@ -256,7 +267,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": false
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "12",
@@ -268,7 +280,8 @@
       "cantidadMinima": 1,
       "requiereMarca": false,
       "requiereModelo": false,
-      "requiereSerie": false
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "13",
@@ -278,9 +291,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "14",
@@ -292,7 +306,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "15",
@@ -302,9 +317,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "16",
@@ -314,9 +330,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "17",
@@ -326,9 +343,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "18",
@@ -338,9 +356,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "19",
@@ -352,7 +371,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "20",
@@ -362,9 +382,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "21",
@@ -376,7 +397,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "22",
@@ -388,7 +410,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": false
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "23",
@@ -398,9 +421,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "24",
@@ -410,9 +434,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "25",
@@ -422,9 +447,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "26",
@@ -436,7 +462,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": false
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "27",
@@ -446,9 +473,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "28",
@@ -460,7 +488,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "29",
@@ -470,9 +499,10 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "30",
@@ -482,9 +512,10 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "31",
@@ -494,9 +525,10 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "32",
@@ -508,7 +540,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "33",
@@ -518,9 +551,10 @@
       "tipoRegla": "PROPORCIONAL",
       "base": 3,
       "cantidadMinima": 2,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "34",
@@ -532,7 +566,8 @@
       "cantidadMinima": 2,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "35",
@@ -544,7 +579,8 @@
       "cantidadMinima": 2,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "36",
@@ -554,9 +590,10 @@
       "tipoRegla": "PROPORCIONAL",
       "base": 4,
       "cantidadMinima": 2,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "37",
@@ -568,7 +605,8 @@
       "cantidadMinima": 2,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "38",
@@ -578,9 +616,10 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "39",
@@ -592,7 +631,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "40",
@@ -604,7 +644,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "41",
@@ -614,9 +655,10 @@
       "tipoRegla": "PROPORCIONAL",
       "base": 3,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "42",
@@ -626,9 +668,10 @@
       "tipoRegla": "PROPORCIONAL",
       "base": 4,
       "cantidadMinima": 2,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "43",
@@ -640,7 +683,8 @@
       "cantidadMinima": 2,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "44",
@@ -650,9 +694,10 @@
       "tipoRegla": "UNICO",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "45",
@@ -664,7 +709,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "46",
@@ -674,9 +720,10 @@
       "tipoRegla": "PROPORCIONAL",
       "base": 3,
       "cantidadMinima": 2,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": true
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "47",
@@ -688,7 +735,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "48",
@@ -700,7 +748,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "49",
@@ -710,9 +759,10 @@
       "tipoRegla": "PROPORCIONAL",
       "base": 4,
       "cantidadMinima": 2,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "50",
@@ -724,7 +774,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "51",
@@ -736,7 +787,8 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
+      "requiereSerie": true,
+      "soloExistencia": false
     },
     {
       "id": "52",
@@ -746,9 +798,10 @@
       "tipoRegla": "LINEAL",
       "base": 1,
       "cantidadMinima": 1,
-      "requiereMarca": true,
-      "requiereModelo": true,
-      "requiereSerie": false
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
     },
     {
       "id": "53",
@@ -760,24 +813,7 @@
       "cantidadMinima": 1,
       "requiereMarca": true,
       "requiereModelo": true,
-      "requiereSerie": true
-    },
-    {
-      "id": "54",
-      "equipamiento": "OTRO"
-    },
-    {
-      "id": "30e4",
-      "tipologia": "",
-      "origen": "",
-      "tipo": "",
-      "equipamiento": "",
-      "tipoRegla": "UNICO",
-      "base": 1,
-      "cantidadMinima": 1,
-      "requiereMarca": false,
-      "requiereModelo": false,
-      "requiereSerie": false,
+      "requiereSerie": true,
       "soloExistencia": false
     }
   ],

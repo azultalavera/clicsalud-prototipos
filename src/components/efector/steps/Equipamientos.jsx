@@ -26,6 +26,7 @@ import {
 import {
   Edit as EditIcon,
   Add as AddIcon,
+  Remove as RemoveIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
   Delete as DeleteIcon,
@@ -63,6 +64,7 @@ const EquipamientosLabV3 = ({
   const [isExtraMode, setIsExtraMode] = useState(false);
   const [requisitosDB, setRequisitosDB] = useState([]);
   const [todosLosEquiposDB, setTodosLosEquiposDB] = useState([]);
+  const [todosLosEquiposFullDB, setTodosLosEquiposFullDB] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
   const [expandedRevision, setExpandedRevision] = useState({});
 
@@ -109,6 +111,7 @@ const EquipamientosLabV3 = ({
           ...new Set(data.map((item) => item.equipamiento)),
         ];
         setTodosLosEquiposDB(nombresTotales);
+        setTodosLosEquiposFullDB(data);
 
         const limpiar = (t) =>
           t
@@ -197,8 +200,42 @@ const EquipamientosLabV3 = ({
     setOpenModal(true);
   };
 
+  const addOneExistencia = (req, subIndex) => {
+    setEquiposCargados((prev) => [
+      ...prev,
+      {
+        id: req.id,
+        subId: subIndex,
+        origen: req.origen,
+        equipamiento: req.equipamiento,
+        marca: "SÓLO EXISTENCIA",
+        modelo: "-",
+        serie: "-",
+        isExtra: false,
+      },
+    ]);
+  };
+
+  const removeOneExistencia = (req) => {
+    setEquiposCargados((prev) => {
+      const copy = [...prev];
+      for (let i = copy.length - 1; i >= 0; i--) {
+        if (copy[i].id === req.id && copy[i].origen === req.origen) {
+          copy.splice(i, 1);
+          return copy;
+        }
+      }
+      return prev;
+    });
+  };
+
   const handleSave = () => {
-    if (!form.marca || !form.equipamiento) {
+    const isFullDBItem = todosLosEquiposFullDB.find(
+      (eq) => eq.equipamiento === form.equipamiento,
+    );
+    const esSoloExistencia = isFullDBItem ? isFullDBItem.soloExistencia : false;
+
+    if (!esSoloExistencia && (!form.marca || !form.equipamiento)) {
       alert("Nombre del equipo y Marca son obligatorios");
       return;
     }
@@ -206,7 +243,16 @@ const EquipamientosLabV3 = ({
       const sinEste = prev.filter(
         (c) => !(c.id === form.id && c.subId === form.subId),
       );
-      return [...sinEste, { ...form, isExtra: isExtraMode }];
+      return [
+        ...sinEste,
+        {
+          ...form,
+          marca: esSoloExistencia ? "SÓLO EXISTENCIA" : form.marca,
+          modelo: esSoloExistencia ? "-" : form.modelo,
+          serie: esSoloExistencia ? "-" : form.serie,
+          isExtra: isExtraMode,
+        },
+      ];
     });
     setOpenModal(false);
     setForm({
@@ -321,8 +367,8 @@ const EquipamientosLabV3 = ({
                       fontSize: "0.6rem",
                       fontWeight: "bold",
                       ml: 1,
-                      color: isCompleto ? "#32A430" : "#8C8888",
-                      borderColor: isCompleto ? "#32A430" : "#8C8888",
+                      color: isCompleto ? "#000000ff" : "#000000ff",
+                      borderColor: isCompleto ? "#000000ff" : "#000000ff",
                     }}
                   />
                 </ListItemButton>
@@ -386,7 +432,13 @@ const EquipamientosLabV3 = ({
                             label="EXTRA"
                             size="small"
                             variant="outlined"
-                            sx={{ ml: 1, height: 18, fontSize: "0.65rem", color: "#0B85C4", borderColor: "#0B85C4" }}
+                            sx={{
+                              ml: 1,
+                              height: 18,
+                              fontSize: "0.65rem",
+                              color: "#0B85C4",
+                              borderColor: "#0B85C4",
+                            }}
                           />
                         )}
                       </TableCell>
@@ -413,123 +465,283 @@ const EquipamientosLabV3 = ({
                       <TableCell colSpan={3} sx={{ p: 0 }}>
                         <Collapse in={expandedRow === req.id}>
                           <Box sx={{ p: 2, bgcolor: "#f1f5f9" }}>
-                            <Table
-                              size="small"
-                              sx={{
-                                bgcolor: "white",
-                                border: "1px solid #cbd5e1",
-                              }}
-                            >
-                              <TableHead sx={{ bgcolor: "#f8fafc" }}>
-                                <TableRow
+                            {req.soloExistencia ? (
+                              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', py: 1.5, gap: 2 }}>
+                                <Typography sx={{ fontWeight: "bold", fontSize: "0.75rem", color: "#64748b" }}>
+                                  CANTIDAD CONFIRMADA
+                                </Typography>
+                                <Box
                                   sx={{
-                                    "& th": {
-                                      fontWeight: "bold",
-                                      fontSize: "0.65rem",
-                                      color: "#64748b",
-                                    },
+                                    border: "1px solid #c2e0ff",
+                                    borderRadius: 1,
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    bgcolor: "white",
                                   }}
                                 >
-                                  <TableCell sx={{ width: 140 }}>
-                                    UNIDAD
-                                  </TableCell>
-                                  <TableCell>MARCA</TableCell>
-                                  <TableCell>MODELO</TableCell>
-                                  <TableCell>SERIE</TableCell>
-                                  <TableCell align="center">ACCIONES</TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {cargadosEnEste.map((unit, uIdx) => (
-                                  <TableRow
-                                    key={uIdx}
-                                    sx={{ bgcolor: "#ffffffff" }}
+                                  <IconButton
+                                    color="primary"
+                                    size="small"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      removeOneExistencia(req);
+                                    }}
+                                    disabled={actualCount === 0}
+                                    sx={{ p: 0.5 }}
                                   >
-                                    <TableCell
-                                      size="small"
-                                      sx={{
-                                        fontSize: "0.75rem",
-                                        fontWeight: 600,
-                                      }}
-                                    >
-                                      #{uIdx + 1}
+                                    <RemoveIcon fontSize="small" />
+                                  </IconButton>
+                                  <Typography
+                                    sx={{
+                                      px: 1.5,
+                                      fontWeight: "bold",
+                                      fontSize: "0.85rem",
+                                      textAlign: "center",
+                                      color: "#005596",
+                                    }}
+                                  >
+                                    {actualCount}
+                                  </Typography>
+                                  <IconButton
+                                    color="primary"
+                                    size="small"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      addOneExistencia(req, actualCount);
+                                    }}
+                                    sx={{ p: 0.5 }}
+                                  >
+                                    <AddIcon fontSize="small" />
+                                  </IconButton>
+                                </Box>
+                                <Typography sx={{ fontSize: "0.75rem", color: "#94a3b8" }}>
+                                  (Requerido: {req.cantidadFinalCalculada || 0})
+                                </Typography>
+                              </Box>
+                            ) : (
+                              <Table
+                                size="small"
+                                sx={{
+                                  bgcolor: "white",
+                                  border: "1px solid #cbd5e1",
+                                }}
+                              >
+                                <TableHead sx={{ bgcolor: "#f8fafc" }}>
+                                  <TableRow
+                                    sx={{
+                                      "& th": {
+                                        fontWeight: "bold",
+                                        fontSize: "0.65rem",
+                                        color: "#64748b",
+                                      },
+                                    }}
+                                  >
+                                    <TableCell sx={{ width: 140 }}>
+                                      UNIDAD
                                     </TableCell>
-                                    <TableCell sx={{ fontSize: "0.75rem" }}>
-                                      {unit.marca}
-                                    </TableCell>
-                                    <TableCell sx={{ fontSize: "0.75rem" }}>
-                                      {unit.modelo}
-                                    </TableCell>
-                                    <TableCell sx={{ fontSize: "0.75rem" }}>
-                                      {unit.serie}
-                                    </TableCell>
+                                    <TableCell>MARCA</TableCell>
+                                    <TableCell>MODELO</TableCell>
+                                    <TableCell>SERIE</TableCell>
                                     <TableCell align="center">
-                                      <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        justifyContent="center"
-                                      >
-                                        <IconButton
-                                          size="small"
-                                          onClick={() =>
-                                            handleOpenForm(
-                                              unit,
-                                              unit.subId,
-                                              unit.isExtra,
-                                            )
-                                          }
-                                        >
-                                          <EditIcon
-                                            fontSize="inherit"
-                                            color="primary"
-                                          />
-                                        </IconButton>
-                                        <IconButton
-                                          size="small"
-                                          onClick={() =>
-                                            unit.isExtra
-                                              ? setEquiposCargados((prev) =>
-                                                  prev.filter(
-                                                    (c) =>
-                                                      !(
-                                                        c.id === unit.id &&
-                                                        c.subId === unit.subId
-                                                      ),
-                                                  ),
-                                                )
-                                              : handleLimpiarFila(
-                                                  unit.id,
-                                                  unit.subId,
-                                                )
-                                          }
-                                        >
-                                          {unit.isExtra ? (
-                                            <CloseIcon
-                                              fontSize="small"
-                                              sx={{ color: "#d32f2f" }}
-                                            />
-                                          ) : (
-                                            <DeleteIcon
-                                              fontSize="small"
-                                              color="action"
-                                            />
-                                          )}
-                                        </IconButton>
-                                      </Stack>
+                                      ACCIONES
                                     </TableCell>
                                   </TableRow>
-                                ))}
-                                {!req.isExtra &&
-                                  actualCount < req.cantidadFinalCalculada && (
-                                    <TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {cargadosEnEste.map((unit, uIdx) => (
+                                    <TableRow
+                                      key={uIdx}
+                                      sx={{ bgcolor: "#ffffffff" }}
+                                    >
+                                      <TableCell
+                                        size="small"
+                                        sx={{
+                                          fontSize: "0.75rem",
+                                          fontWeight: 600,
+                                        }}
+                                      >
+                                        #{uIdx + 1}
+                                      </TableCell>
+                                      <TableCell sx={{ fontSize: "0.75rem" }}>
+                                        {unit.marca}
+                                      </TableCell>
+                                      <TableCell sx={{ fontSize: "0.75rem" }}>
+                                        {unit.modelo}
+                                      </TableCell>
+                                      <TableCell sx={{ fontSize: "0.75rem" }}>
+                                        {unit.serie}
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        <Stack
+                                          direction="row"
+                                          spacing={1}
+                                          justifyContent="center"
+                                        >
+                                          <IconButton
+                                            size="small"
+                                            onClick={() =>
+                                              handleOpenForm(
+                                                unit,
+                                                unit.subId,
+                                                unit.isExtra,
+                                              )
+                                            }
+                                            disabled={req.soloExistencia}
+                                          >
+                                            <EditIcon
+                                              fontSize="inherit"
+                                              color={
+                                                req.soloExistencia
+                                                  ? "disabled"
+                                                  : "primary"
+                                              }
+                                            />
+                                          </IconButton>
+                                          <IconButton
+                                            size="small"
+                                            onClick={() =>
+                                              unit.isExtra
+                                                ? setEquiposCargados((prev) =>
+                                                    prev.filter(
+                                                      (c) =>
+                                                        !(
+                                                          c.id === unit.id &&
+                                                          c.subId === unit.subId
+                                                        ),
+                                                    ),
+                                                  )
+                                                : handleLimpiarFila(
+                                                    unit.id,
+                                                    unit.subId,
+                                                  )
+                                            }
+                                          >
+                                            {unit.isExtra ? (
+                                              <CloseIcon
+                                                fontSize="small"
+                                                sx={{ color: "#d32f2f" }}
+                                              />
+                                            ) : (
+                                              <DeleteIcon
+                                                fontSize="small"
+                                                color="action"
+                                              />
+                                            )}
+                                          </IconButton>
+                                        </Stack>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                  {!req.isExtra &&
+                                    actualCount <
+                                      req.cantidadFinalCalculada && (
+                                      <TableRow>
+                                        <TableCell
+                                          sx={{
+                                            fontStyle: "italic",
+                                            color: "#b0b0b0ff",
+                                            fontSize: "0.75rem",
+                                          }}
+                                        >
+                                          Pendiente de carga
+                                        </TableCell>
+                                        <TableCell colSpan={3} />
+                                        <TableCell align="center">
+                                          {req.soloExistencia ? (
+                                            <Stack
+                                              direction="row"
+                                              spacing={1}
+                                              justifyContent="center"
+                                            >
+                                              <Button
+                                                variant="contained"
+                                                size="small"
+                                                color="success"
+                                                onClick={() =>
+                                                  handleDirectConfirm(
+                                                    req,
+                                                    actualCount,
+                                                  )
+                                                }
+                                                sx={{
+                                                  fontSize: "0.65rem",
+                                                  fontWeight: "bold",
+                                                }}
+                                              >
+                                                CONFIRMAR 1
+                                              </Button>
+                                              {req.cantidadFinalCalculada -
+                                                actualCount >
+                                                1 && (
+                                                <Button
+                                                  variant="outlined"
+                                                  size="small"
+                                                  color="success"
+                                                  onClick={() => {
+                                                    const faltantes =
+                                                      req.cantidadFinalCalculada -
+                                                      actualCount;
+                                                    const nuevos = Array.from({
+                                                      length: faltantes,
+                                                    }).map((_, i) => ({
+                                                      id: req.id,
+                                                      subId: actualCount + i,
+                                                      origen: req.origen,
+                                                      equipamiento:
+                                                        req.equipamiento,
+                                                      marca: "SÓLO EXISTENCIA",
+                                                      modelo: "-",
+                                                      serie: "-",
+                                                      isExtra: false,
+                                                    }));
+                                                    setEquiposCargados(
+                                                      (prev) => [
+                                                        ...prev,
+                                                        ...nuevos,
+                                                      ],
+                                                    );
+                                                  }}
+                                                  sx={{
+                                                    fontSize: "0.65rem",
+                                                    fontWeight: "bold",
+                                                  }}
+                                                >
+                                                  CONFIRMAR FALTANTES (
+                                                  {req.cantidadFinalCalculada -
+                                                    actualCount}
+                                                  )
+                                                </Button>
+                                              )}
+                                            </Stack>
+                                          ) : (
+                                            <IconButton
+                                              size="small"
+                                              onClick={() =>
+                                                handleOpenForm(
+                                                  req,
+                                                  actualCount,
+                                                  false,
+                                                )
+                                              }
+                                            >
+                                              <AddIcon color="error" />
+                                            </IconButton>
+                                          )}
+                                        </TableCell>
+                                      </TableRow>
+                                    )}
+                                  {isComplete && !req.isExtra && (
+                                    <TableRow
+                                      sx={{ borderTop: "1px dashed #ccc" }}
+                                    >
                                       <TableCell
                                         sx={{
+                                          color: "#94a3b8",
                                           fontStyle: "italic",
-                                          color: "#b0b0b0ff",
                                           fontSize: "0.75rem",
                                         }}
                                       >
-                                        Pendiente de carga
+                                        Opcional
                                       </TableCell>
                                       <TableCell colSpan={3} />
                                       <TableCell align="center">
@@ -538,51 +750,26 @@ const EquipamientosLabV3 = ({
                                           onClick={() =>
                                             handleOpenForm(
                                               req,
-                                              actualCount,
-                                              false,
+                                              Date.now(),
+                                              true,
                                             )
                                           }
                                         >
-                                          <AddIcon color="error" />
+                                          <AddIcon
+                                            fontSize="small"
+                                            sx={{ color: "#94a3b8" }}
+                                          />
                                         </IconButton>
                                       </TableCell>
                                     </TableRow>
                                   )}
-                                {isComplete && !req.isExtra && (
-                                  <TableRow
-                                    sx={{ borderTop: "1px dashed #ccc" }}
-                                  >
-                                    <TableCell
-                                      sx={{
-                                        color: "#94a3b8",
-                                        fontStyle: "italic",
-                                        fontSize: "0.75rem",
-                                      }}
-                                    >
-                                      Opcional
-                                    </TableCell>
-                                    <TableCell colSpan={3} />
-                                    <TableCell align="center">
-                                      <IconButton
-                                        size="small"
-                                        onClick={() =>
-                                          handleOpenForm(req, Date.now(), true)
-                                        }
-                                      >
-                                        <AddIcon
-                                          fontSize="small"
-                                          sx={{ color: "#94a3b8" }}
-                                        />
-                                      </IconButton>
-                                    </TableCell>
-                                  </TableRow>
-                                )}
-                              </TableBody>
-                            </Table>
-                          </Box>
-                        </Collapse>
-                      </TableCell>
-                    </TableRow>
+                                </TableBody>
+                              </Table>
+                            )}
+                            </Box>
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
                   </React.Fragment>
                 );
               })}
@@ -611,9 +798,21 @@ const EquipamientosLabV3 = ({
       {/* MODAL */}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <Box sx={styleModal}>
-          <Box sx={{ bgcolor: "#005596", color: "white", py: 2, textAlign: "center" }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
-              {isExtraMode && !requisitosDB.find((r) => r.id === form.id) ? "NUEVO EQUIPO" : "EDITAR EQUIPO"}
+          <Box
+            sx={{
+              bgcolor: "#005596",
+              color: "white",
+              py: 2,
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", fontSize: "1.1rem" }}
+            >
+              {isExtraMode && !requisitosDB.find((r) => r.id === form.id)
+                ? "NUEVO EQUIPO"
+                : "EDITAR EQUIPO"}
             </Typography>
           </Box>
           <Box sx={{ p: 4 }}>
@@ -632,7 +831,9 @@ const EquipamientosLabV3 = ({
                   options={listaEquiposDisponiblesExtra}
                   value={form.equipamiento || null}
                   onChange={(e, v) => setForm({ ...form, equipamiento: v })}
-                  onInputChange={(e, v) => setForm({ ...form, equipamiento: v })}
+                  onInputChange={(e, v) =>
+                    setForm({ ...form, equipamiento: v })
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -652,33 +853,39 @@ const EquipamientosLabV3 = ({
                 />
               )}
 
-              <TextField
-                label="Marca"
-                fullWidth
-                variant="standard"
-                value={form.marca}
-                onChange={(e) =>
-                  setForm({ ...form, marca: e.target.value.toUpperCase() })
-                }
-              />
-              <TextField
-                label="Modelo"
-                fullWidth
-                variant="standard"
-                value={form.modelo}
-                onChange={(e) =>
-                  setForm({ ...form, modelo: e.target.value.toUpperCase() })
-                }
-              />
-              <TextField
-                label="Serie"
-                fullWidth
-                variant="standard"
-                value={form.serie}
-                onChange={(e) =>
-                  setForm({ ...form, serie: e.target.value.toUpperCase() })
-                }
-              />
+              {!todosLosEquiposFullDB.find(
+                (eq) => eq.equipamiento === form.equipamiento,
+              )?.soloExistencia && (
+                <>
+                  <TextField
+                    label="Marca"
+                    fullWidth
+                    variant="standard"
+                    value={form.marca}
+                    onChange={(e) =>
+                      setForm({ ...form, marca: e.target.value.toUpperCase() })
+                    }
+                  />
+                  <TextField
+                    label="Modelo"
+                    fullWidth
+                    variant="standard"
+                    value={form.modelo}
+                    onChange={(e) =>
+                      setForm({ ...form, modelo: e.target.value.toUpperCase() })
+                    }
+                  />
+                  <TextField
+                    label="Serie"
+                    fullWidth
+                    variant="standard"
+                    value={form.serie}
+                    onChange={(e) =>
+                      setForm({ ...form, serie: e.target.value.toUpperCase() })
+                    }
+                  />
+                </>
+              )}
             </Stack>
 
             <Box
