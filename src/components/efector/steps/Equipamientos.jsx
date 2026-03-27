@@ -38,6 +38,8 @@ import {
   Check as CheckIcon,
   PriorityHigh as PriorityHighIcon,
   Cancel as CancelIcon,
+  ContentPasteOffOutlined as ContentPasteOffIcon,
+  AssignmentTurnedInOutlined as AssignmentTurnedInIcon,
 } from "@mui/icons-material";
 
 const styleModal = {
@@ -352,7 +354,7 @@ const EquipamientosLabV3 = ({
           variant="outlined"
           sx={{
             width: 350,
-            height: "70vh",
+            height: "58vh",
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
@@ -384,12 +386,11 @@ const EquipamientosLabV3 = ({
                     "&.Mui-selected": {
                       bgcolor: "#e3f2fd",
                       color: "#005596",
-                      borderRight: "4px solid #005596",
                     },
                   }}
                 >
                   <ListItemText
-                    primary={s}
+                    primary={infraSelection[s] > 0 ? `${s} (x${infraSelection[s]})` : s}
                     primaryTypographyProps={{
                       fontSize: "0.8rem",
                       fontWeight: 700,
@@ -400,12 +401,14 @@ const EquipamientosLabV3 = ({
                     variant="outlined"
                     size="small"
                     sx={{
-                      height: 20,
-                      fontSize: "0.6rem",
+                      height: 24,
+                      fontSize: "0.65rem",
                       fontWeight: "bold",
-                      ml: 1,
-                      color: isCompleto ? "#000000ff" : "#000000ff",
-                      borderColor: isCompleto ? "#000000ff" : "#000000ff",
+                      borderRadius: "12px",
+                      color: isCompleto ? "#4caf50" : "#ef5350",
+                      borderColor: isCompleto ? "#4caf50" : "#ef5350",
+                      bgcolor: "transparent",
+                      ml: 1
                     }}
                   />
                 </ListItemButton>
@@ -420,7 +423,7 @@ const EquipamientosLabV3 = ({
           variant="outlined"
           sx={{
             flex: 1,
-            height: "70vh",
+            height: "58vh",
             display: "flex",
             flexDirection: "column",
           }}
@@ -620,14 +623,11 @@ const EquipamientosLabV3 = ({
                               display: "inline-flex",
                               alignItems: "center",
                               justifyContent: "center",
-                              border: `1px solid ${actualCount > 0 ? "#005596" : "#ccc"}`,
-                              borderRadius: "4px",
                               height: "28px",
                               width: "30px",
-                              bgcolor: "white",
                               fontSize: "0.75rem",
                               fontWeight: actualCount > 0 ? "bold" : "normal",
-                              color: actualCount > 0 ? "#005596" : "inherit"
+                              color: "#000"
                             }}
                           >
                             {actualCount}
@@ -1007,34 +1007,35 @@ const EquipamientosLabV3 = ({
                 />
               )}
 
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Checkbox
-                  checked={form.soloExistencia}
-                  onChange={(e) => setForm({ ...form, soloExistencia: e.target.checked })}
-                  size="small"
-                  disabled={!isExtraMode}
-                />
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: 500,
-                    color: isExtraMode ? "#64748b" : "rgba(100, 116, 139, 0.5)"
-                  }}
-                >
-                  Sólo existencia
-                </Typography>
-              </Box>
-
               {(() => {
+                const canEditFields = !!form.equipamiento && (form.equipamiento !== "OTRO" || !!form.otroEquipo);
                 const isSoloExistencia = form.soloExistencia;
 
                 return (
                   <>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, opacity: canEditFields ? 1 : 0.5 }}>
+                      <Checkbox
+                        checked={form.soloExistencia}
+                        onChange={(e) => setForm({ ...form, soloExistencia: e.target.checked })}
+                        size="small"
+                        disabled={!isExtraMode || !canEditFields}
+                      />
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 500,
+                          color: isExtraMode ? "#64748b" : "rgba(100, 116, 139, 0.5)"
+                        }}
+                      >
+                        Sólo existencia
+                      </Typography>
+                    </Box>
+
                     <TextField
                       label="Marca"
                       fullWidth
                       variant="standard"
-                      disabled={isSoloExistencia}
+                      disabled={!canEditFields || isSoloExistencia}
                       value={isSoloExistencia ? "" : form.marca}
                       onChange={(e) =>
                         setForm({ ...form, marca: e.target.value.toUpperCase() })
@@ -1044,7 +1045,7 @@ const EquipamientosLabV3 = ({
                       label="Modelo"
                       fullWidth
                       variant="standard"
-                      disabled={isSoloExistencia}
+                      disabled={!canEditFields || isSoloExistencia}
                       value={isSoloExistencia ? "" : form.modelo}
                       onChange={(e) =>
                         setForm({ ...form, modelo: e.target.value.toUpperCase() })
@@ -1054,7 +1055,7 @@ const EquipamientosLabV3 = ({
                       label="Serie"
                       fullWidth
                       variant="standard"
-                      disabled={isSoloExistencia}
+                      disabled={!canEditFields || isSoloExistencia}
                       value={isSoloExistencia ? "" : form.serie}
                       onChange={(e) =>
                         setForm({ ...form, serie: e.target.value.toUpperCase() })

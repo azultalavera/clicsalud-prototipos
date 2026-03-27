@@ -183,8 +183,6 @@ const HomeEfector = () => {
           )}
         </Box>
       </Paper>
-      <Fab onClick={() => setOpenModal(true)} sx={{ position: "fixed", bottom: 30, right: 30, backgroundColor: "#005596", color: "white" }}><AddIcon /></Fab>
-      <ModalHabilitacion open={openModal} onClose={() => setOpenModal(false)} />
     </Layout>
   );
 };
