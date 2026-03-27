@@ -20,7 +20,7 @@ import {
   Autocomplete,
   Divider,
   Chip,
-  Tooltip,
+  Checkbox,
   Modal,
 } from "@mui/material";
 import {
@@ -77,6 +77,7 @@ const EquipamientosLabV3 = ({
     marca: "",
     modelo: "",
     serie: "",
+    soloExistencia: false,
   });
 
   const serviceNames = useMemo(() => {
@@ -116,10 +117,10 @@ const EquipamientosLabV3 = ({
         const limpiar = (t) =>
           t
             ? t
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .trim()
-                .toUpperCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .trim()
+              .toUpperCase()
             : "";
 
         const calculados = data
@@ -192,9 +193,11 @@ const EquipamientosLabV3 = ({
       subId: subIndex,
       origen: isNewRequest ? targetOrigen : req.origen,
       equipamiento: isNewRequest ? "" : req.equipamiento,
+      otroEquipo: "",
       marca: req?.marca || "",
       modelo: req?.modelo || "",
       serie: req?.serie || "",
+      soloExistencia: !!req?.soloExistencia,
     });
     setIsExtraMode(esExtra || isNewRequest);
     setOpenModal(true);
@@ -216,6 +219,10 @@ const EquipamientosLabV3 = ({
     ]);
   };
 
+  const handleDirectConfirm = (req, subIndex) => {
+    addOneExistencia(req, subIndex);
+  };
+
   const removeOneExistencia = (req) => {
     setEquiposCargados((prev) => {
       const copy = [...prev];
@@ -230,15 +237,26 @@ const EquipamientosLabV3 = ({
   };
 
   const handleSave = () => {
-    const isFullDBItem = todosLosEquiposFullDB.find(
-      (eq) => eq.equipamiento === form.equipamiento,
-    );
-    const esSoloExistencia = isFullDBItem ? isFullDBItem.soloExistencia : false;
+    const finalEquipamiento =
+      form.equipamiento === "OTRO" ? form.otroEquipo : form.equipamiento;
 
-    if (!esSoloExistencia && (!form.marca || !form.equipamiento)) {
-      alert("Nombre del equipo y Marca son obligatorios");
+    if (!finalEquipamiento) {
+      alert("Debe indicar el nombre del equipo");
       return;
     }
+
+    if (
+      !form.soloExistencia &&
+      !form.marca &&
+      !form.modelo &&
+      !form.serie
+    ) {
+      alert(
+        "Debe completar al menos un dato técnico (Marca, Modelo o Serie) o marcar 'Sólo existencia'",
+      );
+      return;
+    }
+
     setEquiposCargados((prev) => {
       const sinEste = prev.filter(
         (c) => !(c.id === form.id && c.subId === form.subId),
@@ -247,9 +265,10 @@ const EquipamientosLabV3 = ({
         ...sinEste,
         {
           ...form,
-          marca: esSoloExistencia ? "SÓLO EXISTENCIA" : form.marca,
-          modelo: esSoloExistencia ? "-" : form.modelo,
-          serie: esSoloExistencia ? "-" : form.serie,
+          equipamiento: finalEquipamiento,
+          marca: form.soloExistencia ? "SÓLO EXISTENCIA" : form.marca,
+          modelo: form.soloExistencia ? "-" : form.modelo,
+          serie: form.soloExistencia ? "-" : form.serie,
           isExtra: isExtraMode,
         },
       ];
@@ -264,6 +283,7 @@ const EquipamientosLabV3 = ({
       marca: "",
       modelo: "",
       serie: "",
+      soloExistencia: false,
     });
   };
 
@@ -287,17 +307,34 @@ const EquipamientosLabV3 = ({
         !obligatorios.some((ob) => ob.equipamiento === c.equipamiento),
     );
     const extrasAgrupados = extrasCargados.reduce((acc, curr) => {
-      if (!acc[curr.equipamiento])
+      if (!acc[curr.equipamiento]) {
+        const fullInfo = todosLosEquiposFullDB.find(
+          (eq) => eq.equipamiento === curr.equipamiento,
+        );
         acc[curr.equipamiento] = {
           id: curr.id,
           equipamiento: curr.equipamiento,
           cantidadFinalCalculada: 0,
           isExtra: true,
           origen: origenSel,
+          soloExistencia: curr.soloExistencia || fullInfo?.soloExistencia || false,
         };
+      }
       return acc;
     }, {});
-    return [...obligatorios, ...Object.values(extrasAgrupados)];
+    const combined = [...obligatorios, ...Object.values(extrasAgrupados)];
+    return combined.sort((a, b) => {
+      // 1. Requeridos primero, Extras al último
+      if (!a.isExtra && b.isExtra) return -1;
+      if (a.isExtra && !b.isExtra) return 1;
+
+      // 2. SoloExistencia: true primero
+      if (a.soloExistencia && !b.soloExistencia) return -1;
+      if (!a.soloExistencia && b.soloExistencia) return 1;
+
+      // 3. Empate: alfabético
+      return a.equipamiento.localeCompare(b.equipamiento);
+    });
   }, [requisitosDB, serviceNames, activeIdx, equiposCargados]);
 
   return (
@@ -400,12 +437,36 @@ const EquipamientosLabV3 = ({
                 }}
               >
                 <TableCell>EQUIPOS</TableCell>
-                <TableCell align="center">ACTUAL / REQUERIDO</TableCell>
+                <TableCell align="center">
+                  <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 1,
+                    py: 0.5,
+                    borderRadius: 1
+                  }}>
+                    <Typography variant="caption" sx={{ fontWeight: 'bold' }}>CANTIDAD</Typography>
+                  </Box>
+                </TableCell>
+                <TableCell align="center">REQUERIDO</TableCell>
                 <TableCell align="right" />
               </TableRow>
             </TableHead>
             <TableBody>
-              {itemsAMostrar.map((req) => {
+              {itemsAMostrar.map((req, idx) => {
+                const prev = itemsAMostrar[idx - 1];
+                const isFirstOfMainGroup = !prev || prev.isExtra !== req.isExtra;
+                const isFirstOfSubGroup =
+                  isFirstOfMainGroup || prev.soloExistencia !== req.soloExistencia;
+
+                const mainTitle = req.isExtra
+                  ? "EQUIPOS EXTRA"
+                  : "EQUIPOS REQUERIDOS";
+                const subTitle = req.soloExistencia
+                  ? "Sólo existencia"
+                  : "MARCA/MODELO/SERIE";
+
                 const cargadosEnEste = equiposCargados.filter(
                   (c) =>
                     (c.id === req.id ||
@@ -418,12 +479,65 @@ const EquipamientosLabV3 = ({
 
                 return (
                   <React.Fragment key={req.id}>
+                    {isFirstOfMainGroup && (
+                      <TableRow sx={{ bgcolor: "#F1F5F9" }}>
+                        <TableCell colSpan={4} sx={{ py: 1.5, px: 2 }}>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontWeight: "900",
+                              color: "#005596",
+                              fontSize: "0.9rem",
+                              letterSpacing: "0.05em",
+                            }}
+                          >
+                            {mainTitle}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                    {isFirstOfSubGroup && (
+                      <TableRow sx={{ bgcolor: "transparent" }}>
+                        <TableCell
+                          colSpan={4}
+                          sx={{
+                            py: 0.5,
+                            px: 3,
+                            borderBottom: "1px solid #f1f5f9",
+                          }}
+                        >
+                          <Typography
+                            variant="overline"
+                            sx={{
+                              fontWeight: "700",
+                              color: "#64748b",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                              fontSize: "0.7rem",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                width: 8,
+                                height: 2,
+                                bgcolor: "#94a3b8",
+                                borderRadius: 1,
+                              }}
+                            />
+                            {subTitle}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    )}
                     <TableRow
-                      hover
-                      onClick={() =>
-                        setExpandedRow(expandedRow === req.id ? null : req.id)
-                      }
-                      sx={{ cursor: "pointer" }}
+                      hover={!req.soloExistencia}
+                      onClick={() => {
+                        if (!req.soloExistencia) {
+                          setExpandedRow(expandedRow === req.id ? null : req.id);
+                        }
+                      }}
+                      sx={{ cursor: req.soloExistencia ? "default" : "pointer" }}
                     >
                       <TableCell sx={{ fontWeight: 700 }}>
                         {req.equipamiento}{" "}
@@ -443,82 +557,107 @@ const EquipamientosLabV3 = ({
                         )}
                       </TableCell>
                       <TableCell align="center">
+                        {req.soloExistencia ? (
+                          <Box
+                            sx={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              border: `1px solid ${actualCount > 0 ? "#005596" : "#ccc"}`,
+                              borderRadius: "4px",
+                              height: "28px",
+                              bgcolor: "white",
+                              overflow: "hidden"
+                            }}
+                          >
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeOneExistencia(req);
+                              }}
+                              disabled={actualCount === 0}
+                              sx={{
+                                borderRadius: 0,
+                                p: 0,
+                                width: 28,
+                                height: 28,
+                                borderRight: "1px solid #ccc"
+                              }}
+                            >
+                              <RemoveIcon fontSize="inherit" />
+                            </IconButton>
+                            <Typography
+                              sx={{
+                                width: "30px",
+                                textAlign: "center",
+                                fontSize: "0.75rem",
+                                fontWeight: actualCount > 0 ? "bold" : "normal",
+                                color: actualCount > 0 ? "#005596" : "inherit"
+                              }}
+                            >
+                              {actualCount}
+                            </Typography>
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                addOneExistencia(req, actualCount);
+                              }}
+                              sx={{
+                                borderRadius: 0,
+                                p: 0,
+                                width: 28,
+                                height: 28,
+                                borderLeft: "1px solid #ccc"
+                              }}
+                            >
+                              <AddIcon fontSize="inherit" />
+                            </IconButton>
+                          </Box>
+                        ) : (
+                          <Typography
+                            sx={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              border: `1px solid ${actualCount > 0 ? "#005596" : "#ccc"}`,
+                              borderRadius: "4px",
+                              height: "28px",
+                              width: "30px",
+                              bgcolor: "white",
+                              fontSize: "0.75rem",
+                              fontWeight: actualCount > 0 ? "bold" : "normal",
+                              color: actualCount > 0 ? "#005596" : "inherit"
+                            }}
+                          >
+                            {actualCount}
+                          </Typography>
+                        )}
+                      </TableCell>
+                      <TableCell align="center">
                         <Typography
-                          sx={{ fontWeight: "bold", fontSize: "0.85rem" }}
+                          sx={{ fontWeight: "regular", fontSize: "0.85rem", color: "#000000ff" }}
                         >
-                          {req.isExtra
-                            ? "-"
-                            : `${actualCount} / ${req.cantidadFinalCalculada || 0}`}
+                          {req.isExtra ? "-" : (req.cantidadFinalCalculada || 0)}
                         </Typography>
                       </TableCell>
                       <TableCell align="right">
-                        <IconButton size="small">
-                          {expandedRow === req.id ? (
-                            <KeyboardArrowUpIcon />
-                          ) : (
-                            <KeyboardArrowDownIcon />
-                          )}
-                        </IconButton>
+                        {!req.soloExistencia && (
+                          <IconButton size="small">
+                            {expandedRow === req.id ? (
+                              <KeyboardArrowUpIcon />
+                            ) : (
+                              <KeyboardArrowDownIcon />
+                            )}
+                          </IconButton>
+                        )}
                       </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell colSpan={3} sx={{ p: 0 }}>
-                        <Collapse in={expandedRow === req.id}>
-                          <Box sx={{ p: 2, bgcolor: "#f1f5f9" }}>
-                            {req.soloExistencia ? (
-                              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', py: 1.5, gap: 2 }}>
-                                <Typography sx={{ fontWeight: "bold", fontSize: "0.75rem", color: "#64748b" }}>
-                                  CANTIDAD CONFIRMADA
-                                </Typography>
-                                <Box
-                                  sx={{
-                                    border: "1px solid #c2e0ff",
-                                    borderRadius: 1,
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    bgcolor: "white",
-                                  }}
-                                >
-                                  <IconButton
-                                    color="primary"
-                                    size="small"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      removeOneExistencia(req);
-                                    }}
-                                    disabled={actualCount === 0}
-                                    sx={{ p: 0.5 }}
-                                  >
-                                    <RemoveIcon fontSize="small" />
-                                  </IconButton>
-                                  <Typography
-                                    sx={{
-                                      px: 1.5,
-                                      fontWeight: "bold",
-                                      fontSize: "0.85rem",
-                                      textAlign: "center",
-                                      color: "#005596",
-                                    }}
-                                  >
-                                    {actualCount}
-                                  </Typography>
-                                  <IconButton
-                                    color="primary"
-                                    size="small"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      addOneExistencia(req, actualCount);
-                                    }}
-                                    sx={{ p: 0.5 }}
-                                  >
-                                    <AddIcon fontSize="small" />
-                                  </IconButton>
-                                </Box>
-                                <Typography sx={{ fontSize: "0.75rem", color: "#94a3b8" }}>
-                                  (Requerido: {req.cantidadFinalCalculada || 0})
-                                </Typography>
-                              </Box>
-                            ) : (
+                    {!req.soloExistencia && (
+                      <TableRow>
+                        <TableCell colSpan={4} sx={{ p: 0 }}>
+                          <Collapse in={expandedRow === req.id}>
+                            <Box sx={{ p: 2, bgcolor: "#ffffffff" }}>
                               <Table
                                 size="small"
                                 sx={{
@@ -602,18 +741,18 @@ const EquipamientosLabV3 = ({
                                             onClick={() =>
                                               unit.isExtra
                                                 ? setEquiposCargados((prev) =>
-                                                    prev.filter(
-                                                      (c) =>
-                                                        !(
-                                                          c.id === unit.id &&
-                                                          c.subId === unit.subId
-                                                        ),
-                                                    ),
-                                                  )
+                                                  prev.filter(
+                                                    (c) =>
+                                                      !(
+                                                        c.id === unit.id &&
+                                                        c.subId === unit.subId
+                                                      ),
+                                                  ),
+                                                )
                                                 : handleLimpiarFila(
-                                                    unit.id,
-                                                    unit.subId,
-                                                  )
+                                                  unit.id,
+                                                  unit.subId,
+                                                )
                                             }
                                           >
                                             {unit.isExtra ? (
@@ -634,7 +773,7 @@ const EquipamientosLabV3 = ({
                                   ))}
                                   {!req.isExtra &&
                                     actualCount <
-                                      req.cantidadFinalCalculada && (
+                                    req.cantidadFinalCalculada && (
                                       <TableRow>
                                         <TableCell
                                           sx={{
@@ -673,45 +812,45 @@ const EquipamientosLabV3 = ({
                                               {req.cantidadFinalCalculada -
                                                 actualCount >
                                                 1 && (
-                                                <Button
-                                                  variant="outlined"
-                                                  size="small"
-                                                  color="success"
-                                                  onClick={() => {
-                                                    const faltantes =
-                                                      req.cantidadFinalCalculada -
-                                                      actualCount;
-                                                    const nuevos = Array.from({
-                                                      length: faltantes,
-                                                    }).map((_, i) => ({
-                                                      id: req.id,
-                                                      subId: actualCount + i,
-                                                      origen: req.origen,
-                                                      equipamiento:
-                                                        req.equipamiento,
-                                                      marca: "SÓLO EXISTENCIA",
-                                                      modelo: "-",
-                                                      serie: "-",
-                                                      isExtra: false,
-                                                    }));
-                                                    setEquiposCargados(
-                                                      (prev) => [
-                                                        ...prev,
-                                                        ...nuevos,
-                                                      ],
-                                                    );
-                                                  }}
-                                                  sx={{
-                                                    fontSize: "0.65rem",
-                                                    fontWeight: "bold",
-                                                  }}
-                                                >
-                                                  CONFIRMAR FALTANTES (
-                                                  {req.cantidadFinalCalculada -
-                                                    actualCount}
-                                                  )
-                                                </Button>
-                                              )}
+                                                  <Button
+                                                    variant="outlined"
+                                                    size="small"
+                                                    color="success"
+                                                    onClick={() => {
+                                                      const faltantes =
+                                                        req.cantidadFinalCalculada -
+                                                        actualCount;
+                                                      const nuevos = Array.from({
+                                                        length: faltantes,
+                                                      }).map((_, i) => ({
+                                                        id: req.id,
+                                                        subId: actualCount + i,
+                                                        origen: req.origen,
+                                                        equipamiento:
+                                                          req.equipamiento,
+                                                        marca: "SÓLO EXISTENCIA",
+                                                        modelo: "-",
+                                                        serie: "-",
+                                                        isExtra: false,
+                                                      }));
+                                                      setEquiposCargados(
+                                                        (prev) => [
+                                                          ...prev,
+                                                          ...nuevos,
+                                                        ],
+                                                      );
+                                                    }}
+                                                    sx={{
+                                                      fontSize: "0.65rem",
+                                                      fontWeight: "bold",
+                                                    }}
+                                                  >
+                                                    CONFIRMAR FALTANTES (
+                                                    {req.cantidadFinalCalculada -
+                                                      actualCount}
+                                                    )
+                                                  </Button>
+                                                )}
                                             </Stack>
                                           ) : (
                                             <IconButton
@@ -765,11 +904,11 @@ const EquipamientosLabV3 = ({
                                   )}
                                 </TableBody>
                               </Table>
-                            )}
                             </Box>
                           </Collapse>
                         </TableCell>
                       </TableRow>
+                    )}
                   </React.Fragment>
                 );
               })}
@@ -830,10 +969,14 @@ const EquipamientosLabV3 = ({
                   freeSolo
                   options={listaEquiposDisponiblesExtra}
                   value={form.equipamiento || null}
-                  onChange={(e, v) => setForm({ ...form, equipamiento: v })}
-                  onInputChange={(e, v) =>
-                    setForm({ ...form, equipamiento: v })
-                  }
+                  onChange={(e, v) => {
+                    const isSolo = todosLosEquiposFullDB.find(eq => eq.equipamiento === v)?.soloExistencia || false;
+                    setForm({ ...form, equipamiento: v, soloExistencia: isSolo });
+                  }}
+                  onInputChange={(e, v) => {
+                    const isSolo = todosLosEquiposFullDB.find(eq => eq.equipamiento === v)?.soloExistencia || false;
+                    setForm({ ...form, equipamiento: v, soloExistencia: isSolo });
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -853,39 +996,73 @@ const EquipamientosLabV3 = ({
                 />
               )}
 
-              {!todosLosEquiposFullDB.find(
-                (eq) => eq.equipamiento === form.equipamiento,
-              )?.soloExistencia && (
-                <>
-                  <TextField
-                    label="Marca"
-                    fullWidth
-                    variant="standard"
-                    value={form.marca}
-                    onChange={(e) =>
-                      setForm({ ...form, marca: e.target.value.toUpperCase() })
-                    }
-                  />
-                  <TextField
-                    label="Modelo"
-                    fullWidth
-                    variant="standard"
-                    value={form.modelo}
-                    onChange={(e) =>
-                      setForm({ ...form, modelo: e.target.value.toUpperCase() })
-                    }
-                  />
-                  <TextField
-                    label="Serie"
-                    fullWidth
-                    variant="standard"
-                    value={form.serie}
-                    onChange={(e) =>
-                      setForm({ ...form, serie: e.target.value.toUpperCase() })
-                    }
-                  />
-                </>
+              {form.equipamiento === "OTRO" && (
+                <TextField
+                  label="Nombre Equipo"
+                  fullWidth
+                  variant="standard"
+                  value={form.otroEquipo}
+                  onChange={(e) => setForm({ ...form, otroEquipo: e.target.value.toUpperCase() })}
+                  autoFocus
+                />
               )}
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Checkbox
+                  checked={form.soloExistencia}
+                  onChange={(e) => setForm({ ...form, soloExistencia: e.target.checked })}
+                  size="small"
+                  disabled={!isExtraMode}
+                />
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 500,
+                    color: isExtraMode ? "#64748b" : "rgba(100, 116, 139, 0.5)"
+                  }}
+                >
+                  Sólo existencia
+                </Typography>
+              </Box>
+
+              {(() => {
+                const isSoloExistencia = form.soloExistencia;
+
+                return (
+                  <>
+                    <TextField
+                      label="Marca"
+                      fullWidth
+                      variant="standard"
+                      disabled={isSoloExistencia}
+                      value={isSoloExistencia ? "" : form.marca}
+                      onChange={(e) =>
+                        setForm({ ...form, marca: e.target.value.toUpperCase() })
+                      }
+                    />
+                    <TextField
+                      label="Modelo"
+                      fullWidth
+                      variant="standard"
+                      disabled={isSoloExistencia}
+                      value={isSoloExistencia ? "" : form.modelo}
+                      onChange={(e) =>
+                        setForm({ ...form, modelo: e.target.value.toUpperCase() })
+                      }
+                    />
+                    <TextField
+                      label="Serie"
+                      fullWidth
+                      variant="standard"
+                      disabled={isSoloExistencia}
+                      value={isSoloExistencia ? "" : form.serie}
+                      onChange={(e) =>
+                        setForm({ ...form, serie: e.target.value.toUpperCase() })
+                      }
+                    />
+                  </>
+                );
+              })()}
             </Stack>
 
             <Box
