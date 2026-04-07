@@ -1,112 +1,192 @@
-import React from 'react';
-import { Box, Typography, Paper, Switch, Stack, TextField, Grid, Divider } from '@mui/material';
+import React from "react";
+import { Box, Typography, Paper, Switch, Stack, TextField, Grid } from "@mui/material";
 
 const FilaAuditoria = ({ label, value, onChange }) => (
-  <Box sx={{ 
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-    py: 1.2, px: 2, borderBottom: '1px solid #f0f0f0',
-    bgcolor: value ? '#fff3e0' : 'transparent', // Un naranja muy suave para Hemodiálisis
-    transition: '0.2s'
-  }}>
-    <Typography variant="body2" sx={{ fontWeight: 500, color: '#444' }}>{label}</Typography>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-      <Typography variant="caption" sx={{ fontWeight: '900', color: value ? '#ef6c00' : '#999' }}>
-        {value ? 'SÍ' : 'NO'}
+  <Box
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: 2,
+      py: 1.2,
+      px: 2,
+      borderBottom: "1px solid #f0f0f0",
+      bgcolor: value ? "#fff3e0" : "transparent",
+      transition: "0.2s",
+    }}
+  >
+    <Typography variant="body2" sx={{ fontWeight: 500, color: "#444", flex: 1, pr: 2 }}>
+      {label}
+    </Typography>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <Typography variant="caption" sx={{ fontWeight: "900", color: value ? "#ef6c00" : "#999" }}>
+        {value ? "SÍ" : "NO"}
       </Typography>
       <Switch size="small" checked={!!value} onChange={onChange} color="warning" />
     </Box>
   </Box>
 );
 
+const resolveBooleanValue = (data, key, fallbackKeys = []) =>
+  [key, ...fallbackKeys].some((candidate) => !!data[candidate]);
+
+const renderBooleanItems = (items, data, onDataChange) =>
+  items.map(({ key, label, fallbackKeys }) => (
+    <FilaAuditoria
+      key={key}
+      label={label}
+      value={resolveBooleanValue(data, key, fallbackKeys)}
+      onChange={(e) => onDataChange(key, e.target.checked)}
+    />
+  ));
+
+const direccionYFuncionamiento = [
+  { key: "hemo_independiente", label: "Unidad de Diálisis Independiente" },
+  { key: "hemo_psico_act", label: "Registro de Psicofármacos Actualizado" },
+  { key: "hemo_enf_trans", label: "Registro de Enfermedades Transmisibles" },
+  { key: "hemo_reglamento", label: "Reglamento Interno" },
+  { key: "hemo_plan_evac", label: "Plan de Evacuación", fallbackKeys: ["hemo_seguridad"] },
+  { key: "hemo_bomberos", label: "Habilitación de Bomberos", fallbackKeys: ["hemo_seguridad"] },
+  { key: "hemo_bioseg_exp", label: "Normas bioseguridad expuestas" },
+  { key: "hemo_normas_medicos", label: "Normas de Procedimientos para Médicos", fallbackKeys: ["hemo_normas_proc"] },
+  { key: "hemo_normas_enfermeria", label: "Normas de Procedimientos para enfermeras", fallbackKeys: ["hemo_normas_proc"] },
+  { key: "hemo_incucai_nro", label: "Nro de Inscripción de pacientes al INCUCAI y/o ECODAI" },
+  { key: "hemo_incucai_carpetas", label: "Carpetas de Inscripción de pacientes al INCUCAI y/o ECODAI" },
+  { key: "hemo_convenio", label: "Convenio de Internación" },
+  { key: "hemo_hc_completa", label: "Registro Historia clínica completa" },
+  { key: "hemo_planillas_enf", label: "Planillas de Personal Enfermería" },
+];
+
+const serologiaPacientes = [
+  { key: "ser_pac_hiv", label: "HIV" },
+  { key: "ser_pac_hb", label: "Hepatitis B" },
+  { key: "ser_pac_hc", label: "Hepatitis C" },
+];
+
+const serologiaPersonal = [
+  { key: "ser_per_hiv", label: "HIV" },
+  { key: "ser_per_hb", label: "Hepatitis B" },
+  { key: "ser_per_hc", label: "Hepatitis C" },
+];
+
+const reusosYObservaciones = [
+  { key: "hemo_libro_reusos", label: "Libro de Reusos" },
+  { key: "hemo_obs_registradas", label: "Observaciones registradas" },
+];
+
 const SeccionHEMODINAMIA = ({ data, onDataChange }) => {
   return (
     <Box sx={{ mt: 1 }}>
-      
-      {/* 1. DIRECCIÓN Y FUNCIONAMIENTO */}
-      <Typography variant="subtitle2" sx={{ color: '#ef6c00', fontWeight: 'bold', mb: 1.5, mt: 2, textTransform: 'uppercase' }}>
-        Dirección, Funcionamiento y Normas
+      <Typography
+        variant="subtitle2"
+        sx={{ color: "#ef6c00", fontWeight: "bold", mb: 1.5, mt: 2, textTransform: "uppercase" }}
+      >
+        De la Dirección y Funcionamiento
       </Typography>
-      <Paper variant="outlined" sx={{ borderRadius: '12px', overflow: 'hidden', mb: 3 }}>
-        <FilaAuditoria label="Unidad de Diálisis Independiente" value={data.hemo_independiente} onChange={(e) => onDataChange('hemo_independiente', e.target.checked)} />
-        <FilaAuditoria label="Reglamento Interno" value={data.hemo_reglamento} onChange={(e) => onDataChange('hemo_reglamento', e.target.checked)} />
-        <FilaAuditoria label="Plan de Evacuación / Habilitación Bomberos" value={data.hemo_seguridad} onChange={(e) => onDataChange('hemo_seguridad', e.target.checked)} />
-        <FilaAuditoria label="Convenio de Internación" value={data.hemo_convenio} onChange={(e) => onDataChange('hemo_convenio', e.target.checked)} />
-        <FilaAuditoria label="Normas de Procedimientos (Médicos y Enfermeras)" value={data.hemo_normas_proc} onChange={(e) => onDataChange('hemo_normas_proc', e.target.checked)} />
-        <FilaAuditoria label="Normas de bioseguridad expuestas" value={data.hemo_bioseg_exp} onChange={(e) => onDataChange('hemo_bioseg_exp', e.target.checked)} />
+      <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden", mb: 3 }}>
+        {renderBooleanItems(direccionYFuncionamiento, data, onDataChange)}
       </Paper>
 
-      {/* 2. REGISTROS Y FISCALIZACIÓN (INCUCAI/ECODAI) */}
-      <Typography variant="subtitle2" sx={{ color: '#ef6c00', fontWeight: 'bold', mb: 1.5, textTransform: 'uppercase' }}>
-        Registros, Libros y Fiscalización
+      <Typography
+        variant="subtitle2"
+        sx={{ color: "#ef6c00", fontWeight: "bold", mb: 1.5, textTransform: "uppercase" }}
+      >
+        Análisis de agua
       </Typography>
-      <Paper variant="outlined" sx={{ borderRadius: '12px', overflow: 'hidden', mb: 3 }}>
-        <FilaAuditoria label="Registro Historia Clínica completa" value={data.hemo_hc_completa} onChange={(e) => onDataChange('hemo_hc_completa', e.target.checked)} />
-        <FilaAuditoria label="Registro de Psicofármacos Actualizado" value={data.hemo_psico_act} onChange={(e) => onDataChange('hemo_psico_act', e.target.checked)} />
-        <FilaAuditoria label="Registro de Enfermedades Transmisibles" value={data.hemo_enf_trans} onChange={(e) => onDataChange('hemo_enf_trans', e.target.checked)} />
-        <FilaAuditoria label="Libro de Reusos / Cant. máxima reusos" value={data.hemo_libro_reusos} onChange={(e) => onDataChange('hemo_libro_reusos', e.target.checked)} />
-        <FilaAuditoria label="Planillas de Personal Enfermería" value={data.hemo_planillas_enf} onChange={(e) => onDataChange('hemo_planillas_enf', e.target.checked)} />
-        <Divider />
-        <Box sx={{ p: 2, bgcolor: '#fafafa' }}>
-          <Stack spacing={2}>
-            <FilaAuditoria label="Nro de Inscripción de pacientes al INCUCAI y/o ECODAI" value={data.hemo_incucai_nro} onChange={(e) => onDataChange('hemo_incucai_nro', e.target.checked)} />
-            <FilaAuditoria label="Carpetas de Inscripción de pacientes al INCUCAI / ECODAI" value={data.hemo_incucai_carpetas} onChange={(e) => onDataChange('hemo_incucai_carpetas', e.target.checked)} />
-          </Stack>
+      <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden", mb: 3 }}>
+        <FilaAuditoria
+          label="Físico, Químico"
+          value={!!data.hemo_agua_fisico}
+          onChange={(e) => onDataChange("hemo_agua_fisico", e.target.checked)}
+        />
+        <Box sx={{ px: 2, pb: 2, pt: 1, borderBottom: "1px solid #f0f0f0", bgcolor: "#fafafa" }}>
+          <TextField
+            fullWidth
+            label="Fecha último físico-químico"
+            type="date"
+            variant="standard"
+            InputLabelProps={{ shrink: true }}
+            value={data.fecha_fisico || ""}
+            onChange={(e) => onDataChange("fecha_fisico", e.target.value)}
+          />
+        </Box>
+        <FilaAuditoria
+          label="Bacteriológico"
+          value={!!data.hemo_agua_bacterio}
+          onChange={(e) => onDataChange("hemo_agua_bacterio", e.target.checked)}
+        />
+        <Box sx={{ px: 2, pb: 2, pt: 1, bgcolor: "#fafafa" }}>
+          <TextField
+            fullWidth
+            label="Fecha último bacteriológico"
+            type="date"
+            variant="standard"
+            InputLabelProps={{ shrink: true }}
+            value={data.fecha_bacterio || ""}
+            onChange={(e) => onDataChange("fecha_bacterio", e.target.value)}
+          />
         </Box>
       </Paper>
 
-      {/* 3. ANÁLISIS DE AGUA (CRÍTICO) */}
-      <Typography variant="subtitle2" sx={{ color: '#ef6c00', fontWeight: 'bold', mb: 1.5, textTransform: 'uppercase' }}>
-        Control y Análisis de Agua
+      <Typography
+        variant="subtitle2"
+        sx={{ color: "#ef6c00", fontWeight: "bold", mb: 1.5, textTransform: "uppercase" }}
+      >
+        Posee serología del personal y pacientes
       </Typography>
-      <Paper variant="outlined" sx={{ borderRadius: '12px', overflow: 'hidden', mb: 3 }}>
-        <Box sx={{ p: 2 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <FilaAuditoria label="Análisis Físico-Químico" value={data.hemo_agua_fisico} onChange={(e) => onDataChange('hemo_agua_fisico', e.target.checked)} />
-              <TextField fullWidth label="Fecha último Físico-Químico" type="date" variant="standard" InputLabelProps={{shrink:true}} sx={{ mt: 1, px: 2 }} 
-                value={data.fecha_fisico || ''} onChange={(e) => onDataChange('fecha_fisico', e.target.value)} />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FilaAuditoria label="Análisis Bacteriológico" value={data.hemo_agua_bacterio} onChange={(e) => onDataChange('hemo_agua_bacterio', e.target.checked)} />
-              <TextField fullWidth label="Fecha último Bacteriológico" type="date" variant="standard" InputLabelProps={{shrink:true}} sx={{ mt: 1, px: 2 }} 
-                value={data.fecha_bacterio || ''} onChange={(e) => onDataChange('fecha_bacterio', e.target.value)} />
-            </Grid>
-          </Grid>
-        </Box>
-      </Paper>
-
-      {/* 4. SEROLOGÍA (PERSONAL Y PACIENTES) */}
-      <Typography variant="subtitle2" sx={{ color: '#ef6c00', fontWeight: 'bold', mb: 1.5, textTransform: 'uppercase' }}>
-        Serología (VIH, Hepatitis B y C)
-      </Typography>
-      <Paper variant="outlined" sx={{ borderRadius: '12px', overflow: 'hidden', mb: 3 }}>
+      <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden", mb: 3 }}>
         <Grid container>
-          <Grid item xs={6} sx={{ borderRight: '1px solid #eee' }}>
-            <Typography variant="caption" sx={{ p: 2, fontWeight: 'bold', display: 'block', textAlign: 'center', bgcolor: '#f5f5f5' }}>PACIENTES</Typography>
-            <FilaAuditoria label="VIH" value={data.ser_pac_hiv} onChange={(e) => onDataChange('ser_pac_hiv', e.target.checked)} />
-            <FilaAuditoria label="Hepatitis B" value={data.ser_pac_hb} onChange={(e) => onDataChange('ser_pac_hb', e.target.checked)} />
-            <FilaAuditoria label="Hepatitis C" value={data.ser_pac_hc} onChange={(e) => onDataChange('ser_pac_hc', e.target.checked)} />
+          <Grid item xs={12} md={6} sx={{ borderRight: { md: "1px solid #eee" } }}>
+            <Typography
+              variant="caption"
+              sx={{ p: 2, fontWeight: "bold", display: "block", textAlign: "center", bgcolor: "#f5f5f5" }}
+            >
+              PERSONAL
+            </Typography>
+            {renderBooleanItems(serologiaPersonal, data, onDataChange)}
           </Grid>
-          <Grid item xs={6}>
-            <Typography variant="caption" sx={{ p: 2, fontWeight: 'bold', display: 'block', textAlign: 'center', bgcolor: '#f5f5f5' }}>PERSONAL</Typography>
-            <FilaAuditoria label="VIH" value={data.ser_per_hiv} onChange={(e) => onDataChange('ser_per_hiv', e.target.checked)} />
-            <FilaAuditoria label="Hepatitis B" value={data.ser_per_hb} onChange={(e) => onDataChange('ser_per_hb', e.target.checked)} />
-            <FilaAuditoria label="Hepatitis C" value={data.ser_per_hc} onChange={(e) => onDataChange('ser_per_hc', e.target.checked)} />
+          <Grid item xs={12} md={6}>
+            <Typography
+              variant="caption"
+              sx={{ p: 2, fontWeight: "bold", display: "block", textAlign: "center", bgcolor: "#f5f5f5" }}
+            >
+              PACIENTES
+            </Typography>
+            {renderBooleanItems(serologiaPacientes, data, onDataChange)}
           </Grid>
         </Grid>
       </Paper>
 
-      {/* 5. OBSERVACIONES GENERALES */}
-      <Paper variant="outlined" sx={{ borderRadius: '12px', p: 2 }}>
-        <TextField 
-          fullWidth multiline rows={3} 
-          label="Observaciones de la Unidad de Diálisis" 
-          placeholder="Anote aquí detalles sobre el estado de los filtros, reusos o hallazgos en serología..."
-          value={data.hemo_obs || ''} 
-          onChange={(e) => onDataChange('hemo_obs', e.target.value)}
-        />
+      <Typography
+        variant="subtitle2"
+        sx={{ color: "#ef6c00", fontWeight: "bold", mb: 1.5, textTransform: "uppercase" }}
+      >
+        Libro de reusos y observaciones
+      </Typography>
+      <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden", mb: 3 }}>
+        {renderBooleanItems(reusosYObservaciones, data, onDataChange)}
+        <Box sx={{ p: 2, bgcolor: "#fafafa", borderTop: "1px solid #f0f0f0" }}>
+          <Stack spacing={2}>
+            <TextField
+              fullWidth
+              label="Cant. máxima reusos"
+              type="number"
+              variant="standard"
+              value={data.hemo_reusos_max || ""}
+              onChange={(e) => onDataChange("hemo_reusos_max", e.target.value)}
+            />
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Detalle de observaciones"
+              placeholder="Anote aquí detalles sobre filtros, reusos, hallazgos o novedades de la unidad..."
+              value={data.hemo_obs || ""}
+              onChange={(e) => onDataChange("hemo_obs", e.target.value)}
+            />
+          </Stack>
+        </Box>
       </Paper>
-
     </Box>
   );
 };

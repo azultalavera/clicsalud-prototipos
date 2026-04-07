@@ -1766,5 +1766,2167 @@
       "categoriaId": "CAMA",
       "reconocimiento": "provincial"
     }
+  ],
+  "tipologias": [
+    {
+      "id": "1",
+      "nombre": "CLÍNICAS, SANATORIOS Y HOSPITALES"
+    },
+    {
+      "id": "2",
+      "nombre": "GERIÁTRICOS"
+    },
+    {
+      "id": "3",
+      "nombre": "CIRUGÍA AMBULATORIA"
+    },
+    {
+      "id": "4",
+      "nombre": "SALUD AMBULATORIA"
+    },
+    {
+      "id": "5",
+      "nombre": "ESTÉTICA, COSMIATRÍA Y COSMETOLOGÍA"
+    },
+    {
+      "id": "6",
+      "nombre": "CONSULTORIOS"
+    }
+  ],
+  "configuraciones_maestras": [
+    {
+      "id": "cm-hosp",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "servicios": [
+        {
+          "id": "srv-gen",
+          "name": "DATOS GENERALES",
+          "isDeletable": false,
+          "sections": [
+            {
+              "id": "sec-reg",
+              "name": "REGISTROS",
+              "fields": [
+                {
+                  "id": "new-1775053664332",
+                  "label": "Registro HC",
+                  "type": "boolean",
+                  "options": ""
+                },
+                {
+                  "id": "new-1775053700394",
+                  "label": "tipo hc",
+                  "type": "select",
+                  "options": "DIGITAL, MANUAL, MIXTA"
+                }
+              ]
+            },
+            {
+              "id": "sec-rev",
+              "name": "REVISIÓN",
+              "fields": [
+                {
+                  "id": "rv1",
+                  "label": "Revisión de Historias Clínicas",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "new-1775045148227",
+                  "label": "Agrego una opcion",
+                  "type": "checkbox",
+                  "options": ""
+                }
+              ]
+            },
+            {
+              "id": "sec-est",
+              "name": "ESTADO",
+              "fields": [
+                {
+                  "id": "es1",
+                  "label": "Estado",
+                  "type": "select",
+                  "options": "COMPLETAS, INCOMPLETA",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "es2",
+                  "label": "Reglamento Interno/ Manual Procedimientos de la Institución/ Manual Procedimientos de los servicios",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "es3",
+                  "label": "Aditamento privado/ Denominación correcta",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                }
+              ]
+            },
+            {
+              "id": "sec-dat",
+              "name": "DATOS",
+              "fields": [
+                {
+                  "id": "2",
+                  "label": "Capacidad operativa (total camas)",
+                  "type": "number",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "dt1",
+                  "label": "Cantidad de Plantas",
+                  "type": "number",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "dt2",
+                  "label": "Fecha ultima inspección del conservador responsable",
+                  "type": "date",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "dt3",
+                  "label": "Posee Montacamillas/Ascensores",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "dt4",
+                  "label": "Baño para público discapacitado mixtos",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "dt5",
+                  "label": "Libre ingreso , circulación y giro de camillas",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "dt6",
+                  "label": "Luces autónomas de emergencia",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "dt7",
+                  "label": "Equipo Electrógenos",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                }
+              ]
+            },
+            {
+              "id": "sec-con",
+              "name": "CONSULTORIOS EXTERNOS",
+              "fields": [
+                {
+                  "id": "ce0",
+                  "label": "CONSULTORIOS EXTERNOS",
+                  "type": "number",
+                  "required": false,
+                  "visible": true
+                },
+                {
+                  "id": "ce1",
+                  "label": "CONSULTORIOS SALUD MENTAL",
+                  "type": "checkbox",
+                  "required": false,
+                  "visible": true
+                },
+                {
+                  "id": "ce2",
+                  "label": "Cantidad total de consultorios",
+                  "type": "number",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce3",
+                  "label": "Cantidad de consultorios con baño privada y vestuario",
+                  "type": "number",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce4",
+                  "label": "Consultorio con lavabo",
+                  "type": "date",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce5",
+                  "label": "Plan Evacuacion vigente",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce6",
+                  "label": "Extinguidores de Incendios(vigente o no)",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce7",
+                  "label": "Salida de Emergencia",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce8",
+                  "label": "Habilitación Bomberos",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce9",
+                  "label": "Silla de Ruedas",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce10",
+                  "label": "Todas las camas tipo Ortopedia",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce11",
+                  "label": "Posee planos inclinados",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce12",
+                  "label": "FECHA VENCIMIENTO PLAN EVACUACION",
+                  "type": "date",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce13",
+                  "label": "FECHA VENCIMIENTO BOMBEROS",
+                  "type": "date",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "ce14",
+                  "label": "FECHA VENCIMIENTO EXTINGUIDORES",
+                  "type": "date",
+                  "required": true,
+                  "visible": true
+                }
+              ]
+            },
+            {
+              "id": "sec-rad",
+              "name": "RADIOFÍSICA",
+              "fields": []
+            },
+            {
+              "id": "sec-int",
+              "name": "SECTOR DE INTERNACIÓN CUMPLE Y AREA DE RESIDUOS",
+              "fields": [
+                {
+                  "id": "si1",
+                  "label": "Vacunatorio habilitado",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "si2",
+                  "label": "Condiciones Edilicias",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "si3",
+                  "label": "Área de Residuos",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                }
+              ]
+            },
+            {
+              "id": "sec-lab",
+              "name": "LABORATORIO",
+              "fields": [
+                {
+                  "id": "lb1",
+                  "label": "Habilitación por Cobico",
+                  "type": "boolean",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "lb2",
+                  "label": "Interno/Externo",
+                  "type": "select",
+                  "options": "INTERNO, EXTERNO",
+                  "required": true,
+                  "visible": true
+                },
+                {
+                  "id": "lb3",
+                  "label": "Propio/Tercerizado",
+                  "type": "select",
+                  "options": "PROPIO, TERCERIZADO",
+                  "required": true,
+                  "visible": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "srv-uti",
+          "name": "Unidades de Terapia Intensiva (UTI)",
+          "isDeletable": true,
+          "fields": [
+            {
+              "id": "uti-1",
+              "label": "N° DE CAMAS",
+              "type": "number",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-2",
+              "label": "Coincide con edificacion",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-3",
+              "label": "Planos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-4",
+              "label": "Planillas de enfermería con controles diarios",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-5",
+              "label": "Signos vitales",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-6",
+              "label": "Balance diario",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-7",
+              "label": "Volúmenes de ingresos y egresos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-8",
+              "label": "Medicación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-9",
+              "label": "Unidad ubicada en zona de circulación semirrestringida",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-10",
+              "label": "Sala de internación c/pileta lavamanos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-11",
+              "label": "Office de enfermería",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-12",
+              "label": "Monitores",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-13",
+              "label": "Local de ropa y material usado",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-14",
+              "label": "Area lavachatas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-15",
+              "label": "Depósito de camillas y aparatología",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-16",
+              "label": "Sala de médicos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-17",
+              "label": "Posee otras Unidades de UCI / UCO",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-18",
+              "label": "Comparte algún local UCI / UCO",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-19",
+              "label": "Grupo electrógeno",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-20",
+              "label": "Sistema de Iluminación de Emergencia",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-21",
+              "label": "Acceso directo y exclusivo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-22",
+              "label": "Fácil comunicación c/cirugía",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-23",
+              "label": "Camas ortopédicas o articuladas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-24",
+              "label": "Doble comando",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-25",
+              "label": "Rodantes",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-26",
+              "label": "Ventanas al exterior",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-27",
+              "label": "Visión panorámica directa a todas las camas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-28",
+              "label": "Local de Instrumental y material estéril",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-29",
+              "label": "Local cerrado c/1 cama para aislamiento",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-30",
+              "label": "Evoluciones diarias en Historia Clínica",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-31",
+              "label": "Libro de Registro de Enfermedades Transmisibles",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-32",
+              "label": "Libro de Registro de psicofármacos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-33",
+              "label": "Vestuario para visitas c/pileta lavamanos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-34",
+              "label": "Habitación, c/baño propio para médico de Guardia",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-35",
+              "label": "Doble circuito de energía eléctrica",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-36",
+              "label": "Diez tomas de electricidad por cama",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-37",
+              "label": "Hermeticidad",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-38",
+              "label": "Privacidad",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-39",
+              "label": "Superficie total sala internación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-40",
+              "label": "Iluminación natural",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-41",
+              "label": "Iluminación artificial central",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-42",
+              "label": "Iluminación Individual",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uti-43",
+              "label": "Acceso desde 4 posiciones",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "id": "srv-uco",
+          "name": "Unidad Coronaria (UCO)",
+          "isDeletable": true,
+          "fields": [
+            {
+              "id": "uco-1",
+              "label": "N° DE CAMAS",
+              "type": "number",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-2",
+              "label": "PLANOS",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-3",
+              "label": "Coincide con edificacion",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-4",
+              "label": "Planillas de enfermería con controles diarios",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-5",
+              "label": "Signos vitales",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-6",
+              "label": "Balance diario",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-7",
+              "label": "Volúmenes de ingresos y egresos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-8",
+              "label": "Medicación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-9",
+              "label": "Unidad ubicada en zona de circulación semirrestringida",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-10",
+              "label": "Sala de internación c/pileta lavamanos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-11",
+              "label": "Office de enfermería",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-12",
+              "label": "Monitores",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-13",
+              "label": "Local de ropa y material usado",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-14",
+              "label": "Area lavachatas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-15",
+              "label": "Depósito de camillas y aparatología",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-16",
+              "label": "Sala de médicos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-17",
+              "label": "Grupo electrógeno",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-18",
+              "label": "Acceso directo y exclusivo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-19",
+              "label": "Fácil comunicación c/cirugía",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-20",
+              "label": "Privacidad",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-21",
+              "label": "Camas ortopédicas o articuladas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-22",
+              "label": "Doble comando",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-23",
+              "label": "Rodantes",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-24",
+              "label": "Plano apoyo rígido",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-25",
+              "label": "Acceso desde 4 posiciones",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-26",
+              "label": "Visión panorámica directa a todas las camas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-27",
+              "label": "Local de Instrumental y material estéril",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-28",
+              "label": "Local cerrado c/1 cama para aislamiento",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-29",
+              "label": "Evoluciones diarias en Historia Clínica",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-30",
+              "label": "Vestuario para visitas c/pileta lavamanos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-31",
+              "label": "Habitación, c/baño propio para médico de Guardia",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-32",
+              "label": "Comparte algún local UCI / UCO",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-33",
+              "label": "Posee otras Unidades de UCI / UCO",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-34",
+              "label": "Diez tomas de electricidad por cama",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-35",
+              "label": "Sistema de Iluminación de Emergencia",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-36",
+              "label": "Hermeticidad",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-37",
+              "label": "Superficie total sala internación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-38",
+              "label": "Iluminación natural",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-39",
+              "label": "Iluminación artificial central",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-40",
+              "label": "Iluminación Individual",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "uco-41",
+              "label": "Ventanas al exterior De paño fijo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "id": "srv-utin",
+          "name": "Unidad de Terapia Intensiva Neonatal (UTIN)",
+          "isDeletable": true,
+          "fields": [
+            {
+              "id": "utin-1",
+              "label": "N° DE CAMAS",
+              "type": "number",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-2",
+              "label": "Planillas de enfermería con controles diarios",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-3",
+              "label": "Signos vitales",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-4",
+              "label": "Balance diario",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-5",
+              "label": "Volúmenes de ingresos y egresos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-6",
+              "label": "Medicación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-7",
+              "label": "Unidad ubicada en zona de circulación semirrestringida",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-8",
+              "label": "Sala de internación c/pileta lavamanos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-9",
+              "label": "Office de enfermería con monitores",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-10",
+              "label": "Area de deposito ropa limpia",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-11",
+              "label": "Local de ropa y material usado",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-12",
+              "label": "Pileta para material",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-13",
+              "label": "Depósito para incubadora/cuna/aparatos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-14",
+              "label": "Sala de médicos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-15",
+              "label": "Camillas accionadas a codo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-16",
+              "label": "Camilla a pie",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-17",
+              "label": "A electricidad",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-18",
+              "label": "Local de formulas lacteas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-19",
+              "label": "Extrator de aire con filtro",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-20",
+              "label": "Ventilacion",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-21",
+              "label": "Acceso directo y exclusivo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-22",
+              "label": "Privacidad",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-23",
+              "label": "Incubadoras",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-24",
+              "label": "Fuente de oxigeno",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-25",
+              "label": "Aire comprimido",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-26",
+              "label": "Aspiracion",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-27",
+              "label": "Unidades de aisalmiento",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-28",
+              "label": "De paño fijo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-29",
+              "label": "Iluminacion individual difusas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-30",
+              "label": "Visión panorámica directa a todas las camas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-31",
+              "label": "Local de Instrumental y material estéril",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-32",
+              "label": "Local cerrado c/2 unidades para aislamiento",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-33",
+              "label": "Lavabo propio",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-34",
+              "label": "Vestuario para visitas c/pileta lavamanos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-35",
+              "label": "Dispensador de jabon liquido",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-36",
+              "label": "Sanitorios para el personal",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-37",
+              "label": "Habitación, c/baño propio para médico de Guardia",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-38",
+              "label": "Con dispensador liquido",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-39",
+              "label": "Toalla de papel",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-40",
+              "label": "Armario con llave",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-41",
+              "label": "Ocho tomas de electricidad por cama con tablero independiente",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-42",
+              "label": "Sistema calefaccion refrigeracion",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-43",
+              "label": "Fácil comunicación c/cirugía",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-44",
+              "label": "Superficie total sala internación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-45",
+              "label": "Consola de monitoreo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-46",
+              "label": "Repisa individual",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-47",
+              "label": "Cunas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-48",
+              "label": "Fuente de oxigeno en internación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-49",
+              "label": "Consola para monitoreo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-50",
+              "label": "Ventanas al exterior",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-51",
+              "label": "Iluminacion natural",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-52",
+              "label": "Iluminacion artificial central",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-53",
+              "label": "Incubadoras a servocontrol de circuito cerrado 6(seis)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-54",
+              "label": "Incubadoras a servocontrol de reserva 2(dos)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-55",
+              "label": "Incubadora de Transporte dos (2)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-56",
+              "label": "Incubadoras servocunas dos (2)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-57",
+              "label": "Cunas 2(dos)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-58",
+              "label": "Monitores transcutáneos de oxígeno 1(uno)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-59",
+              "label": "Respirador de uso Neonatal con respiración sincronizada del paciente (SIMV/INV) dos (2)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-60",
+              "label": "Mezclador de oxígeno - aire comprimido (Blender) 8(ocho)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-61",
+              "label": "Halocefálico con tapa rebatible 3(tres) pequeños y 3(tres) medianos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-62",
+              "label": "Equipo para reanimación completo 2(DOS)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-63",
+              "label": "Aspirador regulable con manómetro 1 (uno)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-64",
+              "label": "Sincronizador desfibrilador con paletas neonatal 1(uno)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-65",
+              "label": "Balanza electrónica 1(una)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-66",
+              "label": "Electrocardiógrafo 1(uno)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-67",
+              "label": "Pediómetro 1(uno)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-68",
+              "label": "Reloj de pared con segundero 1(uno)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-69",
+              "label": "Ecógrafo portátil para ecografías ECO Doppler color 1(uno)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-70",
+              "label": "Cocina de dos (2) hornallas PARA FORMULA LACTEA",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-71",
+              "label": "Heladera PARA FORMULA LACTEA",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-72",
+              "label": "Oxígeno, aire comprimido y aspiración central una toma por unidad",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-73",
+              "label": "Tubos de oxígeno portátil 2(dos)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-74",
+              "label": "Monitores cardiorrespiratorios 4(cuatro)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-75",
+              "label": "Tensiómetro Neonatal (efecto Doppler) 2(dos)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-76",
+              "label": "Bomba de perfusión de jeringa 4(cuatro)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-77",
+              "label": "Bomba de perfusión continua 4(cuatro)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-78",
+              "label": "Spot de luminoterapia 4(cuatro)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-79",
+              "label": "Oxímetro de pulso 4(cuatro)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-80",
+              "label": "Canalización de arteria umbilical / curación / punción lumbar / presión venosa central / drenaje torácico / exanguineotransfusión",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-81",
+              "label": "Calentador humidificador tipo Fishel Paykel 1 (uno) para cada halocefálico 6 (seis)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-82",
+              "label": "Balanzas neonatales / incubadoras 6 (seis)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-83",
+              "label": "Mesa central 1(una)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-84",
+              "label": "Balanza para pañales 1(una)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-85",
+              "label": "Electroencefalógrafo portátil 1(uno)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-86",
+              "label": "Lámpara portátil 1(una)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-87",
+              "label": "Aparato de Rx portátil con 2 delantales plomados 1(uno)",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-88",
+              "label": "Horno de microondas PARA FORMULA LACTEA",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-89",
+              "label": "Mesada con pileta PARA FORMULA LACTEA",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-90",
+              "label": "Equipo de aspiración 1 cada 4 camas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-91",
+              "label": "Tubos de oxígeno",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-92",
+              "label": "Equipo de desfibrilación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-93",
+              "label": "Monitores",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-94",
+              "label": "Adaptador",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-95",
+              "label": "Carro de curación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-96",
+              "label": "Tensiómetro",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-97",
+              "label": "Equipo de Exanguiuneotransfusion",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-98",
+              "label": "Dispositivo PPCVA nasal",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-99",
+              "label": "Sistema de aspiración torácica",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-100",
+              "label": "Equipos para cateterización vesical",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-101",
+              "label": "Equipos para cateterización venosa",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-102",
+              "label": "Equipo para punción torácica",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-103",
+              "label": "Oximetro de pulso portátil",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-104",
+              "label": "Botiquín c/medicamentos para urgencias de 24 hs.",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-105",
+              "label": "Oxígeno y aspiración central c/boca individual p c/cama",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-106",
+              "label": "Respirador volumétrico c/presión positiva y negativa",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-107",
+              "label": "Canal individual por cama",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-108",
+              "label": "Comando central",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-109",
+              "label": "Resucitador tipo AMBU",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-110",
+              "label": "Instrumental de examen",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-111",
+              "label": "Nebulizador",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-112",
+              "label": "Equipo de luminoterapia",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-113",
+              "label": "Elementos para intubación endotraqueal",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-114",
+              "label": "Sistema portátil de aspiración p/ drenaje",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-115",
+              "label": "Equipos para cateterización nasogástrica",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-116",
+              "label": "Equipo para punción raquídea",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-117",
+              "label": "Equipo para punción abdominal",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-118",
+              "label": "Bomba de infusión continua",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-119",
+              "label": "Incubadoras portatiles c/control de t° y alarma",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-120",
+              "label": "Caja de paro",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-121",
+              "label": "Cronograma de trabajo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-122",
+              "label": "Lab.bioquímico",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-123",
+              "label": "Hemoterapia",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "utin-124",
+              "label": "Radiología",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "id": "srv-hemo",
+          "name": "HEMODINAMIA",
+          "isDeletable": true,
+          "fields": [
+            {
+              "id": "hemo-1",
+              "label": "Unidad de Diálisis Independiente",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-2",
+              "label": "Registro de Psicofármacos Actualizado",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-3",
+              "label": "Registro de Enfermedades Transmisibles",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-4",
+              "label": "Reglamento Interno",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-5",
+              "label": "Plan de Evacuación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-6",
+              "label": "Habilitación de Bomberos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-7",
+              "label": "Normas bioseguridad expuestas",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-8",
+              "label": "Normas de Procedimientos para Médicos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-9",
+              "label": "Normas de Procedimientos para enfermeras",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-10",
+              "label": "Nro de Inscripción de pacientes al INCUCAI y/o ECODAI",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-11",
+              "label": "Carpetas de Inscripción de pacientes al INCUCAI y/o ECODAI",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-12",
+              "label": "Convenio de Internación",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-13",
+              "label": "Registro Historia clínica completa",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-14",
+              "label": "Análisis de agua - Físico, Químico",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-15",
+              "label": "Análisis de agua - Bacteriológico",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-16",
+              "label": "Planillas de Personal Enfermería",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-17",
+              "label": "Fecha último físico-químico",
+              "type": "date",
+              "required": false,
+              "visible": true
+            },
+            {
+              "id": "hemo-18",
+              "label": "Fecha último bacteriológico",
+              "type": "date",
+              "required": false,
+              "visible": true
+            },
+            {
+              "id": "hemo-19",
+              "label": "Serología del personal - HIV",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-20",
+              "label": "Serología del personal - Hepatitis B",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-21",
+              "label": "Serología del personal - Hepatitis C",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-22",
+              "label": "Serología de pacientes - HIV",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-23",
+              "label": "Serología de pacientes - Hepatitis B",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-24",
+              "label": "Serología de pacientes - Hepatitis C",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-25",
+              "label": "Libro de Reusos",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "hemo-26",
+              "label": "Cant. máxima reusos",
+              "type": "number",
+              "required": false,
+              "visible": true
+            },
+            {
+              "id": "hemo-27",
+              "label": "Observaciones registradas",
+              "type": "boolean",
+              "required": false,
+              "visible": true
+            },
+            {
+              "id": "hemo-28",
+              "label": "Detalle de observaciones",
+              "type": "textarea",
+              "required": false,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cm-geri",
+      "tipologia": "GERIÁTRICOS",
+      "servicios": [
+        {
+          "id": "srv-gen",
+          "name": "Datos Generales",
+          "isDeletable": false,
+          "fields": [
+            {
+              "id": "g1",
+              "label": "Capacidad máxima de residentes",
+              "type": "number",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "g2",
+              "label": "Estado de mantenimiento edilicio general",
+              "type": "select",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "g3",
+              "label": "Protocolo de emergencias médicas vigente",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cm-ciru",
+      "tipologia": "CIRUGÍA AMBULATORIA",
+      "servicios": [
+        {
+          "id": "srv-gen",
+          "name": "Datos Generales",
+          "isDeletable": false,
+          "fields": [
+            {
+              "id": "c1",
+              "label": "Cantidad de salas de cirugía",
+              "type": "number",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "c2",
+              "label": "Equipamiento de esterilización operativo",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cm-salud",
+      "tipologia": "SALUD AMBULATORIA",
+      "servicios": [
+        {
+          "id": "srv-gen",
+          "name": "Datos Generales",
+          "isDeletable": false,
+          "fields": [
+            {
+              "id": "s1",
+              "label": "Especialidades médicas disponibles",
+              "type": "text",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "s2",
+              "label": "Cant. de consultorios registrados",
+              "type": "number",
+              "required": true,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cm-este",
+      "tipologia": "ESTÉTICA, COSMIATRÍA Y COSMETOLOGÍA",
+      "servicios": [
+        {
+          "id": "srv-gen",
+          "name": "Datos Generales",
+          "isDeletable": false,
+          "fields": [
+            {
+              "id": "e1",
+              "label": "Títulos habilitantes del personal actuante",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "e2",
+              "label": "Aparatología con certificación de ANMAT",
+              "type": "checkbox",
+              "required": true,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cm-cons",
+      "tipologia": "CONSULTORIOS",
+      "servicios": [
+        {
+          "id": "srv-gen",
+          "name": "Datos Generales",
+          "isDeletable": false,
+          "fields": [
+            {
+              "id": "cs1",
+              "label": "Habilitación municipal vigente",
+              "type": "boolean",
+              "required": true,
+              "visible": true
+            },
+            {
+              "id": "cs2",
+              "label": "Gestión de residuos patógenos (si aplica)",
+              "type": "select",
+              "required": true,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

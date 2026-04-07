@@ -1,99 +1,155 @@
-import React from 'react';
-import { Box, Typography, Grid, TextField, Paper, Switch, Divider } from '@mui/material';
+import React from "react";
+import { Box, Typography, TextField, Paper, Switch } from "@mui/material";
 
 const FilaAuditoria = ({ label, value, onChange }) => (
-  <Box sx={{ 
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-    py: 1.2, px: 2, borderBottom: '1px solid #f0f0f0',
-    bgcolor: value ? '#f1f8e9' : 'transparent', transition: '0.2s'
-  }}>
-    <Typography variant="body2" sx={{ fontWeight: 500, color: '#444' }}>{label}</Typography>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-      <Typography variant="caption" sx={{ fontWeight: '900', color: value ? '#2e7d32' : '#999' }}>
-        {value ? 'SÍ' : 'NO'}
+  <Box
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: 2,
+      py: 1.2,
+      px: 2,
+      borderBottom: "1px solid #f0f0f0",
+      bgcolor: value ? "#f1f8e9" : "transparent",
+      transition: "0.2s",
+    }}
+  >
+    <Typography variant="body2" sx={{ fontWeight: 500, color: "#444", flex: 1, pr: 2 }}>
+      {label}
+    </Typography>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <Typography variant="caption" sx={{ fontWeight: "900", color: value ? "#2e7d32" : "#999" }}>
+        {value ? "SÍ" : "NO"}
       </Typography>
       <Switch size="small" checked={!!value} onChange={onChange} color="success" />
     </Box>
   </Box>
 );
 
+const renderBooleanItems = (items, data, onDataChange) =>
+  items.map(({ key, label }) => (
+    <FilaAuditoria
+      key={key}
+      label={label}
+      value={data[key]}
+      onChange={(e) => onDataChange(key, e.target.checked)}
+    />
+  ));
+
+const datosGenerales = [
+  { key: "uti_coincide_edificacion", label: "Coincide con edificación" },
+  { key: "uti_planos", label: "Planos" },
+];
+
+const registros = [
+  { key: "uti_planillas", label: "Planillas de enfermería con controles diarios" },
+  { key: "uti_signos", label: "Signos vitales" },
+  { key: "uti_balance", label: "Balance diario" },
+  { key: "uti_volumenes", label: "Volúmenes de ingresos y egresos" },
+  { key: "uti_medicacion", label: "Medicación" },
+  { key: "uti_evoluciones", label: "Evoluciones diarias en Historia Clínica" },
+  { key: "uti_libro_enf", label: "Libro de Registro de Enfermedades Transmisibles" },
+  { key: "uti_libro_psico", label: "Libro de Registro de psicofármacos" },
+];
+
+const edificios = [
+  { key: "uti_semirrestringida", label: "Unidad ubicada en zona de circulación semirrestringida" },
+  { key: "uti_pileta", label: "Sala de internación c/pileta lavamanos" },
+  { key: "uti_office", label: "Office de enfermería" },
+  { key: "uti_sucio", label: "Local de ropa y material usado" },
+  { key: "uti_lavachatas", label: "Área lavachatas" },
+  { key: "uti_deposito", label: "Depósito de camillas y aparatología" },
+  { key: "uti_sala_medicos", label: "Sala de médicos" },
+  { key: "uti_otras_uni", label: "Posee otras Unidades de UCI / UCO" },
+  { key: "uti_comparte", label: "Comparte algún local UCI / UCO" },
+  { key: "uti_acceso_excl", label: "Acceso directo y exclusivo" },
+  { key: "uti_com_cirugia", label: "Fácil comunicación c/cirugía" },
+  { key: "uti_vision", label: "Visión panorámica directa a todas las camas" },
+  { key: "uti_esteril", label: "Local de Instrumental y material estéril" },
+  { key: "uti_aislamiento", label: "Local cerrado c/1 cama para aislamiento" },
+  { key: "uti_vest_visitas", label: "Vestuario para visitas c/pileta lavamanos" },
+  { key: "uti_dorm_medico", label: "Habitación, c/baño propio para médico de Guardia" },
+];
+
+const equipamiento = [
+  { key: "uti_monitores", label: "Monitores" },
+  { key: "uti_camas_orto", label: "Camas ortopédicas o articuladas" },
+  { key: "uti_doble_comando", label: "Doble comando" },
+  { key: "uti_rodantes", label: "Rodantes" },
+  { key: "uti_acceso_4p", label: "Acceso desde 4 posiciones" },
+];
+
+const instalaciones = [
+  { key: "uti_electrogeno", label: "Grupo electrógeno" },
+  { key: "uti_luz_emerg", label: "Sistema de Iluminación de Emergencia" },
+  { key: "uti_doble_circuito", label: "Doble circuito de energía eléctrica" },
+  { key: "uti_tomas_cama", label: "Diez tomas de electricidad por cama" },
+  { key: "uti_hermeticidad", label: "Hermeticidad" },
+  { key: "uti_privacidad", label: "Privacidad" },
+  { key: "uti_ventanas", label: "Ventanas al exterior" },
+  { key: "uti_ilumin_nat", label: "Iluminación natural" },
+  { key: "uti_ilumin_art", label: "Iluminación artificial central" },
+  { key: "uti_ilumin_ind", label: "Iluminación Individual" },
+];
+
 const SeccionUTI = ({ data, onDataChange }) => {
   return (
     <Box sx={{ mt: 1 }}>
-      
-      {/* 1. PLANILLAS Y REGISTROS */}
-      <Typography variant="subtitle2" sx={{ color: '#005596', fontWeight: 'bold', mb: 1.5, mt: 2, textTransform: 'uppercase' }}>
+      <Typography variant="subtitle2" sx={{ color: "#005596", fontWeight: "bold", mb: 1.5, mt: 2, textTransform: "uppercase" }}>
+        Datos Generales
+      </Typography>
+      <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden", mb: 3 }}>
+        <Box sx={{ p: 2, borderBottom: "1px solid #f0f0f0", bgcolor: "#fafafa" }}>
+          <TextField
+            fullWidth
+            label="N° de camas"
+            variant="standard"
+            type="number"
+            value={data.uti_n_camas || ""}
+            onChange={(e) => onDataChange("uti_n_camas", e.target.value)}
+          />
+        </Box>
+        {renderBooleanItems(datosGenerales, data, onDataChange)}
+      </Paper>
+
+      <Typography variant="subtitle2" sx={{ color: "#005596", fontWeight: "bold", mb: 1.5, textTransform: "uppercase" }}>
         Planillas y Registros Obligatorios
       </Typography>
-      <Paper variant="outlined" sx={{ borderRadius: '12px', overflow: 'hidden', mb: 3 }}>
-        <FilaAuditoria label="Signos Vitales y Controles Diarios" value={data.uti_signos} onChange={(e) => onDataChange('uti_signos', e.target.checked)} />
-        <FilaAuditoria label="Balance Diario (Ingresos y Egresos)" value={data.uti_balance} onChange={(e) => onDataChange('uti_balance', e.target.checked)} />
-        <FilaAuditoria label="Registro de Medicación" value={data.uti_medicacion} onChange={(e) => onDataChange('uti_medicacion', e.target.checked)} />
-        <FilaAuditoria label="Evoluciones diarias en Historia Clínica" value={data.uti_evoluciones} onChange={(e) => onDataChange('uti_evoluciones', e.target.checked)} />
-        <FilaAuditoria label="Libro de Registro de Enfermedades Transmisibles" value={data.uti_libro_enf} onChange={(e) => onDataChange('uti_libro_enf', e.target.checked)} />
-        <FilaAuditoria label="Libro de Registro de Psicofármacos" value={data.uti_libro_psico} onChange={(e) => onDataChange('uti_libro_psico', e.target.checked)} />
+      <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden", mb: 3 }}>
+        {renderBooleanItems(registros, data, onDataChange)}
       </Paper>
 
-      {/* 2. PLANTA FÍSICA Y LOCALES */}
-      <Typography variant="subtitle2" sx={{ color: '#005596', fontWeight: 'bold', mb: 1.5, textTransform: 'uppercase' }}>
+      <Typography variant="subtitle2" sx={{ color: "#005596", fontWeight: "bold", mb: 1.5, textTransform: "uppercase" }}>
         Edificios y Locales de la Unidad
       </Typography>
-      <Paper variant="outlined" sx={{ borderRadius: '12px', overflow: 'hidden', mb: 3 }}>
-        <FilaAuditoria label="Unidad ubicada en zona semirrestringida" value={data.uti_semirrestringida} onChange={(e) => onDataChange('uti_semirrestringida', e.target.checked)} />
-        <FilaAuditoria label="Acceso directo y exclusivo" value={data.uti_acceso_excl} onChange={(e) => onDataChange('uti_acceso_excl', e.target.checked)} />
-        <FilaAuditoria label="Fácil comunicación con Quirófano/Cirugía" value={data.uti_com_cirugia} onChange={(e) => onDataChange('uti_com_cirugia', e.target.checked)} />
-        <FilaAuditoria label="Visión panorámica directa a todas las camas" value={data.uti_vision} onChange={(e) => onDataChange('uti_vision', e.target.checked)} />
-        <FilaAuditoria label="Sala de internación con pileta lavamanos" value={data.uti_pileta} onChange={(e) => onDataChange('uti_pileta', e.target.checked)} />
-        <FilaAuditoria label="Office de enfermería" value={data.uti_office} onChange={(e) => onDataChange('uti_office', e.target.checked)} />
-        <FilaAuditoria label="Local de Instrumental y material estéril" value={data.uti_esteril} onChange={(e) => onDataChange('uti_esteril', e.target.checked)} />
-        <FilaAuditoria label="Local de ropa y material usado (sucio)" value={data.uti_sucio} onChange={(e) => onDataChange('uti_sucio', e.target.checked)} />
-        <FilaAuditoria label="Area lavachatas" value={data.uti_lavachatas} onChange={(e) => onDataChange('uti_lavachatas', e.target.checked)} />
-        <FilaAuditoria label="Local cerrado con 1 cama para aislamiento" value={data.uti_aislamiento} onChange={(e) => onDataChange('uti_aislamiento', e.target.checked)} />
-        <FilaAuditoria label="Depósito de camillas y aparatología" value={data.uti_deposito} onChange={(e) => onDataChange('uti_deposito', e.target.checked)} />
-        <FilaAuditoria label="Sala de médicos" value={data.uti_sala_medicos} onChange={(e) => onDataChange('uti_sala_medicos', e.target.checked)} />
-        <FilaAuditoria label="Habitación con baño propio para médico de Guardia" value={data.uti_dorm_medico} onChange={(e) => onDataChange('uti_dorm_medico', e.target.checked)} />
-        <FilaAuditoria label="Vestuario para visitas con pileta lavamanos" value={data.uti_vest_visitas} onChange={(e) => onDataChange('uti_vest_visitas', e.target.checked)} />
-        <FilaAuditoria label="Posee otras Unidades de UCI / UCO" value={data.uti_otras_uni} onChange={(e) => onDataChange('uti_otras_uni', e.target.checked)} />
-        <FilaAuditoria label="Comparte algún local UCI / UCO" value={data.uti_comparte} onChange={(e) => onDataChange('uti_comparte', e.target.checked)} />
+      <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden", mb: 3 }}>
+        {renderBooleanItems(edificios, data, onDataChange)}
       </Paper>
 
-      {/* 3. EQUIPAMIENTO Y MOBILIARIO */}
-      <Typography variant="subtitle2" sx={{ color: '#005596', fontWeight: 'bold', mb: 1.5, textTransform: 'uppercase' }}>
+      <Typography variant="subtitle2" sx={{ color: "#005596", fontWeight: "bold", mb: 1.5, textTransform: "uppercase" }}>
         Equipamiento y Mobiliario
       </Typography>
-      <Paper variant="outlined" sx={{ borderRadius: '12px', overflow: 'hidden', mb: 3 }}>
-        <FilaAuditoria label="Monitores Multiparamétricos" value={data.uti_monitores} onChange={(e) => onDataChange('uti_monitores', e.target.checked)} />
-        <FilaAuditoria label="Camas ortopédicas o articuladas" value={data.uti_camas_orto} onChange={(e) => onDataChange('uti_camas_orto', e.target.checked)} />
-        <FilaAuditoria label="Doble comando" value={data.uti_doble_comando} onChange={(e) => onDataChange('uti_doble_comando', e.target.checked)} />
-        <FilaAuditoria label="Rodantes operativos" value={data.uti_rodantes} onChange={(e) => onDataChange('uti_rodantes', e.target.checked)} />
+      <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden", mb: 3 }}>
+        {renderBooleanItems(equipamiento, data, onDataChange)}
       </Paper>
 
-      {/* 4. INSTALACIONES Y AMBIENTE */}
-      <Typography variant="subtitle2" sx={{ color: '#005596', fontWeight: 'bold', mb: 1.5, textTransform: 'uppercase' }}>
+      <Typography variant="subtitle2" sx={{ color: "#005596", fontWeight: "bold", mb: 1.5, textTransform: "uppercase" }}>
         Instalaciones, Energía y Ambiente
       </Typography>
-      <Paper variant="outlined" sx={{ borderRadius: '12px', overflow: 'hidden', mb: 3 }}>
-        <Box sx={{ p: 2, borderBottom: '1px solid #f0f0f0', bgcolor: '#fafafa' }}>
-           <TextField 
-             fullWidth label="Superficie total sala internación (m2)" 
-             variant="standard" type="number"
-             value={data.uti_superficie || ''} 
-             onChange={(e) => onDataChange('uti_superficie', e.target.value)} 
-           />
+      <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden", mb: 3 }}>
+        <Box sx={{ p: 2, borderBottom: "1px solid #f0f0f0", bgcolor: "#fafafa" }}>
+          <TextField
+            fullWidth
+            label="Superficie total sala internación (m²)"
+            variant="standard"
+            type="number"
+            value={data.uti_superficie || ""}
+            onChange={(e) => onDataChange("uti_superficie", e.target.value)}
+          />
         </Box>
-        <FilaAuditoria label="Grupo electrógeno de transferencia automática" value={data.uti_electrogeno} onChange={(e) => onDataChange('uti_electrogeno', e.target.checked)} />
-        <FilaAuditoria label="Sistema de Iluminación de Emergencia" value={data.uti_luz_emerg} onChange={(e) => onDataChange('uti_luz_emerg', e.target.checked)} />
-        <FilaAuditoria label="Doble circuito de energía eléctrica" value={data.uti_doble_circuito} onChange={(e) => onDataChange('uti_doble_circuito', e.target.checked)} />
-        <FilaAuditoria label="Diez tomas de electricidad por cama" value={data.uti_tomas_cama} onChange={(e) => onDataChange('uti_tomas_cama', e.target.checked)} />
-        <FilaAuditoria label="Hermeticidad en la unidad" value={data.uti_hermeticidad} onChange={(e) => onDataChange('uti_hermeticidad', e.target.checked)} />
-        <FilaAuditoria label="Privacidad (cortinas o paneles)" value={data.uti_privacidad} onChange={(e) => onDataChange('uti_privacidad', e.target.checked)} />
-        <FilaAuditoria label="Ventanas al exterior" value={data.uti_ventanas} onChange={(e) => onDataChange('uti_ventanas', e.target.checked)} />
-        <FilaAuditoria label="Iluminación natural" value={data.uti_ilumin_nat} onChange={(e) => onDataChange('uti_ilumin_nat', e.target.checked)} />
-        <FilaAuditoria label="Iluminación artificial central" value={data.uti_ilumin_art} onChange={(e) => onDataChange('uti_ilumin_art', e.target.checked)} />
-        <FilaAuditoria label="Iluminación Individual por cama" value={data.uti_ilumin_ind} onChange={(e) => onDataChange('uti_ilumin_ind', e.target.checked)} />
-        <FilaAuditoria label="Acceso desde 4 posiciones a la cabecera" value={data.uti_acceso_4p} onChange={(e) => onDataChange('uti_acceso_4p', e.target.checked)} />
+        {renderBooleanItems(instalaciones, data, onDataChange)}
       </Paper>
-
     </Box>
   );
 };

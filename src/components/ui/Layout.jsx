@@ -37,6 +37,7 @@ const Layout = ({ children }) => {
   };
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+  const isEfector = location.pathname.startsWith('/home-efector');
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -82,65 +83,67 @@ const Layout = ({ children }) => {
         </Toolbar>
       </AppBar>
 
-      {/* BARRA LATERAL (Drawer) */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: isDrawerOpen ? drawerWidthFull : drawerWidthMini,
-          flexShrink: 0,
-          whiteSpace: 'nowrap',
-          boxSizing: 'border-box',
-          [`& .MuiDrawer-paper`]: {
+      {/* BARRA LATERAL (Drawer) - Oculta en Efector */}
+      {!isEfector && (
+        <Drawer
+          variant="permanent"
+          sx={{
             width: isDrawerOpen ? drawerWidthFull : drawerWidthMini,
-            transition: (theme) => theme.transitions.create('width', {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
-            overflowX: 'hidden',
-            pt: 8, // Espacio para el AppBar
-            borderRight: '1px solid #e0e0e0',
-            backgroundColor: '#ffffff'
-          },
-        }}
-      >
-        <List>
-          {menuItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <ListItemButton 
-                key={item.text} 
-                onClick={() => navigate(item.path)}
-                sx={{ 
-                  minHeight: 48, 
-                  justifyContent: isDrawerOpen ? 'initial' : 'center', 
-                  px: 2.5,
-                  bgcolor: isActive ? '#f0f7ff' : 'transparent',
-                  borderLeft: isActive ? '4px solid #0090d0' : '4px solid transparent'
-                }}
-              >
-                <ListItemIcon 
+            flexShrink: 0,
+            whiteSpace: 'nowrap',
+            boxSizing: 'border-box',
+            [`& .MuiDrawer-paper`]: {
+              width: isDrawerOpen ? drawerWidthFull : drawerWidthMini,
+              transition: (theme) => theme.transitions.create('width', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+              }),
+              overflowX: 'hidden',
+              pt: 8, // Espacio para el AppBar
+              borderRight: '1px solid #e0e0e0',
+              backgroundColor: '#ffffff'
+            },
+          }}
+        >
+          <List>
+            {menuItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <ListItemButton 
+                  key={item.text} 
+                  onClick={() => navigate(item.path)}
                   sx={{ 
-                    minWidth: 0, 
-                    mr: isDrawerOpen ? 3 : 'auto', 
-                    justifyContent: 'center',
-                    color: isActive ? '#0090d0' : '#757575' 
+                    minHeight: 48, 
+                    justifyContent: isDrawerOpen ? 'initial' : 'center', 
+                    px: 2.5,
+                    bgcolor: isActive ? '#f0f7ff' : 'transparent',
+                    borderLeft: isActive ? '4px solid #0090d0' : '4px solid transparent'
                   }}
                 >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText 
-                  primary={item.text} 
-                  sx={{ 
-                    opacity: isDrawerOpen ? 1 : 0,
-                    color: isActive ? '#0090d0' : '#333',
-                    '& .MuiTypography-root': { fontWeight: isActive ? 'bold' : 'normal' }
-                  }} 
-                />
-              </ListItemButton>
-            );
-          })}
-        </List>
-      </Drawer>
+                  <ListItemIcon 
+                    sx={{ 
+                      minWidth: 0, 
+                      mr: isDrawerOpen ? 3 : 'auto', 
+                      justifyContent: 'center',
+                      color: isActive ? '#0090d0' : '#757575' 
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={item.text} 
+                    sx={{ 
+                      opacity: isDrawerOpen ? 1 : 0,
+                      color: isActive ? '#0090d0' : '#333',
+                      '& .MuiTypography-root': { fontWeight: isActive ? 'bold' : 'normal' }
+                    }} 
+                  />
+                </ListItemButton>
+              );
+            })}
+          </List>
+        </Drawer>
+      )}
 
       {/* CONTENIDO PRINCIPAL */}
       <Box 

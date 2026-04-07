@@ -10,6 +10,7 @@ import HomeEfector from './components/efector/HomeEfector';
 import EquipamientosConfig from './components/backoffice/EquipamientosConfig';
 import RecursosHumanosConfig from './components/backoffice/RecursosHumanosConfig';
 import JefeServicioConfig from './components/backoffice/JefeServicioConfig';
+import ConfiguradorInspeccionRouter from './components/backoffice/configurador-inspeccion/ConfiguradorRouter';
 
 const theme = createTheme({
   palette: {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/clicsalud-backoffice/gestion-recursos/equipamientos" element={<EquipamientosConfig />} />
           <Route path="/clicsalud-backoffice/gestion-recursos/recursos-humanos" element={<RecursosHumanosConfig />} />
           <Route path="/clicsalud-backoffice/gestion-recursos/jefe-servicio" element={<JefeServicioConfig />} />
+          <Route path="/clicsalud-backoffice/gestion-recursos/acta-inpeccion/*" element={<ConfiguradorInspeccionRouter />} />
 
           {/* RUTA EFECTOR: Usamos /* para que HomeEfector maneje sus sub-rutas internamente */}
           <Route path="/home-efector/*" element={<HomeEfector />} />
