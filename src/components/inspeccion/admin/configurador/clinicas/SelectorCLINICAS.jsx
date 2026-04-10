@@ -1,14 +1,14 @@
 import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
-import BusinessIcon from '@mui/icons-material/Business';
+import { Business as BusinessIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-const SelectorGERIATRICOS = () => {
+const SelectorCLINICAS = () => {
   const navigate = useNavigate();
-  const t = "GERIÁTRICOS";
+  const t = "CLÍNICAS, SANATORIOS Y HOSPITALES";
 
   const handleSelect = () => {
-    navigate("geriatricos");
+    navigate("clinicas-sanatorios-y-hospitales");
   };
 
   return (
@@ -47,4 +47,4 @@ const SelectorGERIATRICOS = () => {
   );
 };
 
-export default SelectorGERIATRICOS;
+export default SelectorCLINICAS;

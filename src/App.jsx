@@ -10,7 +10,9 @@ import HomeEfector from './components/efector/HomeEfector';
 import EquipamientosConfig from './components/backoffice/EquipamientosConfig';
 import RecursosHumanosConfig from './components/backoffice/RecursosHumanosConfig';
 import JefeServicioConfig from './components/backoffice/JefeServicioConfig';
-import ConfiguradorInspeccionRouter from './components/backoffice/configurador-inspeccion/ConfiguradorRouter';
+import ConfiguradorInspeccionRouter from './components/inspeccion/admin/configurador/ConfiguradorRouter';
+import PantallaInspeccion from './components/inspeccion/inspector/PantallaInspeccion';
+import Layout from './components/ui/Layout';
 
 const theme = createTheme({
   palette: {
@@ -41,6 +43,9 @@ function App() {
 
           {/* RUTA EFECTOR: Usamos /* para que HomeEfector maneje sus sub-rutas internamente */}
           <Route path="/home-efector/*" element={<HomeEfector />} />
+
+          {/* RUTA INSPECTOR: Pantalla de Tablet */}
+          <Route path="/inspector/*" element={<Layout><PantallaInspeccion /></Layout>} />
           
           {/* FALLBACK: Solo si no entra en ninguna de las de arriba */}
           <Route path="*" element={<Navigate to="/" replace />} />

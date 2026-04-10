@@ -9,6 +9,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
+import TabletMacIcon from '@mui/icons-material/TabletMac';
 import InboxIcon from '@mui/icons-material/Inbox';
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -38,6 +39,8 @@ const Layout = ({ children }) => {
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
   const isEfector = location.pathname.startsWith('/home-efector');
+  const isInspector = location.pathname.startsWith('/inspector');
+  const hideSidebar = isEfector || isInspector;
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -62,7 +65,9 @@ const Layout = ({ children }) => {
           </Box>
           
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>Administrador</Typography>
+            <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 500, color: 'white', opacity: 0.9 }}>
+              {location.pathname.startsWith('/home-efector') ? 'Efector' : location.pathname.startsWith('/inspector') ? 'Inspector' : 'Administrador'}
+            </Typography>
             <IconButton onClick={handleMenuClick} sx={{ p: 0 }}>
               <Avatar sx={{ width: 32, height: 32, bgcolor: 'white', color: '#0090d0', border: '2px solid white' }}>C</Avatar>
             </IconButton>
@@ -76,6 +81,10 @@ const Layout = ({ children }) => {
                 <ListItemIcon><LocalHospitalIcon fontSize="small" /></ListItemIcon>
                 Efector
               </MenuItem>
+              <MenuItem onClick={() => handleMenuClose('/inspector')}>
+                <ListItemIcon><TabletMacIcon fontSize="small" /></ListItemIcon>
+                Inspector (Tablet)
+              </MenuItem>
               <Divider />
               <MenuItem onClick={() => handleMenuClose('/login')}>Cerrar Sesión</MenuItem>
             </Menu>
@@ -83,8 +92,8 @@ const Layout = ({ children }) => {
         </Toolbar>
       </AppBar>
 
-      {/* BARRA LATERAL (Drawer) - Oculta en Efector */}
-      {!isEfector && (
+      {/* BARRA LATERAL (Drawer) - Oculta en Efector e Inspector */}
+      {!hideSidebar && (
         <Drawer
           variant="permanent"
           sx={{

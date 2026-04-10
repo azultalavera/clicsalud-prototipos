@@ -1,0 +1,662 @@
+import json
+
+table = """
+|  Clínicas  |  Geriátricos  |  CATEGORÍA| Subcategoria| subtitulo| DATO A INSPECCIONAR| Tipo de dato
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | N° Expt. Digital| ALFANUMÉRICO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | | FECHA Y HORA| FECHA
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | FORMATO INSPECCIÓN| VIRTUAL/PRESENCIAL
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | Nombre Establecimiento| STRING
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | Razón Social| STRING
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | Dirección| STRING
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | Localidad| STRING
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | Email| STRING
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | Teléfono| NÚMERO
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | Nombre Inspector| STRING
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | DNI Inspector| NÚMERO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | | Radiofísica| TRUE/FALSE
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | | Tipo de Inspección| HABILITACIÓN/RUTINA/DENUNCIA
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | | Fecha de Habilitación| FECHA
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | | Resolución Nº| NÚMERO
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | DIRECTOR TÉCNICO| STRING
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | DNI DT| NÚMERO
+|  TRUE  |  TRUE  |  TIPOLOGÍA| | | MATRÍCULA DT| NÚMERO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | REGISTROS| Registro de Historia Clínicas| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | REGISTROS| Tipo de Registros| MANUAL/DIGITAL/MIXTA
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | REVISIÓN| Revision de Historias Clínicas| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | REVISIÓN| Completitud Historias Clínicas| COMPLETAS/INCOMPLETAS
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | REVISIÓN| Reglamento Interno/ Manual Procedimientos de la Institución/ Manual Procedimientos de los servicios| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | REVISIÓN| Aditamento privado/ Denominación correcta| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Cantidad de Plantas| NÚMERO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Fecha ultima inspección del conservador responsable| FECHA
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Posee Montacamillas/Ascensores| MONTACAMILLAS/ASCENSORES/AMBOS/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Baño para público discapacitado mixtos| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Libre ingreso , circulación y giro de camillas| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Luces autónomas de emergencia| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Equipo Electrógenos| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| CONSULTORIOS EXTERNOS| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Cantidad total de consultorios| NÚMERO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Cantidad de consultorios con baño privada y vestuario| NÚMERO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Consultorio con lavabo| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Plan Evacuacion vigente| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Extinguidores de Incendios(vigente o no)| VIGENTE/NO VIGENTE
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Salida de Emergencia| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Habilitación Bomberos| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Silla de Ruedas| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Todas las camas tipo Ortopedia| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| Posee planos inclinados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| CONSULTORIOS SALUD MENTAL| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| FECHA VENCIMIENTO PLAN EVACUACION| FECHA
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| FECHA VENCIMIENTO BOMBEROS| FECHA
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | DATOS| FECHA VENCIMIENTO EXTINGUIDORES| FECHA
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | RADIOFÍSICA| Diagnóstico por imagen habilitados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | RADIOFÍSICA| Densitometría ósea habilitados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | RADIOFÍSICA| TAC habilitados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | RADIOFÍSICA| Radiología simple habilitados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | RADIOFÍSICA| Ecografía habilitados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | RADIOFÍSICA| Mamografía habilitados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | RADIOFÍSICA| PET habilitados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | RADIOFÍSICA| RMN habilitados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | RADIOFÍSICA| Radiología contrastada habilitados| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | SECTOR DE INTERNACIÓN CUMPLE Y AREA DE RESIDUOS| Condiciones Edilicias| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | SECTOR DE INTERNACIÓN CUMPLE Y AREA DE RESIDUOS| Área de Residuos| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | LABORATORIO| Habilitación por Cobico| SI/NO
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | LABORATORIO| Interno/Externo| BUTTON GROUP
+|  TRUE  |  FALSE  |  TIPOLOGÍA| | LABORATORIO| Propio/Tercerizado| BUTTON GROUP
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULO 2| Cantidad de Recursos Humano| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULO 2| Reglamento Interno| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULO 2| Libro de Registro de Residentes| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULO 3| Destino exclusivo| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULO 3| Sala de enfermeria| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULO 4| Historia Clinica| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULO 4| Completa y actualizada| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULO 5| Libro de registros familiares| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULO 5| Formulario para familiares al ingreso / Copia Reglamento Interno| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 7 y 14| Condiciones de Habitabilidad| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 7 y 14| Detectores de humotemperatura y fugas de gas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 7 y 14| Luz de emergencia| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 7 y 14| Extintores| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 7 y 14| Disyuntores y llaves térmicas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 7 y 14| Llaves principal de gas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 7 y 14| Rol de incendio y plan de evacuación aprobado| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 8 y 9| Habitaciones| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 8 y 9| Baños| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 8 y 9| Comedor| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 8 y 9| Sala de estar - usos multiples| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 8 y 9| Deposito de despensa, limpieza| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | ARTÍCULOS 8 y 9| Conexiones Cubiertas y cerradas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 10: Identificacion| Fachada visible| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 10: Identificacion| Habilitación visible| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 10: Identificacion| Articulo 13: Circunvalacion General| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 10: Identificacion| Materiales de facil combustion o inflamables| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 10: Identificacion| Puertas de salida en regla| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 10: Identificacion| Pisos Facil limpieza y antideslizante| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 10: Identificacion| Pasamanos acorde| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 10: Identificacion| Iluminacion acorde| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 10: Identificacion| Carteles indicadores salida de emergencia| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 11: Ubicacion Inmueble| Ubicacion acorde a las prestaciones| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 12: Acceso Peatonal| Nivel de vereda| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 13: Circunvalacion General| Materiales de facil combustion o inflamables| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 13: Circunvalacion General| Puertas de salida en regla| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 13: Circunvalacion General| Pisos Facil limpieza y antideslizante| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 13: Circunvalacion General| Pasamanos acorde| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 13: Circunvalacion General| Iluminacion acorde| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 13: Circunvalacion General| Carteles indicadores salida de emergencia| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 15: Circulaciones Mecanizadas Ascensor| Constancia mensual mantenimiento| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 15: Circulaciones Mecanizadas Ascensor| Capacidad min. para silla y acompañante| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 15: Circulaciones Mecanizadas Ascensor| Localizacion visual y sonora del coche| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 15: Circulaciones Mecanizadas Ascensor| Ancho minimo acceso| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 15: Circulaciones Mecanizadas Ascensor| Puerta idenitificada| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 15: Circulaciones Mecanizadas Ascensor| Señal orientación piso| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 15: Circulaciones Mecanizadas Ascensor| Materiales revestimiento| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 15: Circulaciones Mecanizadas Ascensor| Iluminacion adecuada| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 24:| Cumple iluminación y ventilación| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 25: Terminaciones| Pisos antideslizantes| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 25: Terminaciones| Pisos comunes| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 25: Terminaciones| Pisos de madera| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 25: Terminaciones| Muros terminación lisa| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 25: Terminaciones| Cielorrasos superficie continua| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 26: Mobiliario| Sillones| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 26: Mobiliario| Sillas acorde a cantidad residentes| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 26: Mobiliario| Mesas acordes| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 26: Mobiliario| Elementos decoración - tv Audio| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Iluminacion natural| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Ilumin. artificial central| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Ilumin. art. individual| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Ventilación Natural| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Llamador por cama| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Climatizacion| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Higiene| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Privacidad| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Baño privado - Cantidad Habitaciones 1 cama| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Baño privado - Cantidad Habitaciones 2 cama| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Baño privado - Cantidad Habitaciones 3 cama| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Baño privado - Otras| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Sin Baño privado - Cantidad Habitaciones 1 cama| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Sin Baño privado - Cantidad Habitaciones 2 cama| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Sin Baño privado - Cantidad Habitaciones 3 cama| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Sin Baño privado - Otras| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Total habitaciones| NÚMERO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 27 /28 / 40: Habitaciones / camas / sillas| Sup. 4.5m2 por cama:| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| Muebles por habitación| Articulo 27 /28 / 40: Habitaciones / camas / sillas | Placard/guardarropas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| Muebles por habitación| Articulo 27 /28 / 40: Habitaciones / camas / sillas | Cama con elástico de madera| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| Muebles por habitación| Articulo 27 /28 / 40: Habitaciones / camas / sillas | Altura mínima 0,40m| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| Muebles por habitación| Articulo 27 /28 / 40: Habitaciones / camas / sillas | Mesa de luz individual| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| Muebles por habitación| Articulo 27 /28 / 40: Habitaciones / camas / sillas | Colchón altura mínima 14 cm| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| Muebles por habitación| Articulo 27 /28 / 40: Habitaciones / camas / sillas | Forrado| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Ventilacion| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Iluminación| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Inodoro altura mínima 0,45m| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Lavatorio| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Artefactos c/agarraderas empotradas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| pisos antideslizantes| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Accecibilidad artefactos| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Timbre| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Puertas hacia fuera| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Ducha| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Ducha manual| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Bidet altura mínima 0,45m| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Espejo| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Provisión agua caliente/fria| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Griferia mezcladora| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Higiene| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 30: Baños| Luz de emergencia| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | VArticulo 29: Enfermería/consultorios| Acorde a Reglamentación| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 32: Baños para personas con discapacidad motora| Acorde a Reglamentación| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 36: Dependencias complementarias cocina| Despensa y verduleria| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 37: Lavadero| Propio| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 37: Lavadero| Concesionado| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 37: Lavadero| con tendero| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 37: Lavadero| Higiene| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 38: Dependencias lavadero| | SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 38: Dependencias lavadero| Dep. ropa limpia| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 38: Dependencias lavadero| Dep. gral.| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 44: Instalación de agua| | SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 44: Instalación de agua| Agua caliente (caldera, termotanque, calefón)| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 53: Reglamento horario| Trabajo| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 53: Reglamento horario| Reposo| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 53: Reglamento horario| Comidas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 53: Reglamento horario| Visitas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 53: Reglamento horario| Laborterapias y recreativas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 53: Reglamento horario| Diagrama frecuencia cambio ropas, cama, baño y comedor| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 33: Cocina| Iluminación| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 33: Cocina| Despensa| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 33: Cocina| Lavatorio| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 33: Cocina| Mesada| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 33: Cocina| Higiene| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 33: Cocina| Provisión agua caliente/fria| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 33: Cocina| Provisión víveres secos y semiperecederos| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 39: Residuos Patogenos| Acorde a Reglamentación| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 43: Acondicionamiento ambiental| Calefacción| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 43: Acondicionamiento ambiental| Circulación de aire| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 46: Instalación gas| Habilitado| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 54: planificación de actividades| Esparcimiento| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 54: planificación de actividades| Comidas| SI/NO
+|  FALSE  |  TRUE  |  TIPOLOGÍA| | Articulo 54: planificación de actividades| Laborterapia| SI/NO
+|  TRUE  |  FALSE  |  GUARDIA| ARQUITECTURA| | N° DE CAMAS| SI/NO
+|  TRUE  |  FALSE  |  GUARDIA| ARQUITECTURA| | Coincide con edificacion| SI/NO
+|  TRUE  |  FALSE  |  GUARDIA| ARQUITECTURA| | Planos| SI/NO
+|  TRUE  |  FALSE  |  GUARDIA| RECURSOS HUMANOS| | MEDICOS| NÚMERO
+|  TRUE  |  FALSE  |  GUARDIA| RECURSOS HUMANOS| | ENFERMERAS| NÚMERO
+|  TRUE  |  FALSE  |  GUARDIA| EQUIPAMIENTO| | Cardiodesfibrilador| NÚMERO
+|  TRUE  |  FALSE  |  GUARDIA| EQUIPAMIENTO| | Electrocardiógrafo| NÚMERO
+|  TRUE  |  FALSE  |  GUARDIA| EQUIPAMIENTO| | Oxímetro de pulso/monitor multiparamétrico| NÚMERO
+|  TRUE  |  FALSE  |  GUARDIA| EQUIPAMIENTO| | Equipo para nebulizaciones| NÚMERO
+|  TRUE  |  FALSE  |  GUARDIA| EQUIPAMIENTO| | Carro de paro completo| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| ARQUITECTURA| | N° DE CAMAS| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| ARQUITECTURA| | Coincide con edificacion| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| ARQUITECTURA| | Planos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| JEFE DE SERVICIO| | Jefes de servicio| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| RECURSOS HUMANOS| | Médicos de guardia| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| RECURSOS HUMANOS| | Médicos asistenciales| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| RECURSOS HUMANOS| | Enfermeros| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| EQUIPAMIENTO| | Carro de urgencia| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| EQUIPAMIENTO| | Electrocardiógrafo| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIO DE CUIDADOS INTENSIVOS| EQUIPAMIENTO| | Equipo para intubación| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| SERVICIOS| | N° DE CAMAS| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| SERVICIOS| | Coincide con edificacion| SI/NO
+|  TRUE  |  FALSE  |  QUIROFANO| SERVICIOS| | Planos| SI/NO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Electrobisturí| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Máquina de anestesia| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Caja de traqueotomía| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Monitor multiparamétrico| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Cama quirúrgica regulable| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Sistema de aspiración automática| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Laringoscopio y tubos endotraqueales| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Mesa de Cirugía| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Cardiodesfibrilador| NÚMERO
+|  TRUE  |  FALSE  |  QUIROFANO| EQUIPAMIENTO| | Lámpara ciálitica| NÚMERO
+|  TRUE  |  FALSE  |  SALA DE PARTO| SERVICIOS| | N° DE CAMAS| SI/NO
+|  TRUE  |  FALSE  |  SALA DE PARTO| SERVICIOS| | Coincide con edificacion| SI/NO
+|  TRUE  |  FALSE  |  SALA DE PARTO| SERVICIOS| | Planos| SI/NO
+|  TRUE  |  FALSE  |  SALA DE PARTO| EQUIPAMIENTO| | Cama de parto| SI/NO
+|  TRUE  |  FALSE  |  SALA DE PARTO| EQUIPAMIENTO| | Mesa de instrumental obstétrico| SI/NO
+|  TRUE  |  FALSE  |  SALA DE PARTO| EQUIPAMIENTO| | Mesa para anestesista| SI/NO
+|  TRUE  |  FALSE  |  SALA DE PARTO| SERVICIOS| | Mesa auxiliar| SI/NO
+|  TRUE  |  FALSE  |  SALA DE PARTO| SERVICIOS| | Lámpara portátil de altura regulable| SI/NO
+|  TRUE  |  FALSE  |  SALA DE PARTO| SERVICIOS| | Balanza para recién nacido| SI/NO
+|  TRUE  |  FALSE  |  SALA DE PARTO| SERVICIOS| | Monitor fetal portátil| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| ARQUITECTURA| | N° DE CAMAS| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| ARQUITECTURA| | Coincide con edificacion| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| ARQUITECTURA| | Planos| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | Planillas de enfermería con controles diarios| Signos vitales| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | Planillas de enfermería con controles diarios| Balance diario| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | Planillas de enfermería con controles diarios| Volúmenes de ingresos y egresos| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | Planillas de enfermería con controles diarios| Medicación| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Unidad ubicada en zona de circulación semirrestringida| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Sala de internación c/pileta lavamanos| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Office de enfermería| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Monitores| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Local de ropa y material usado| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Area lavachatas| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Depósito de camillas and aparatología| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Sala de médicos| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Posee otras Unidades de UCI / UCO| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Comparte algún local UCI / UCO| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Group electrógeno| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Sistema de Iluminación de Emergencia| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Acceso directo y exclusivo| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Fácil comunicación c/cirugía| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Camas ortopédicas o articuladas| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Double comando| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Rodantes| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Ventanas al exterior| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Visión panorámica directa a todas las camas| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Local de Instrumental y material estéril| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Local cerrado c/1 cama para aislamiento| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Evoluciones diarias en Historia Clínica| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Libro de Registro de Enfermedades Transmisibles| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Libro de Registro de psicofármacos| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Vestuario para visitas c/pileta lavamanos| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Habitación, c/baño propio para médico de Guardia| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Doble circuito de energía eléctrica| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Diez tomas de electricidad por cama| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Hermeticidad| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Privacidad| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Superficie total sala internación| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Iluminación natural| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Iluminación artificial central| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Iluminación Individual| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| | De los Edificios/Locales de la unidad| Acceso desde 4 posiciones| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Marcapaso transitorio (si no tiene UCO)| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Carro de urgencia| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Tensiómetro| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Nebulizador| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Sistema portatil de aspiración para drenaje| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Respirador mecánico volumétrico| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Equipo de desfibrilación y sincronizador| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Bomba de infusión| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Oxímetro de pulso portátil| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Electrocardiógrafo| SI/NO
+|  TRUE  |  FALSE  |  UNIDADES DE TERAPIA INTENSIVA| EQUIPAMIENTO| | Equipo de aspiración| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| ARQUITECTURA| | N° DE CAMAS| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| ARQUITECTURA| | Coincide con edificacion| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| ARQUITECTURA| | Planos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | Planillas de enfermería con controles diarios| Signos vitales| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | Planillas de enfermería con controles diarios| Balance diario| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | Planillas de enfermería con controles diarios| Volúmenes de ingresos y egresos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | Planillas de enfermería con controles diarios| Medicación| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Unidad ubicada en zona de circulación semirrestringida| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Sala de internación c/pileta lavamanos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Office de enfermería| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Monitores| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Local de ropa y material usado| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Area lavachatas| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Depósito de camillas and aparatología| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Sala de médicos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Group electrógeno| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Acceso directo y exclusivo| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Fácil comunicación c/cirugía| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Privacidad| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Camas ortopédicas o articuladas| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Double comando| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Rodantes| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Plano apoyo rígido| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Acceso desde 4 posiciones| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Visión panorámica directa a todas las camas| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Local de Instrumental y material estéril| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Local cerrado c/1 cama para aislamiento| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Evoluciones diarias en Historia Clínica| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Vestuario para visitas c/pileta lavamanos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Habitación, c/baño propio para médico de Guardia| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Comparte algún local UCI / UCO| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Posee otras Unidades de UCI / UCO| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Diez tomas de electricidad por cama| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| System de Iluminación de Emergencia| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Hermeticidad| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Superficie total sala internación| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Iluminación natural| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Iluminación artificial central| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Iluminación Individual| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| | De los Edificios/Locales de la unidad| Ventanas al exterior De paño fijo:| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Equipo de aspiración| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Respirador mecánico volumétrico| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Equipo de desfibrilación y sincronizador| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Bomba de infusión| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Carro de urgencias (uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Laringoscopios| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Máscara| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Resucitador tipo AMBU| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Tensiometro| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Nebulizador| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Elementos para intubación endotraqueal| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | System portátil de aspiración o/drenaje| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Equipos para cateterización nasogástrica| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Equipos para puncion raquidea| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Equipo para punción abdominal| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Carro de paro| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Oxímetro de pulso portátil| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Electrocardiógrafo| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Marcapaso transitorio con 2 catéteres| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Equipo portatil de Rx.100 Ma/100 Kv| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Elementos para traqueotomía| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Bolsa| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Adaptador| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Carro de curación| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Instrumental de examen| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Iluminación individual| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | System de aspiración torácica| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Equipos para cateterización vesical| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Equipos para cateterización venosa| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Equipo para punción torácica| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD CORONARIA| EQUIPAMIENTO| | Botiquín con/medicamentos para urgencias de 24 hs| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| ARQUITECTURA| | N° DE CAMAS| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| ARQUITECTURA| | Coincide con edificacion| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| ARQUITECTURA| | Planos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| JEFE DE SERVICIO| | Jefe de servicio| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| RECURSOS HUMANOS| | Médico asistente| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| RECURSOS HUMANOS| | Kinesiólogo| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| RECURSOS HUMANOS| | Médico de guardia activa| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| RECURSOS HUMANOS| | Enfermero| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| EQUIPAMIENTO| | Nebulizador| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| EQUIPAMIENTO| | Cámara cefálica de Gregory| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| EQUIPAMIENTO| | Equipo de desfibrilación y sincronizador| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| EQUIPAMIENTO| | Oxímetro de pulso portátil| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| EQUIPAMIENTO| | Equipo de aspiración| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| EQUIPAMIENTO| | Respirador mecánico volumétrico| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| EQUIPAMIENTO| | Bomba de infusión continua| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA PEDIATRICA| EQUIPAMIENTO| | Electrocardiógrafo| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| ARQUITECTURA| | N° DE CAMAS| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| ARQUITECTURA| | Coincide con edificacion| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| ARQUITECTURA| | Planos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Planillas de enfermería con controles diarios| Signos vitales| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Planillas de enfermería con controles diarios| Balance diario| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Planillas de enfermería con controles diarios| Volúmenes de ingresos y egresos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Planillas de enfermería con controles diarios| Medicación| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Unidad ubicada en zona de circulación semirrestringida| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Sala de internación c/pileta lavamanos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Office de enfermería con monitores| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Area de deposito ropa limpia| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Local de ropa y material usado| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Pileta para material| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Depósito para incubadora/cuna/aparatos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Sala de médicos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Camillas accionadas: a codo:| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Camilla a pie| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| A electricidad| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Local de formulas lacteas| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Extrator de aire con filtro| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Ventilacion| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Acceso directo y exclusivo| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Privacidad| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Incubadoras| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Fuente de oxigeno| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Aire comprimido| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Aspiracion| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Unidades de aisalmiento| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| De paño fijo| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Iluminacion individual difusas| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Visión panorámica directa a todas las camas| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Local de Instrumental y material estéril| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Local cerrado c/2 unidades para aislamiento| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Lavabo propio| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Vestuario para visitas c/pileta lavamanos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Dispensador de jabon liquido| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Sanitorios para el personal| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Habitación, c/baño propio para médico de Guardia| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Con dispensador liquido| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Toalla de papel| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Armario con llave| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Ocho tomas de electricidad por cama con tablero independiente| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| System calefaccion refrigeracion| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Fácil comunicación c/cirugía| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Superficie total sala internación| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Consola de monitoreo| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Repisa individual| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Cunas| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Fuente de oxigeno| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Consola para monitoreo| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Ventanas al exterior| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Iluminacion natural| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | De los Edificios/Locales de la unidad| Iluminacion artificial central| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Incubadoras a servocontrol de circuito cerrado 6(seis)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Incubadoras a servocontrol de reserva 2(dos)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Incubadora de Transporte dos (2)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Incubadoras servocunas dos (2)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Cunas 2(dos)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Monitores transcutáneos de oxígeno 1(uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Respirador de uso Neonatal con respiración sincronizada del paciente (SIMV/INV) dos (2)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Mezclador de oxígeno - aire comprimido (Blender) 8(ocho)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Halocefálico con tapa rebatible 3(tres) pequeños y 3(tres) medianos| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Equipo para reanimación completo 2(DOS)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Aspirador regulable con manómetro 1 (uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Sincronizador desfibrilador con paletas neonatal 1(uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Balanza electrónica 1(una)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Electrocardiógrafo 1(uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Pediómetro 1(uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Reloj de pared con segundero 1(uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Ecógrafo portátil para ecografías ECO Doppler color 1(uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Cocina de dos (2) hornallas PARA FORMULA LACTEA| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Heladera PARA FORMULA LACTEA| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Oxígeno, aire comprimido y aspiración central una toma por unidad| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Tubos de oxígeno portátil 2(dos)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Monitores cardiorrespiratorios 4(cuatro)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Tensiómetro Neonatal (efecto Doppler) 2(dos)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Bomba de perfusión de jeringa 4(cuatro)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Bomba de perfusión continua 4(cuatro)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Spot de luminoterapia 4(cuatro)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Oxímetro de pulso 4(cuatro)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| canalización de arteria umbilical/curación/punción lumbar/presión venosa central/drenaje torácico/exanguineotransfusión| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Calentador humidificador tipo Fishel Paykel 1 (uno) para cada halocefálico 6 (seis)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Balanzas neonatales/incubadoras 6 (seis)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Mesa central 1(una)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Balanza para pañales 1(una)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Electroencefalógrafo portátil 1(uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Reloj de pared con segundero 1(uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Lámpara portátil 1(una)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Aparato de Rx portátil con 2 delantales plomados 1(uno)| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Horno de microondas PARA FORMULA LACTEA| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| | Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:| Mesada con pileta PARA FORMULA LACTEA| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipo de aspiración 1 cada 4 camas| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Tubos de oxígeno| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipo de desfibrilación| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Monitores| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Adaptador| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Carro de curación| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Tensiómetro| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipo de Exanguiuneotransfusion| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Dispositivo PPCVA nasal| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | system de aspiración torácica| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipos para cateterización vesical| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipos para cateterización venosa| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipo para punción torácica| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipo de desfibrilación| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Oximetro de pulso portátil| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Botiquín c/medicamentos para urgencias de 24 hs.| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Oxígeno y aspiración central c/boca individual p c/cama| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Respirador volumétrico c/presión positiva y negativa| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Canal individual por cama| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Comando central| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Resucitador tipo AMBU| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Instrumental de examen| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Nebulizador| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipo de luminoterapia| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Elementos para intubación endotraqueal| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | system portátil de aspiración p/ drenaje| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipos para cateterización nasogástrica| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipo para punción raquídea| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Equipo para punción abdominal| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Bomba de infusión continua| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Incubadoras portatiles c/control de t° y alarma| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| EQUIPAMIENTO| | Caja de paro| NÚMERO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| Cronograma de trabajo| | Lab.bioquímico| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| Cronograma de trabajo| | Hemoterapia| SI/NO
+|  TRUE  |  FALSE  |  UNIDAD DE TERAPIA INTENSIVA NEONATAL| Cronograma de trabajo| | Radiología| SI/NO
+|  TRUE  |  FALSE  |  HEMODINAMIA| ARQUITECTURA| | N° DE CAMAS| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| ARQUITECTURA| | Coincide con edificacion| SI/NO
+|  TRUE  |  FALSE  |  HEMODINAMIA| ARQUITECTURA| | Planos| SI/NO
+|  TRUE  |  FALSE  |  HEMODINAMIA| JEFE DE SERVICIO| | Jefe de servicio| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| RECURSOS HUMANOS| | Médico| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| RECURSOS HUMANOS| | Enfermero profesional| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| RECURSOS HUMANOS| | Médico radiólogo| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| RECURSOS HUMANOS| | Médico anestesista| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Arco en C o paralelogramo deformable| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Mesa de Cateterismo| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Intensificador de imágenes| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Tubo de rayos X| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Generadores pulsados por tetrodos| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Electrocardiógrafo| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Oxímetro de pulso| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Cardiodesfribilador| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Inyectora de contraste| NÚMERO
+|  TRUE  |  FALSE  |  HEMODINAMIA| EQUIPAMIENTO| | Monitor digital| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| ARQUITECTURA| | N° DE CAMAS| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| ARQUITECTURA| | Planos| SI/NO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| JEFE DE SERVICIO| | Jefe de Servicio| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| RECURSOS HUMANOS| | Médico oncólogico| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| RECURSOS HUMANOS| | Trabajador social| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| RECURSOS HUMANOS| | Enfermeros| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| RECURSOS HUMANOS| | Kinesiólogo| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| RECURSOS HUMANOS| | Psicólogo| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| RECURSOS HUMANOS| | Nutricionista| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| EQUIPAMIENTO| | Sillón de Oncología| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| EQUIPAMIENTO| | Colchón antiescaras de corresponder| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| EQUIPAMIENTO| | Bomba de infusión| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| EQUIPAMIENTO| | Campana de flujo laminar| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| EQUIPAMIENTO| | Balanza de uso clínico con cartabón| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| EQUIPAMIENTO| | Equipo de monitoreo presión arterial| NÚMERO
+|  TRUE  |  FALSE  |  HOSPITAL DE DIA| EQUIPAMIENTO| | Oxímetro de pulso| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Unidad de Dialisis Independiente| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Registro de Psicofarmacos Actualizado| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Registro de Enfermedades Trasmisibles| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Reglamento Interno| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Plan de Evacuacion| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Habilitacion de Bomberos| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Normas bioseguridad expuestas| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Normas de Procedimientos para Medicos| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Normas de Procedimientos para enfermeras| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De la Direccion and Funcionamiento| Nro de Inscripcion de pacientes al INCUCAI y/o ECODAI:| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De the Direccion and Funcionamiento| Carpetas de Inscripcion de pacientes al INCUCAI y/o ECODAI| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De the Direccion and Funcionamiento| Convenio de Internacion| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | De the Direccion and Funcionamiento| Registro Historia clinica completa| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Analisis de agua| Fisico, Quimico| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Analisis de agua| Bacteriologico| NÚMERO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Analisis de agua| Fecha ultimo fisico-quimico| FECHA
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Analisis de agua| Fecha ultimo bacteriologico| FECHA
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia del personal para| HIV| SI/NO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia del personal para| Hepatitis B| SI/NO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia del personal para| Hepatitis C| SI/NO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia del personal para| Observaciones:| SI/NO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia del personal para| Planillas de Personal Enfermeria| SI/NO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia de pacientes| HIV| SI/NO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia de pacientes| Hepatitis B| SI/NO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia de pacientes| Hepatitis C| SI/NO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia de pacientes| Libro de Reusos| SI/NO
+|  TRUE  |  FALSE  |  HEMODIALISIS| | Posee Serologia de pacientes| Cant. maxima reusos| SI/NO
+"""
+
+def clean_val(v):
+    return v.strip()
+
+lines = [l for l in table.split('\n') if l.strip() and '|' in l]
+rows = []
+for l in lines[1:]: # Skip header
+    if ':---:' in l: continue
+    parts = [clean_val(p) for p in l.split('|')][1:-1]
+    if len(parts) >= 7:
+        rows.append(parts)
+
+def get_type(t):
+    t = t.upper()
+    if 'FECHA' in t: return 'date'
+    if 'NÚMERO' in t: return 'number'
+    if 'SI/NO' in t or 'TRUE/FALSE' in t: return 'boolean'
+    if '/' in t: return 'select'
+    return 'text'
+
+def get_options(t):
+    if '/' in t: return t.replace('/', ', ')
+    return ''
+
+def build_config(tipologia_id, tipologia_name, filter_idx):
+    servicios = {}
+    
+    for r in rows:
+        if r[filter_idx] != 'TRUE': continue
+        
+        cat = r[2]
+        subcat = r[3]
+        subtit = r[4]
+        label = r[5]
+        dtype = r[6]
+        
+        if cat == 'TIPOLOGÍA' or cat == '':
+            srv_id = 'srv-gen'
+            srv_name = 'DATOS GENERALES'
+        else:
+            srv_id = 'srv-' + cat.lower().replace(' ', '-')
+            srv_name = cat
+
+        if srv_id not in servicios:
+            servicios[srv_id] = {
+                'id': srv_id,
+                'name': srv_name,
+                'fields': [] if srv_id != 'srv-gen' else None,
+                'sections': [] if srv_id == 'srv-gen' else None
+            }
+        
+        # Consistent ID generation
+        import hashlib
+        field_id = 'f-' + hashlib.md5((label + (subtit or '') + srv_id).encode()).hexdigest()[:8]
+        field = {
+            'id': field_id,
+            'label': label,
+            'type': get_type(dtype),
+            'options': get_options(dtype)
+        }
+        
+        if srv_id == 'srv-gen':
+            sec_name = subtit if subtit else 'General'
+            found_sec = None
+            for s in servicios[srv_id]['sections']:
+                if s['name'] == sec_name:
+                    found_sec = s
+                    break
+            if not found_sec:
+                sec_id = 'sec-' + hashlib.md5(sec_name.encode()).hexdigest()[:8]
+                found_sec = {'id': sec_id, 'name': sec_name, 'fields': []}
+                servicios[srv_id]['sections'].append(found_sec)
+            found_sec['fields'].append(field)
+        else:
+            servicios[srv_id]['fields'].append(field)
+            
+    return {
+        'id': tipologia_id,
+        'tipologia': tipologia_name,
+        'servicios': list(servicios.values())
+    }
+
+clinicas_config = build_config('clinicas', 'CLÍNICAS, SANATORIOS Y HOSPITALES', 0)
+geriatricos_config = build_config('geriatricos', 'GERIÁTRICOS', 1)
+
+import os
+db_path = r'c:\Users\azult\OneDrive\Escritorio\Repositorios\clicsalud-prototipos\db.json'
+
+with open(db_path, 'r', encoding='utf-8') as f:
+    db = json.load(f)
+
+db['configuraciones_maestras'] = [clinicas_config, geriatricos_config]
+
+with open(db_path, 'w', encoding='utf-8') as f:
+    json.dump(db, f, indent=2, ensure_ascii=False)
+
+print("Migration completed successfully.")

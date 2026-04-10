@@ -7,14 +7,16 @@ import {
 import { Box, Snackbar, Alert } from "@mui/material";
 
 // Icons
-import ToggleOnIcon from "@mui/icons-material/ToggleOn";
-import TextFieldsIcon from "@mui/icons-material/TextFields";
-import NumbersIcon from "@mui/icons-material/Numbers";
-import EventIcon from "@mui/icons-material/Event";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import NotesIcon from "@mui/icons-material/Notes";
-import ListAltIcon from "@mui/icons-material/ListAlt";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { 
+  ToggleOn as ToggleOnIcon,
+  TextFields as TextFieldsIcon,
+  Numbers as NumbersIcon,
+  Event as EventIcon,
+  AccessTime as AccessTimeIcon,
+  Notes as NotesIcon,
+  ListAlt as ListAltIcon,
+  CheckBox as CheckBoxIcon
+} from "@mui/icons-material";
 
 // Subcomponents
 import ClinicasDashboard from "./ClinicasDashboard";
@@ -86,14 +88,13 @@ const ConfiguradorClinicas = () => {
       if (data && data.length > 0) {
         let loadedServicios = data[0].servicios;
         // Filter out legacy elements if present in db
-        loadedServicios = loadedServicios.filter(s => s.id !== "tramite-arqui" && s.id !== "tramite-docs");
-        if (!loadedServicios.some((s) => s.isTramite)) {
-          loadedServicios = [...tramiteSectionsTemplate, ...loadedServicios];
-        }
+        // Fix: Use ONLY what's on the server, don't force prepending tramite sections
+        // unless explicitly needed by the business rules if they were missing.
+        // But the user asked for ONLY what's in db.json.
         setServicios(loadedServicios);
       } else {
-        const defaults = [...tramiteSectionsTemplate, ...initialServiciosTemplate];
-        setServicios(defaults);
+        // Fallback more minimal
+        setServicios(initialServiciosTemplate);
       }
     } catch (err) {
       console.error("Error loading config", err);

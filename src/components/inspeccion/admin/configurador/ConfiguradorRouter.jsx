@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Layout from '../../ui/Layout';
+import Layout from '../../../ui/Layout';
 import SelectoresMain from './SelectoresMain';
 import ConfiguradorClinicas from './clinicas/ConfiguradorClinicas';
 

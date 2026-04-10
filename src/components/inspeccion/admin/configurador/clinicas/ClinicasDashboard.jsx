@@ -21,17 +21,19 @@ import {
   Fab,
   Stack,
 } from "@mui/material";
-import BusinessIcon from "@mui/icons-material/Business";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural";
-import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AddIcon from "@mui/icons-material/Add";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import SaveIcon from "@mui/icons-material/Save";
+import {
+  Business as BusinessIcon,
+  Apartment as ApartmentIcon,
+  FaceRetouchingNatural as FaceRetouchingNaturalIcon,
+  MedicalServices as MedicalServicesIcon,
+  DeleteOutline as DeleteOutlineIcon,
+  Add as AddIcon,
+  AddCircleOutline as AddCircleOutlineIcon,
+  DragIndicator as DragIndicatorIcon,
+  ExpandMore as ExpandMoreIcon,
+  ArrowBack as ArrowBackIcon,
+  Save as SaveIcon
+} from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
 import { ConfigContext, slugify, fieldTypes } from "./ConfiguradorClinicas";
@@ -96,9 +98,8 @@ const ClinicasDashboard = () => {
   ) => {
     const newServicios = [...servicios];
     if (sectionIdx !== null) {
-      newServicios[serviceIdx].sections[sectionIdx].fields[fieldIdx][key] =
-        value;
-    } else {
+      newServicios[serviceIdx].sections[sectionIdx].fields[fieldIdx][key] = value;
+    } else if (newServicios[serviceIdx].fields) {
       newServicios[serviceIdx].fields[fieldIdx][key] = value;
     }
     setServicios(newServicios);
@@ -113,8 +114,10 @@ const ClinicasDashboard = () => {
     };
     const newServicios = [...servicios];
     if (sectionIdx !== null) {
+      if (!newServicios[serviceIdx].sections[sectionIdx].fields) newServicios[serviceIdx].sections[sectionIdx].fields = [];
       newServicios[serviceIdx].sections[sectionIdx].fields.push(newField);
     } else {
+      if (!newServicios[serviceIdx].fields) newServicios[serviceIdx].fields = [];
       newServicios[serviceIdx].fields.push(newField);
     }
     setServicios(newServicios);
@@ -314,9 +317,9 @@ const ClinicasDashboard = () => {
                   {srv.name}
                 </Typography>
                 <Chip
-                  label={`${srv.fields.length} campos`}
+                  label={`${(srv.fields?.length || 0) + (srv.sections?.reduce((acc, s) => acc + (s.fields?.length || 0), 0) || 0)} campos`}
                   size="small"
-                  sx={{ backgroundColor: srv.fields.length > 0 ? "#dcfce7" : "#f1f5f9", color: srv.fields.length > 0 ? "#166534" : "#64748b", fontWeight: 700, fontSize: "0.75rem" }}
+                  sx={{ backgroundColor: ((srv.fields?.length || 0) + (srv.sections?.reduce((acc, s) => acc + (s.fields?.length || 0), 0) || 0)) > 0 ? "#dcfce7" : "#f1f5f9", color: ((srv.fields?.length || 0) + (srv.sections?.reduce((acc, s) => acc + (s.fields?.length || 0), 0) || 0)) > 0 ? "#166534" : "#64748b", fontWeight: 700, fontSize: "0.75rem" }}
                 />
               </Paper>
             ))}
@@ -626,7 +629,7 @@ const ClinicasDashboard = () => {
                   </Typography>
                 </Box>
                 <Chip
-                  label={`${srv.fields.length} parámetros`}
+                  label={`${(srv.fields?.length || 0) + (srv.sections?.reduce((acc, s) => acc + (s.fields?.length || 0), 0) || 0)} parámetros`}
                   sx={{ fontWeight: 600, fontFamily: "Roboto, sans-serif" }}
                 />
                 {srv.isDeletable && (

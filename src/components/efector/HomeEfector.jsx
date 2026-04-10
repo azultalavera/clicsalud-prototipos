@@ -50,7 +50,7 @@ import Equipamientos from "./steps/Equipamientos"; // Asegúrate que el archivo 
 import RRHHStep from "./steps/RRHHStep";
 import JefeServicioStep from "./steps/JefeServicioStep";
 import ModalHabilitacion from "../ui/ModalHabilitacion";
-import ActaInspeccion from "../inspeccion/ActaInspeccion";
+import PantallaInspeccion from "../inspeccion/inspector/PantallaInspeccion";
 
 // --- ESTILOS STEPPER ---
 const QontoConnector = styled(StepConnector)(() => ({
@@ -288,11 +288,7 @@ const HomeEfector = () => {
               <Route
                 path="actainspeccion"
                 element={
-                  <ActaInspeccion
-                    selectedServices={selectedServices}
-                    infraSelection={infraSelection}
-                    equiposCargados={equiposCargados}
-                  />
+                  <PantallaInspeccion />
                 }
               />
             </Routes>
