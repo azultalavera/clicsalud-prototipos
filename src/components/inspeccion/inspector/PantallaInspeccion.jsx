@@ -37,7 +37,12 @@ import {
 
 const DEFAULT_TIPOLOGIA = "CLÍNICAS, SANATORIOS Y HOSPITALES";
 
-const PantallaInspeccion = () => {
+const PantallaInspeccion = ({
+  serviciosEfector: propsServicios,
+  infraEfector: propsInfra,
+  rrhhEfector: propsRrhh,
+  equiposEfector: propsEquipos,
+}) => {
   const [loading, setLoading] = useState(true);
   const [config, setConfig] = useState(null);
   const [inspectorData, setInspectorData] = useState({});
@@ -46,16 +51,44 @@ const PantallaInspeccion = () => {
   const [selectedCategory, setSelectedCategory] = useState("ARQUITECTURA");
   const [selectedSubService, setSelectedSubService] = useState("UTI");
   const [serviciosEfector, setServiciosEfector] = useState([]);
+  const [infraEfector, setInfraEfector] = useState({});
+  const [rrhhEfector, setRrhhEfector] = useState([]);
+  const [equiposEfector, setEquiposEfector] = useState([]);
 
   useEffect(() => {
-    if (config?.servicios && serviciosEfector.length === 0) {
-      setServiciosEfector([
-        "GUARDIA",
-        "UNIDADES DE TERAPIA INTENSIVA",
-        "QUIROFANO",
-      ]);
+    const loadFromCache = () => {
+      const cachedSrv = localStorage.getItem("efector_servicios");
+      const cachedInfra = localStorage.getItem("efector_infra");
+      const cachedRrhh = localStorage.getItem("efector_rrhh");
+      const cachedEquipos = localStorage.getItem("efector_equipos");
+      if (cachedSrv) setServiciosEfector(JSON.parse(cachedSrv));
+      if (cachedInfra) setInfraEfector(JSON.parse(cachedInfra));
+      if (cachedRrhh) setRrhhEfector(JSON.parse(cachedRrhh));
+      if (cachedEquipos) setEquiposEfector(JSON.parse(cachedEquipos));
+    };
+
+    // 1. Prioridad: Props
+    if (propsServicios) {
+      setServiciosEfector(propsServicios);
+      setInfraEfector(propsInfra || {});
+      setRrhhEfector(propsRrhh || []);
+      setEquiposEfector(propsEquipos || []);
+    } else {
+      // 2. Fallback: LocalStorage
+      loadFromCache();
     }
-  }, [config]);
+
+    // 3. Escuchar cambios en otras pestañas (Sincronización automática)
+    const handleStorageChange = (e) => {
+      if (e.key?.startsWith("efector_")) {
+        loadFromCache();
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [propsServicios, propsInfra, propsRrhh, propsEquipos]);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,7 +121,6 @@ const PantallaInspeccion = () => {
     HEMODIALISIS: ["HEMODIALISIS", "DIALISIS"],
   };
 
-  // Filtrar los chips de subservicios que realmente están cargados por el efector
   const activeSubServicios = SUBSERVICIOS.filter((sub) => {
     return serviciosEfector.some((srvName) => {
       const isMatch = TARGET_MAPPINGS[sub]?.some((k) =>
@@ -102,7 +134,6 @@ const PantallaInspeccion = () => {
     });
   });
 
-  // Si el sub-servicio actual ya no está activo, seleccionar el primero disponible
   useEffect(() => {
     if (
       activeSubServicios.length > 0 &&
@@ -135,7 +166,6 @@ const PantallaInspeccion = () => {
     );
   }
 
-  // AGRUPACIÓN: DATOS GENERALES vs OTROS SERVICIOS
   const datosGeneralesSrv = config?.servicios?.find((s) =>
     s.name?.toUpperCase().includes("DATOS GENERALES"),
   );
@@ -177,7 +207,6 @@ const PantallaInspeccion = () => {
     },
   ];
 
-  // Lógica de porcentaje de Completitud
   const getFlatFields = (sectionsObj) => {
     return sectionsObj?.flatMap((sec) => sec.fields || []) || [];
   };
@@ -246,7 +275,7 @@ const PantallaInspeccion = () => {
         display: "flex",
         flexDirection: "column",
         minHeight: "calc(100vh - 64px)",
-        width: "95%",
+        width: "89%",
         bgcolor: "#ffffff",
         overflowX: "hidden",
         mx: "auto",
@@ -255,47 +284,6 @@ const PantallaInspeccion = () => {
         pb: 10,
       }}
     >
-      {/* SIMULADOR DE EFECTOR (Para Pruebas) */}
-      <Box
-        sx={{
-          mb: 4,
-          p: 2,
-          bgcolor: "#f0fdf4",
-          borderRadius: 4,
-          border: "2px solid #bbf7d0",
-        }}
-      >
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: 800,
-            color: "#166534",
-            mb: 1,
-            textTransform: "uppercase",
-          }}
-        >
-          🧪 SIMULADOR: Servicios cargados por el Efector
-        </Typography>
-        <Autocomplete
-          multiple
-          options={allServiceNames.filter(
-            (n) => !n.includes("DATOS GENERALES"),
-          )}
-          value={serviciosEfector}
-          onChange={(e, newVal) => setServiciosEfector(newVal)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              size="small"
-              placeholder="Agregar o quitar servicios..."
-              sx={{ bgcolor: "white", borderRadius: 2 }}
-            />
-          )}
-        />
-      </Box>
-
-      {/* DATOS GENERALES Acordeon */}
       {datosGeneralesSrv && (
         <Accordion
           expanded={expandedDatosGenerales}
@@ -374,7 +362,6 @@ const PantallaInspeccion = () => {
         </Accordion>
       )}
 
-      {/* NAVEGACIÓN PRINCIPAL: ICONOS TIPO STEPPER */}
       <Box
         sx={{
           display: "flex",
@@ -386,7 +373,6 @@ const PantallaInspeccion = () => {
           position: "relative",
         }}
       >
-        {/* Linea conectora de fondo */}
         <Box
           sx={{
             position: "absolute",
@@ -451,7 +437,6 @@ const PantallaInspeccion = () => {
         })}
       </Box>
 
-      {/* APARTADOS SECUNDARIOS PARA "SERVICIOS" */}
       {selectedCategory === "SERVICIOS" && (
         <Box
           sx={{
@@ -508,10 +493,8 @@ const PantallaInspeccion = () => {
         </Box>
       )}
 
-      {/* ESPACIADOR SI NO ESTAMOS EN SERVICIOS */}
       {selectedCategory !== "SERVICIOS" && <Box sx={{ mb: 4 }} />}
 
-      {/* CONTENIDO REAGRUPADO */}
       <Box
         sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1 }}
       >
@@ -522,7 +505,6 @@ const PantallaInspeccion = () => {
             const isTargetService = TARGET_MAPPINGS[selectedSubService]?.some(
               (k) => srv.name?.toUpperCase().includes(k),
             );
-            // Evitar que "TERAPIA INTENSIVA" engulla pediátricos si no estamos en UTIP
             const isExcluded =
               selectedSubService === "UTI" &&
               (srv.name?.toUpperCase().includes("PEDIATRICA") ||
@@ -582,7 +564,6 @@ const PantallaInspeccion = () => {
                     {srv.name}
                   </Typography>
                 </Box>
-                {/* BARRA DE PROGRESO DE ESTE BLOQUE */}
                 {renderProgressBar(blockStats)}
               </Box>
 
@@ -606,9 +587,38 @@ const PantallaInspeccion = () => {
                   selectedCategory === "RECURSOS HUMANOS" ||
                   selectedCategory === "SALAS Y CAMAS" ? (
                     <VerificationTable
-                      fields={section.fields}
+                      fields={section.fields.filter((f) => {
+                        // FILTRO POR SALAS Y CAMAS
+                        if (selectedCategory === "SALAS Y CAMAS") {
+                          const name = f.label || f.name;
+                          return infraEfector[name] > 0;
+                        }
+                        // FILTRO POR RECURSOS HUMANOS
+                        if (selectedCategory === "RECURSOS HUMANOS") {
+                          return rrhhEfector.some(
+                            (r) =>
+                              (r.especialidad === f.especialidad ||
+                                r.tipoPlantel === f.tipoPlantel) &&
+                              r.origen === srv.name &&
+                              r.cantidadCargada > 0,
+                          );
+                        }
+                        // FILTRO POR EQUIPAMIENTO
+                        if (selectedCategory === "EQUIPAMIENTO") {
+                          return equiposEfector.some(
+                            (e) =>
+                              e.equipamiento === f.equipamiento &&
+                              e.origen === srv.name,
+                          );
+                        }
+                        return true;
+                      })}
                       inspectorData={inspectorData}
                       onChange={handleFieldChange}
+                      infraEfector={infraEfector}
+                      rrhhEfector={rrhhEfector}
+                      equiposEfector={equiposEfector}
+                      currentSrvName={srv.name}
                     />
                   ) : (
                     <Box
@@ -636,7 +646,6 @@ const PantallaInspeccion = () => {
         })}
       </Box>
 
-      {/* BOTÓN FINALIZAR MANTENIDO AL FONDO */}
       <Stack direction="row" spacing={3} sx={{ mt: 8 }}>
         <Button
           fullWidth
@@ -658,7 +667,6 @@ const PantallaInspeccion = () => {
   );
 };
 
-/* COMPONENTE DE CAMPO (LISTA VERTICAL) */
 const FieldItem = ({ field, value, onChange }) => {
   const renderInput = () => {
     switch (field.type) {
@@ -841,8 +849,15 @@ const FieldItem = ({ field, value, onChange }) => {
   );
 };
 
-/* COMPONENTE DE TABLA PARA EQUIPAMIENTO, RRHH, Y SALAS Y CAMAS */
-const VerificationTable = ({ fields, inspectorData, onChange }) => {
+const VerificationTable = ({
+  fields,
+  inspectorData,
+  onChange,
+  infraEfector,
+  rrhhEfector,
+  equiposEfector,
+  currentSrvName,
+}) => {
   return (
     <TableContainer
       component={Paper}
@@ -889,9 +904,36 @@ const VerificationTable = ({ fields, inspectorData, onChange }) => {
             const valorObj = currentVal.valor || "";
             const obsText = currentVal.obs || "";
 
-            // Intenta extraer el valor declarado desde varias fuentes
-            const valorDeclarado =
+            let valorDeclarado =
               field.cantidadMinima ?? field.valorDeclarado ?? 1;
+
+            // 1. INFRAESTRUCTURA (Camas/Salas)
+            const name = field.label || field.name;
+            if (infraEfector && infraEfector[name] !== undefined) {
+              valorDeclarado = infraEfector[name];
+            }
+
+            // 2. RECURSOS HUMANOS
+            if (rrhhEfector && rrhhEfector.length > 0) {
+              const rrhhMatch = rrhhEfector.find(
+                (r) =>
+                  (r.especialidad === field.especialidad ||
+                    r.tipoPlantel === field.tipoPlantel) &&
+                  r.origen === currentSrvName,
+              );
+              if (rrhhMatch) valorDeclarado = rrhhMatch.cantidadCargada;
+            }
+
+            // 3. EQUIPAMIENTO
+            if (equiposEfector && equiposEfector.length > 0) {
+              const equipoMatch = equiposEfector.filter(
+                (e) =>
+                  e.equipamiento === field.equipamiento &&
+                  e.origen === currentSrvName,
+              );
+              if (equipoMatch.length > 0) valorDeclarado = equipoMatch.length;
+            }
+
             const isNumeric = !isNaN(valorDeclarado);
             const hasError =
               isObservado &&

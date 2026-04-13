@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -105,9 +105,18 @@ const HomeEfector = () => {
   const [selectedServices, setSelectedServices] = useState({});
   const [infraSelection, setInfraSelection] = useState({});
   const [equiposCargados, setEquiposCargados] = useState([]);
+  const [rrhhCargado, setRrhhCargado] = useState([]);
   const [isServiceValid, setIsServiceValid] = useState(false);
-  const [isEquipamientoValid, setIsEquipamientoValid] = useState(false); // Solución error línea 100
+  const [isEquipamientoValid, setIsEquipamientoValid] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+
+  // EFECTOR -> INSPECTOR SYNC
+  useEffect(() => {
+    localStorage.setItem("efector_servicios", JSON.stringify(Object.keys(selectedServices)));
+    localStorage.setItem("efector_infra", JSON.stringify(infraSelection));
+    localStorage.setItem("efector_equipos", JSON.stringify(equiposCargados));
+    localStorage.setItem("efector_rrhh", JSON.stringify(rrhhCargado));
+  }, [selectedServices, infraSelection, equiposCargados, rrhhCargado]);
 
   // Moví 'steps' fuera o aseguro su referencia para el useMemo
   const steps = useMemo(
@@ -141,8 +150,12 @@ const HomeEfector = () => {
 
   // Solución error: handleQAFill no se usaba. Podés usarlo en un botón de prueba o borrarlo.
   const handleQAFill = () => {
-    setSelectedServices({ Neonatología: true, Quirófano: true });
-    setInfraSelection({ "Camas UTI": 5 });
+    setSelectedServices({ 
+      "GUARDIA": true, 
+      "UNIDADES DE TERAPIA INTENSIVA": true, 
+      "QUIROFANO": true 
+    });
+    setInfraSelection({ "Camas UTI": 5, "Salas de Parto": 2 });
     setIsServiceValid(true);
   };
 
@@ -252,6 +265,17 @@ const HomeEfector = () => {
             <Routes>
               <Route path="/" element={<Navigate to="vertramite" replace />} />
               <Route
+                path="actainspeccion"
+                element={
+                  <PantallaInspeccion 
+                    serviciosEfector={Object.keys(selectedServices)} 
+                    infraEfector={infraSelection}
+                    rrhhEfector={rrhhCargado}
+                    equiposEfector={equiposCargados}
+                  />
+                }
+              />
+              <Route
                 path="servicios"
                 element={
                   <ServicesStep
@@ -265,7 +289,11 @@ const HomeEfector = () => {
               />
               <Route
                 path="rrhh"
-                element={<RRHHStep selectedServices={selectedServices} />}
+                element={<RRHHStep 
+                  selectedServices={selectedServices} 
+                  rrhhCargado={rrhhCargado} 
+                  setRrhhCargado={setRrhhCargado}
+                />}
               />
               <Route
                 path="jefes"

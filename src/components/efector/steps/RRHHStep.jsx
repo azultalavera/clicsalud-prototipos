@@ -8,8 +8,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-const RRHHStep = ({ selectedServices, onValidationSuccess }) => {
-  const [minimos, setMinimos] = useState([]);
+const RRHHStep = ({ selectedServices, rrhhCargado, setRrhhCargado, onValidationSuccess }) => {
+  const [minimos, setMinimos] = useState(rrhhCargado || []);
   const [adicionales, setAdicionales] = useState([]);
   const [revisionEjecutada, setRevisionEjecutada] = useState(false);
 
@@ -45,12 +45,21 @@ const RRHHStep = ({ selectedServices, onValidationSuccess }) => {
       }
     };
 
-    if (selectedServices && Object.keys(selectedServices).length > 0) {
+    if (selectedServices && Object.keys(selectedServices).length > 0 && (!rrhhCargado || rrhhCargado.length === 0)) {
       fetchYFiltrarRRHH();
+    } else if (rrhhCargado && rrhhCargado.length > 0) {
+      setMinimos(rrhhCargado);
     } else {
       setMinimos([]);
     }
   }, [selectedServices]);
+
+  // Sincronizar minimos locales con el padre
+  useEffect(() => {
+    if (setRrhhCargado) {
+       setRrhhCargado(minimos);
+    }
+  }, [minimos]);
 
   // --- FUNCIONES DE MANEJO DE ESTADO ---
 
