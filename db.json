@@ -1827,7 +1827,7 @@
                 {
                   "id": "f-nomtcemx",
                   "label": "Nombre Establecimiento",
-                  "type": "text",
+                  "type": "checkbox",
                   "options": ""
                 },
                 {

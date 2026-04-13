@@ -2,29 +2,37 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
-  Paper,
-  Grid,
   CircularProgress,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Divider,
   TextField,
   MenuItem,
   Stack,
-  Chip,
   Button,
   ToggleButton,
   ToggleButtonGroup,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Chip,
+  LinearProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Checkbox,
+  Paper,
+  Autocomplete,
 } from "@mui/material";
 import {
-  Dashboard as DashboardIcon,
-  CheckCircle as CheckCircleIcon,
-  Assignment as AssignmentIcon,
-  NavigateNext as NextIcon,
-  NavigateBefore as PrevIcon,
-  FactCheck as FactCheckIcon,
+  ExpandMore as ExpandMoreIcon,
+  ErrorOutline as ErrorOutlineIcon,
+  Domain as DomainIcon,
+  People as PeopleIcon,
+  MedicalServices as MedicalServicesIcon,
+  Bed as BedIcon,
+  LocalHospital as LocalHospitalIcon,
 } from "@mui/icons-material";
 
 const DEFAULT_TIPOLOGIA = "CLÍNICAS, SANATORIOS Y HOSPITALES";
@@ -32,8 +40,22 @@ const DEFAULT_TIPOLOGIA = "CLÍNICAS, SANATORIOS Y HOSPITALES";
 const PantallaInspeccion = () => {
   const [loading, setLoading] = useState(true);
   const [config, setConfig] = useState(null);
-  const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [inspectorData, setInspectorData] = useState({});
+
+  const [expandedDatosGenerales, setExpandedDatosGenerales] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("ARQUITECTURA");
+  const [selectedSubService, setSelectedSubService] = useState("UTI");
+  const [serviciosEfector, setServiciosEfector] = useState([]);
+
+  useEffect(() => {
+    if (config?.servicios && serviciosEfector.length === 0) {
+      setServiciosEfector([
+        "GUARDIA",
+        "UNIDADES DE TERAPIA INTENSIVA",
+        "QUIROFANO",
+      ]);
+    }
+  }, [config]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,13 +63,12 @@ const PantallaInspeccion = () => {
         setLoading(true);
         const res = await fetch(
           `http://localhost:3001/configuraciones_maestras?tipologia=${encodeURIComponent(
-            DEFAULT_TIPOLOGIA
-          )}`
+            DEFAULT_TIPOLOGIA,
+          )}`,
         );
         const data = await res.json();
         if (data && data.length > 0) {
           setConfig(data[0]);
-          setSelectedServiceId(data[0].servicios[0]?.id);
         }
       } catch (err) {
         console.error("Error al cargar configuración", err);
@@ -58,6 +79,39 @@ const PantallaInspeccion = () => {
     fetchData();
   }, []);
 
+  const SUBSERVICIOS = ["UTI", "UCO", "UTIP", "UTIN", "HEMODIALISIS"];
+  const TARGET_MAPPINGS = {
+    UTI: ["UTI", "TERAPIA INTENSIVA", "CUIDADOS INTENSIVOS"],
+    UCO: ["UCO", "CORONARIA", "CORONARIO"],
+    UTIP: ["UTIP", "PEDIATRICA"],
+    UTIN: ["UTIN", "NEONATAL"],
+    HEMODIALISIS: ["HEMODIALISIS", "DIALISIS"],
+  };
+
+  // Filtrar los chips de subservicios que realmente están cargados por el efector
+  const activeSubServicios = SUBSERVICIOS.filter((sub) => {
+    return serviciosEfector.some((srvName) => {
+      const isMatch = TARGET_MAPPINGS[sub]?.some((k) =>
+        srvName.toUpperCase().includes(k),
+      );
+      const isExcluded =
+        sub === "UTI" &&
+        (srvName.toUpperCase().includes("PEDIATRICA") ||
+          srvName.toUpperCase().includes("NEONATAL"));
+      return isMatch && !isExcluded;
+    });
+  });
+
+  // Si el sub-servicio actual ya no está activo, seleccionar el primero disponible
+  useEffect(() => {
+    if (
+      activeSubServicios.length > 0 &&
+      !activeSubServicios.includes(selectedSubService)
+    ) {
+      setSelectedSubService(activeSubServicios[0]);
+    }
+  }, [activeSubServicios, selectedSubService]);
+
   const handleFieldChange = (fieldId, value) => {
     setInspectorData((prev) => ({
       ...prev,
@@ -67,27 +121,123 @@ const PantallaInspeccion = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", bgcolor: "#f8fafc" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          bgcolor: "#ffffffff",
+        }}
+      >
         <CircularProgress size={80} thickness={4} />
       </Box>
     );
   }
 
-  const currentServiceIndex = config?.servicios?.findIndex((s) => s.id === selectedServiceId) ?? 0;
-  const currentService = config?.servicios?.[currentServiceIndex];
+  // AGRUPACIÓN: DATOS GENERALES vs OTROS SERVICIOS
+  const datosGeneralesSrv = config?.servicios?.find((s) =>
+    s.name?.toUpperCase().includes("DATOS GENERALES"),
+  );
 
-  const handleNext = () => {
-    if (currentServiceIndex < (config?.servicios?.length ?? 0) - 1) {
-      setSelectedServiceId(config.servicios[currentServiceIndex + 1].id);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  const otherServices =
+    config?.servicios?.filter(
+      (s) =>
+        !s.name?.toUpperCase().includes("DATOS GENERALES") &&
+        serviciosEfector.includes(s.name),
+    ) || [];
+
+  const allServiceNames = config?.servicios?.map((s) => s.name) || [];
+
+  const PESTAÑAS = [
+    {
+      id: "ARQUITECTURA",
+      label: "ARQUITECTURA",
+      icon: <DomainIcon sx={{ fontSize: 28 }} />,
+    },
+    {
+      id: "RECURSOS HUMANOS",
+      label: "RRHH",
+      icon: <PeopleIcon sx={{ fontSize: 28 }} />,
+    },
+    {
+      id: "EQUIPAMIENTO",
+      label: "EQUIPAMIENTO",
+      icon: <MedicalServicesIcon sx={{ fontSize: 28 }} />,
+    },
+    {
+      id: "SALAS Y CAMAS",
+      label: "SALAS Y CAMAS",
+      icon: <BedIcon sx={{ fontSize: 28 }} />,
+    },
+    {
+      id: "SERVICIOS",
+      label: "SERVICIOS",
+      icon: <LocalHospitalIcon sx={{ fontSize: 28 }} />,
+    },
+  ];
+
+  // Lógica de porcentaje de Completitud
+  const getFlatFields = (sectionsObj) => {
+    return sectionsObj?.flatMap((sec) => sec.fields || []) || [];
   };
 
-  const handlePrev = () => {
-    if (currentServiceIndex > 0) {
-      setSelectedServiceId(config.servicios[currentServiceIndex - 1].id);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  const getCompletionStats = (fieldsArray) => {
+    if (!fieldsArray || fieldsArray.length === 0)
+      return { total: 0, filled: 0, percent: 100 };
+    const total = fieldsArray.length;
+    const filled = fieldsArray.filter((f) => {
+      const val = inspectorData[f.id];
+      if (val === undefined || val === null) return false;
+      if (typeof val === "object")
+        return val.observado !== undefined && val.observado !== false;
+      return String(val).trim() !== "";
+    }).length;
+    const percent = Math.round((filled / total) * 100);
+    return { total, filled, percent };
+  };
+
+  const renderProgressBar = (stats) => {
+    let color = "error";
+    if (stats.percent > 50) color = "warning";
+    if (stats.percent === 100) color = "success";
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          mb: 1,
+          mt: 1,
+          width: "100%",
+        }}
+      >
+        <Box sx={{ flexGrow: 1 }}>
+          <LinearProgress
+            variant="determinate"
+            value={stats.percent}
+            color={color}
+            sx={{ height: 8, borderRadius: 3 }}
+          />
+        </Box>
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 900,
+            minWidth: 45,
+            color:
+              color === "error"
+                ? "#ef4444"
+                : color === "warning"
+                  ? "#f59e0b"
+                  : "#10b981",
+            textAlign: "right",
+          }}
+        >
+          {stats.percent}%
+        </Typography>
+      </Box>
+    );
   };
 
   return (
@@ -95,196 +245,471 @@ const PantallaInspeccion = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "calc(100vh - 64px)",
-        bgcolor: "#f1f5f9",
-        overflow: "hidden",
+        minHeight: "calc(100vh - 64px)",
+        width: "95%",
+        bgcolor: "#ffffff",
+        overflowX: "hidden",
+        mx: "auto",
+        maxWidth: 800,
+        pt: 4,
+        pb: 10,
       }}
     >
-      <Box sx={{ display: "flex", flexGrow: 1, overflow: "hidden" }}>
-        {/* SIDEBAR - Optimizado para 40+ (Iconos grandes, texto claro) */}
-        <Box
+      {/* SIMULADOR DE EFECTOR (Para Pruebas) */}
+      <Box
+        sx={{
+          mb: 4,
+          p: 2,
+          bgcolor: "#f0fdf4",
+          borderRadius: 4,
+          border: "2px solid #bbf7d0",
+        }}
+      >
+        <Typography
+          variant="body2"
           sx={{
-            width: { xs: 300, lg: 380 },
-            bgcolor: "#fff",
-            borderRight: "2px solid #e2e8f0",
-            display: "flex",
-            flexDirection: "column",
-            zIndex: 1,
+            fontWeight: 800,
+            color: "#166534",
+            mb: 1,
+            textTransform: "uppercase",
           }}
         >
-          <Box sx={{ p: 4, bgcolor: "#005596", color: "white" }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-               <FactCheckIcon sx={{ fontSize: 32 }} />
-               <Box>
-                <Typography variant="h5" sx={{ fontWeight: 900, lineHeight: 1.1 }}>
-                  ACTA DIGITAL
-                </Typography>
-                <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.8)", fontWeight: 700, textTransform: "uppercase" }}>
-                  INSPECTOR DE SALUD
-                </Typography>
-               </Box>
-            </Stack>
-          </Box>
-          
-          <List sx={{ flexGrow: 1, py: 2, overflowY: "auto", px: 1.5 }}>
-            {config?.servicios?.map((srv, idx) => (
-              <ListItemButton
-                key={srv.id}
-                selected={selectedServiceId === srv.id}
-                onClick={() => setSelectedServiceId(srv.id)}
+          🧪 SIMULADOR: Servicios cargados por el Efector
+        </Typography>
+        <Autocomplete
+          multiple
+          options={allServiceNames.filter(
+            (n) => !n.includes("DATOS GENERALES"),
+          )}
+          value={serviciosEfector}
+          onChange={(e, newVal) => setServiciosEfector(newVal)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              size="small"
+              placeholder="Agregar o quitar servicios..."
+              sx={{ bgcolor: "white", borderRadius: 2 }}
+            />
+          )}
+        />
+      </Box>
+
+      {/* DATOS GENERALES Acordeon */}
+      {datosGeneralesSrv && (
+        <Accordion
+          expanded={expandedDatosGenerales}
+          onChange={() => setExpandedDatosGenerales(!expandedDatosGenerales)}
+          sx={{
+            mb: 4,
+            boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+            borderRadius: "16px !important",
+            "&:before": { display: "none" },
+            border: "1px solid #e2e8f0",
+          }}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />}
+            sx={{ px: { xs: 2, sm: 3 }, py: 1 }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                pr: 2,
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 900, color: "#1e293b" }}
+              >
+                DATOS GENERALES
+              </Typography>
+              {renderProgressBar(
+                getCompletionStats(
+                  datosGeneralesSrv.sections
+                    ? getFlatFields(datosGeneralesSrv.sections)
+                    : datosGeneralesSrv.fields,
+                ),
+              )}
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails
+            sx={{
+              px: { xs: 2, sm: 3 },
+              py: 3,
+              bgcolor: "#f8fafc",
+              borderTop: "1px solid #e2e8f0",
+            }}
+          >
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                gap: 3,
+              }}
+            >
+              {datosGeneralesSrv.sections
+                ? datosGeneralesSrv.sections.flatMap((sec) =>
+                    sec.fields.map((field) => (
+                      <FieldItem
+                        key={field.id}
+                        field={field}
+                        value={inspectorData[field.id]}
+                        onChange={handleFieldChange}
+                      />
+                    )),
+                  )
+                : datosGeneralesSrv.fields?.map((field) => (
+                    <FieldItem
+                      key={field.id}
+                      field={field}
+                      value={inspectorData[field.id]}
+                      onChange={handleFieldChange}
+                    />
+                  ))}
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+      )}
+
+      {/* NAVEGACIÓN PRINCIPAL: ICONOS TIPO STEPPER */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          mb: 3,
+          px: { xs: 1, sm: 4 },
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        {/* Linea conectora de fondo */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 28,
+            left: { xs: 30, sm: 80 },
+            right: { xs: 30, sm: 80 },
+            height: 2,
+            bgcolor: "#e2e8f0",
+            zIndex: 0,
+          }}
+        />
+
+        {PESTAÑAS.map((tab) => {
+          const isSelected = selectedCategory === tab.id;
+          return (
+            <Box
+              key={tab.id}
+              onClick={() => setSelectedCategory(tab.id)}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                cursor: "pointer",
+                zIndex: 1,
+                width: "20%",
+                gap: 1,
+              }}
+            >
+              <Box
                 sx={{
-                  py: 2.5,
-                  px: 3,
-                  mb: 1,
-                  borderRadius: 3,
+                  width: 56,
+                  height: 56,
+                  borderRadius: "50%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bgcolor: isSelected ? "#0ea5e9" : "#ffffff",
+                  color: isSelected ? "white" : "#64748b",
+                  border: "2px solid",
+                  borderColor: isSelected ? "#0ea5e9" : "#cbd5e1",
+                  boxShadow: isSelected
+                    ? "0 4px 10px rgba(14,165,233,0.3)"
+                    : "none",
                   transition: "all 0.2s",
-                  border: "1px solid transparent",
-                  "&.Mui-selected": {
-                    bgcolor: "#e0f2fe",
-                    borderColor: "#0ea5e9",
-                    color: "#0369a1",
-                    "& .MuiListItemIcon-root": { color: "#0369a1" },
-                    "& .MuiTypography-root": { fontWeight: 900, fontSize: "1.05rem" },
-                  },
-                  "&:hover": { bgcolor: "#f1f5f9" }
                 }}
               >
-                <ListItemIcon sx={{ minWidth: 45, color: "#64748b" }}>
-                   <Typography sx={{ fontWeight: 900, fontSize: "1.2rem", opacity: 0.5 }}>{idx + 1}</Typography>
-                </ListItemIcon>
-                <ListItemText
-                  primary={srv.name}
-                  primaryTypographyProps={{ variant: "body1", sx: { fontSize: "1rem", lineHeight: 1.2 } }}
-                />
-                {Object.keys(inspectorData).some(key => srv.sections?.some(sec => sec.fields.some(f => f.id === key)) || srv.fields?.some(f => f.id === key)) && (
-                   <CheckCircleIcon sx={{ ml: 1, color: "#059669", fontSize: 20 }} />
-                )}
-              </ListItemButton>
-            ))}
-          </List>
-          
-          <Divider />
-          <Box sx={{ p: 3, bgcolor: "#f8fafc" }}>
-             <Button fullWidth variant="contained" size="large" sx={{ py: 2, borderRadius: 3, fontWeight: 900, fontSize: "1.1rem", bgcolor: "#059669", "&:hover": { bgcolor: "#047857" } }}>
-                FINALIZAR ACTA
-             </Button>
-          </Box>
-        </Box>
+                {tab.icon}
+              </Box>
+              <Typography
+                align="center"
+                sx={{
+                  fontWeight: 800,
+                  fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.8rem" },
+                  color: isSelected ? "#0f172a" : "#64748b",
+                  lineHeight: 1.1,
+                }}
+              >
+                {tab.label}
+              </Typography>
+            </Box>
+          );
+        })}
+      </Box>
 
-        {/* MAIN PANEL - Diseñado para Alta Visibilidad */}
+      {/* APARTADOS SECUNDARIOS PARA "SERVICIOS" */}
+      {selectedCategory === "SERVICIOS" && (
         <Box
           sx={{
-            flexGrow: 1,
-            overflowY: "auto",
             display: "flex",
-            flexDirection: "column",
-            position: "relative",
+            flexWrap: "wrap",
+            gap: 1,
+            mb: 4,
+            mt: 3,
+            justifyContent: "center",
+            p: 2,
+            bgcolor: "#f8fafc",
+            borderRadius: 4,
+            border: "1px dashed #cbd5e1",
           }}
         >
-          {/* Header del Servicio Actual */}
-          <Box sx={{ p: { xs: 4, lg: 6 }, pb: 2, bgcolor: "white", borderBottom: "1px solid #e2e8f0" }}>
-             <Chip label={`SECCIÓN ${currentServiceIndex + 1} DE ${config?.servicios?.length}`} color="primary" sx={{ fontWeight: 900, mb: 2, borderRadius: 1 }} />
-             <Typography variant="h3" sx={{ fontWeight: 900, color: "#0f172a", mb: 1, letterSpacing: -1 }}>
-                {currentService?.name}
-             </Typography>
-             <Typography variant="h6" sx={{ color: "#64748b", fontWeight: 400 }}>
-                Complete todos los campos requeridos para esta sección.
-             </Typography>
-          </Box>
-
-          <Box sx={{ p: { xs: 4, lg: 6 }, flexGrow: 1 }}>
-            <Grid container spacing={5}>
-              {currentService?.sections && currentService.sections.length > 0 ? (
-                currentService.sections.map((section) => (
-                  <Grid item xs={12} key={section.id}>
-                    <Box sx={{ mb: 4, display: "flex", alignItems: "center", gap: 2 }}>
-                       <Box sx={{ width: 8, height: 40, bgcolor: "#0ea5e9", borderRadius: 4 }} />
-                       <Typography variant="h4" sx={{ fontWeight: 900, color: "#1e293b" }}>{section.name}</Typography>
-                    </Box>
-                    <Grid container spacing={4}>
-                      {section.fields.map((field) => (
-                        <Grid item xs={12} md={6} xl={4} key={field.id}>
-                          <FieldCard field={field} value={inspectorData[field.id]} onChange={handleFieldChange} />
-                        </Grid>
-                      ))}
-                    </Grid>
-                    <Divider sx={{ mt: 6, opacity: 0.5 }} />
-                  </Grid>
-                ))
-              ) : (
-                currentService?.fields?.map((field) => (
-                  <Grid item xs={12} md={6} xl={4} key={field.id}>
-                    <FieldCard field={field} value={inspectorData[field.id]} onChange={handleFieldChange} />
-                  </Grid>
-                ))
-              )}
-            </Grid>
-
-            {/* Navegación Inferior - Botones GIGANTES */}
-            <Stack direction="row" spacing={3} sx={{ mt: 10, mb: 10 }}>
-               <Button 
-                variant="outlined" 
-                size="large" 
-                startIcon={<PrevIcon />}
-                disabled={currentServiceIndex === 0}
-                onClick={handlePrev}
-                sx={{ flex: 1, py: 4, borderRadius: 4, borderSize: 3, fontWeight: 900, fontSize: "1.2rem" }}
-               >
-                  ANTERIOR
-               </Button>
-               <Button 
-                variant="contained" 
-                size="large" 
-                endIcon={<NextIcon />}
-                disabled={currentServiceIndex === (config?.servicios?.length ?? 0) - 1}
-                onClick={handleNext}
-                sx={{ flex: 2, py: 4, borderRadius: 4, fontWeight: 900, fontSize: "1.4rem", bgcolor: "#005596" }}
-               >
-                  GUARDAR Y CONTINUAR
-               </Button>
-            </Stack>
-          </Box>
+          <Typography
+            variant="body2"
+            sx={{
+              width: "100%",
+              textAlign: "center",
+              fontWeight: 700,
+              mb: 1,
+              color: "#94a3b8",
+            }}
+          >
+            SUB-ÁREAS TÉCNICAS A EVALUAR
+          </Typography>
+          {activeSubServicios.length === 0 && (
+            <Typography
+              variant="body2"
+              sx={{ color: "#ef4444", fontWeight: 700 }}
+            >
+              El efector no ha declarado ningún servicio de este tipo.
+            </Typography>
+          )}
+          {activeSubServicios.map((sub) => (
+            <Chip
+              key={sub}
+              size="medium"
+              label={sub}
+              clickable
+              onClick={() => setSelectedSubService(sub)}
+              sx={{
+                fontWeight: 800,
+                fontSize: "0.85rem",
+                px: 1,
+                bgcolor: selectedSubService === sub ? "#e0f2fe" : "white",
+                color: selectedSubService === sub ? "#0369a1" : "#64748b",
+                border: "2px solid",
+                borderColor: selectedSubService === sub ? "#0ea5e9" : "#e2e8f0",
+              }}
+            />
+          ))}
         </Box>
+      )}
+
+      {/* ESPACIADOR SI NO ESTAMOS EN SERVICIOS */}
+      {selectedCategory !== "SERVICIOS" && <Box sx={{ mb: 4 }} />}
+
+      {/* CONTENIDO REAGRUPADO */}
+      <Box
+        sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1 }}
+      >
+        {otherServices.map((srv) => {
+          let matchedSections = [];
+
+          if (selectedCategory === "SERVICIOS") {
+            const isTargetService = TARGET_MAPPINGS[selectedSubService]?.some(
+              (k) => srv.name?.toUpperCase().includes(k),
+            );
+            // Evitar que "TERAPIA INTENSIVA" engulla pediátricos si no estamos en UTIP
+            const isExcluded =
+              selectedSubService === "UTI" &&
+              (srv.name?.toUpperCase().includes("PEDIATRICA") ||
+                srv.name?.toUpperCase().includes("NEONATAL"));
+
+            if (isTargetService && !isExcluded && srv.sections) {
+              matchedSections = srv.sections.filter((sec) => {
+                const n = sec.name.toUpperCase();
+                return (
+                  !n.includes("ARQUITECTURA") &&
+                  !n.includes("RECURSOS") &&
+                  !n.includes("EQUIPAMIENTO")
+                );
+              });
+            }
+          } else {
+            if (srv.sections) {
+              const keyword =
+                selectedCategory === "RECURSOS HUMANOS"
+                  ? "RECURSOS"
+                  : selectedCategory === "SALAS Y CAMAS"
+                    ? "SALA"
+                    : selectedCategory;
+              matchedSections = srv.sections.filter(
+                (sec) =>
+                  sec.name.toUpperCase().includes(keyword) ||
+                  (selectedCategory === "SALAS Y CAMAS" &&
+                    sec.name.toUpperCase().includes("CAMA")),
+              );
+            }
+          }
+
+          if (!matchedSections || matchedSections.length === 0) return null;
+
+          const blockStats = getCompletionStats(getFlatFields(matchedSections));
+
+          return (
+            <Box key={srv.id} sx={{ mb: 2 }}>
+              <Box sx={{ mb: 3, display: "flex", flexDirection: "column" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <Box
+                    sx={{
+                      width: 8,
+                      height: 32,
+                      bgcolor: "#475569",
+                      borderRadius: 4,
+                    }}
+                  />
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 900,
+                      color: "#1e293b",
+                      letterSpacing: -0.5,
+                    }}
+                  >
+                    {srv.name}
+                  </Typography>
+                </Box>
+                {/* BARRA DE PROGRESO DE ESTE BLOQUE */}
+                {renderProgressBar(blockStats)}
+              </Box>
+
+              {matchedSections.map((section) => (
+                <Box key={section.id} sx={{ mb: 4 }}>
+                  {selectedCategory === "SERVICIOS" && (
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        fontWeight: 800,
+                        mb: 2,
+                        color: "#64748b",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {section.name}
+                    </Typography>
+                  )}
+
+                  {selectedCategory === "EQUIPAMIENTO" ||
+                  selectedCategory === "RECURSOS HUMANOS" ||
+                  selectedCategory === "SALAS Y CAMAS" ? (
+                    <VerificationTable
+                      fields={section.fields}
+                      inspectorData={inspectorData}
+                      onChange={handleFieldChange}
+                    />
+                  ) : (
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                        gap: 3,
+                      }}
+                    >
+                      {section.fields?.map((field) => (
+                        <FieldItem
+                          key={field.id}
+                          field={field}
+                          value={inspectorData[field.id]}
+                          onChange={handleFieldChange}
+                        />
+                      ))}
+                    </Box>
+                  )}
+                </Box>
+              ))}
+              <Divider sx={{ mb: 2, mt: 4, opacity: 0.5 }} />
+            </Box>
+          );
+        })}
       </Box>
+
+      {/* BOTÓN FINALIZAR MANTENIDO AL FONDO */}
+      <Stack direction="row" spacing={3} sx={{ mt: 8 }}>
+        <Button
+          fullWidth
+          variant="contained"
+          size="large"
+          sx={{
+            py: 2.5,
+            borderRadius: 8,
+            fontWeight: 900,
+            fontSize: "1.2rem",
+            bgcolor: "#059669",
+            "&:hover": { bgcolor: "#047857" },
+          }}
+        >
+          FINALIZAR ACTA
+        </Button>
+      </Stack>
     </Box>
   );
 };
 
-/* COMPONENTE DE TARJETA ADAPTADO PARA TABLET / 40+ */
-const FieldCard = ({ field, value, onChange }) => {
+/* COMPONENTE DE CAMPO (LISTA VERTICAL) */
+const FieldItem = ({ field, value, onChange }) => {
   const renderInput = () => {
     switch (field.type) {
       case "boolean":
       case "checkbox":
         return (
           <ToggleButtonGroup
-            value={value === undefined ? null : (value ? "si" : "no")}
+            value={value === undefined ? null : value ? "si" : "no"}
             exclusive
             onChange={(e, val) => {
               if (val !== null) onChange(field.id, val === "si");
             }}
             fullWidth
-            sx={{ mt: 2, height: 80 }}
+            sx={{ height: 48 }}
           >
-            <ToggleButton 
-              value="si" 
-              sx={{ 
-                borderRadius: "16px 0 0 16px",
-                border: "2px solid #e2e8f0",
-                "&.Mui-selected": { bgcolor: "#dcfce7", color: "#166534", borderColor: "#166534", fontWeight: 900, fontSize: "1.2rem" }
+            <ToggleButton
+              value="si"
+              sx={{
+                flex: 1,
+                borderRadius: "8px 0 0 8px",
+                border: "1px solid #cbd5e1",
+                fontSize: "14px",
+                fontWeight: 700,
+                color: "#64748b",
+                "&.Mui-selected": {
+                  bgcolor: "#dcfce7",
+                  color: "#166534",
+                  fontWeight: 900,
+                },
               }}
             >
-              SÍ / CUMPLE
+              SÍ
             </ToggleButton>
-            <ToggleButton 
+            <ToggleButton
               value="no"
-              sx={{ 
-                borderRadius: "0 16px 16px 0",
-                border: "2px solid #e2e8f0",
-                "&.Mui-selected": { bgcolor: "#fee2e2", color: "#991b1b", borderColor: "#991b1b", fontWeight: 900, fontSize: "1.2rem" }
+              sx={{
+                flex: 1,
+                borderRadius: "0 8px 8px 0",
+                border: "1px solid #cbd5e1",
+                borderLeft: "none",
+                fontSize: "14px",
+                fontWeight: 700,
+                color: "#64748b",
+                "&.Mui-selected": {
+                  bgcolor: "#fee2e2",
+                  color: "#991b1b",
+                  fontWeight: 900,
+                },
               }}
             >
-              NO / NO CUMPLE
+              NO
             </ToggleButton>
           </ToggleButtonGroup>
         );
@@ -294,20 +719,33 @@ const FieldCard = ({ field, value, onChange }) => {
             select
             fullWidth
             variant="outlined"
+            size="small"
             value={value || ""}
             onChange={(e) => onChange(field.id, e.target.value)}
-            sx={{ mt: 2 }}
-            InputProps={{ 
-                sx: { borderRadius: 4, height: 70, fontSize: "1.2rem", fontWeight: 700 } 
+            InputProps={{
+              sx: { borderRadius: 2, fontSize: "14px", fontWeight: 500 },
             }}
             SelectProps={{
-                MenuProps: {
-                    PaperProps: { sx: { borderRadius: 3, boxShadow: "0 10px 25px rgba(0,0,0,0.1)" } }
-                }
+              MenuProps: {
+                PaperProps: {
+                  sx: {
+                    borderRadius: 2,
+                    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                  },
+                },
+              },
             }}
           >
             {field.options?.split(",").map((opt) => (
-              <MenuItem key={opt} value={opt.trim()} sx={{ py: 2.5, fontSize: "1.1rem", fontWeight: 500, borderBottom: "1px solid #f1f5f9" }}>
+              <MenuItem
+                key={opt}
+                value={opt.trim()}
+                sx={{
+                  py: 1,
+                  fontSize: "0.9rem",
+                  borderBottom: "1px solid #f1f5f9",
+                }}
+              >
                 {opt.trim()}
               </MenuItem>
             ))}
@@ -319,12 +757,17 @@ const FieldCard = ({ field, value, onChange }) => {
             type="number"
             fullWidth
             variant="outlined"
+            size="small"
             placeholder="0"
             value={value || ""}
             onChange={(e) => onChange(field.id, e.target.value)}
-            sx={{ mt: 2 }}
-            InputProps={{ 
-                sx: { borderRadius: 4, height: 70, fontSize: "1.5rem", fontWeight: 900, textAlign: "center" } 
+            InputProps={{
+              sx: {
+                borderRadius: 2,
+                fontSize: "14px",
+                height: 48,
+                fontWeight: 600,
+              },
             }}
           />
         );
@@ -333,14 +776,19 @@ const FieldCard = ({ field, value, onChange }) => {
           <TextField
             fullWidth
             variant="outlined"
+            size="small"
             placeholder="Escriba aquí..."
             value={value || ""}
             multiline={field.type === "textarea"}
-            rows={field.type === "textarea" ? 4 : 1}
+            rows={field.type === "textarea" ? 3 : 1}
             onChange={(e) => onChange(field.id, e.target.value)}
-            sx={{ mt: 2 }}
-            InputProps={{ 
-                sx: { borderRadius: 4, fontSize: "1.1rem", fontWeight: 500, p: 2 } 
+            InputProps={{
+              sx: {
+                borderRadius: 2,
+                fontSize: "14px",
+                fontWeight: 500,
+                minHeight: 48,
+              },
             }}
           />
         );
@@ -348,27 +796,203 @@ const FieldCard = ({ field, value, onChange }) => {
   };
 
   return (
-    <Paper
-      elevation={0}
+    <Box
       sx={{
-        p: 4,
+        display: "flex",
+        flexDirection: "column",
         height: "100%",
-        borderRadius: 5,
-        border: "2px solid #e2e8f0",
-        bgcolor: "white",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
-        transition: "0.3s",
-        "&:hover": {
-          borderColor: "#0ea5e9",
-          boxShadow: "0 15px 30px -10px rgba(0,0,0,0.08)",
-        },
+        width: "100%",
+        boxSizing: "border-box",
+        minWidth: 0,
       }}
     >
-      <Typography variant="h6" sx={{ fontWeight: 800, color: "#1e293b", mb: 1, minHeight: 60, lineHeight: 1.2 }}>
-        {field.label}
-      </Typography>
-      {renderInput()}
-    </Paper>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          alignItems: "flex-end",
+          mb: 0.5,
+          width: "100%",
+          boxSizing: "border-box",
+          minWidth: 0,
+        }}
+      >
+        <Typography
+          sx={{
+            fontWeight: 800,
+            color: "#334155",
+            lineHeight: 1.2,
+            fontSize: "13px",
+            textTransform: "uppercase",
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            maxWidth: "100%",
+            display: "block",
+          }}
+        >
+          {field.label}
+        </Typography>
+      </Box>
+      <Box sx={{ width: "100%", boxSizing: "border-box", minWidth: 0 }}>
+        {renderInput()}
+      </Box>
+    </Box>
+  );
+};
+
+/* COMPONENTE DE TABLA PARA EQUIPAMIENTO, RRHH, Y SALAS Y CAMAS */
+const VerificationTable = ({ fields, inspectorData, onChange }) => {
+  return (
+    <TableContainer
+      component={Paper}
+      elevation={0}
+      sx={{ border: "1px solid #e2e8f0", borderRadius: 3, overflowX: "auto" }}
+    >
+      <Table size="small" sx={{ minWidth: 650 }}>
+        <TableHead sx={{ bgcolor: "#f1f5f9" }}>
+          <TableRow>
+            <TableCell
+              sx={{ fontWeight: 900, color: "#334155", width: "35%", py: 2 }}
+            >
+              Elemento a Inspeccionar
+            </TableCell>
+            <TableCell
+              align="center"
+              sx={{ fontWeight: 900, color: "#334155", py: 2 }}
+            >
+              Valor Declarado
+            </TableCell>
+            <TableCell
+              align="center"
+              sx={{ fontWeight: 900, color: "#334155", py: 2, width: 90 }}
+            >
+              Observado
+            </TableCell>
+            <TableCell
+              align="center"
+              sx={{ fontWeight: 900, color: "#334155", py: 2, width: 140 }}
+            >
+              Valor Observado
+            </TableCell>
+            <TableCell
+              sx={{ fontWeight: 900, color: "#334155", width: "30%", py: 2 }}
+            >
+              Observación
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {fields?.map((field) => {
+            const currentVal = inspectorData[field.id] || {};
+            const isObservado = currentVal.observado || false;
+            const valorObj = currentVal.valor || "";
+            const obsText = currentVal.obs || "";
+
+            // Intenta extraer el valor declarado desde varias fuentes
+            const valorDeclarado =
+              field.cantidadMinima ?? field.valorDeclarado ?? 1;
+            const isNumeric = !isNaN(valorDeclarado);
+            const hasError =
+              isObservado &&
+              valorObj !== "" &&
+              isNumeric &&
+              Number(valorObj) !== Number(valorDeclarado);
+
+            const update = (key, val) =>
+              onChange(field.id, { ...currentVal, [key]: val });
+
+            return (
+              <TableRow
+                key={field.id}
+                hover
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                  bgcolor: hasError ? "#fef2f2" : "inherit",
+                }}
+              >
+                <TableCell
+                  component="th"
+                  scope="row"
+                  sx={{
+                    fontWeight: 700,
+                    color: "#1e293b",
+                    fontSize: "0.85rem",
+                    py: 1.5,
+                  }}
+                >
+                  {field.label ||
+                    field.name ||
+                    field.equipamiento ||
+                    field.especialidad ||
+                    "Elemento Sin Nombre"}
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: 800 }}>
+                  <Box
+                    sx={{
+                      bgcolor: "#e2e8f0",
+                      color: "#0f172a",
+                      display: "inline-block",
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 1.5,
+                    }}
+                  >
+                    {valorDeclarado}
+                  </Box>
+                </TableCell>
+                <TableCell align="center">
+                  <Checkbox
+                    checked={isObservado}
+                    onChange={(e) => update("observado", e.target.checked)}
+                    color="success"
+                    sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
+                  />
+                </TableCell>
+                <TableCell align="center">
+                  {isObservado && (
+                    <TextField
+                      size="small"
+                      type="number"
+                      placeholder="Cant."
+                      value={valorObj}
+                      onChange={(e) => update("valor", e.target.value)}
+                      error={hasError}
+                      sx={{
+                        width: "100%",
+                        "& .MuiInputBase-root": {
+                          bgcolor: "white",
+                          fontWeight: 800,
+                          height: 38,
+                        },
+                      }}
+                    />
+                  )}
+                </TableCell>
+                <TableCell>
+                  {isObservado && (
+                    <TextField
+                      fullWidth
+                      size="small"
+                      placeholder="Razones, marcas, estado..."
+                      value={obsText}
+                      onChange={(e) => update("obs", e.target.value)}
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          bgcolor: "white",
+                          minHeight: 38,
+                          fontSize: "0.85rem",
+                        },
+                      }}
+                    />
+                  )}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

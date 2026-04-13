@@ -285,12 +285,7 @@ const HomeEfector = () => {
                   />
                 }
               />
-              <Route
-                path="actainspeccion"
-                element={
-                  <PantallaInspeccion />
-                }
-              />
+              <Route path="actainspeccion" element={<PantallaInspeccion />} />
             </Routes>
           </Box>
 

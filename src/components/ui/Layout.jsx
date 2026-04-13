@@ -159,9 +159,10 @@ const Layout = ({ children }) => {
         component="main" 
         sx={{ 
           flexGrow: 1, 
-          p: 4, 
+          p: isInspector ? 0 : 4, 
           mt: 8, 
-          backgroundImage: `url(${fondoOndas})`, 
+          backgroundImage: isInspector ? 'none' : `url(${fondoOndas})`, 
+          backgroundColor: isInspector ? '#ffffff' : 'transparent',
           backgroundAttachment: 'fixed', 
           backgroundSize: 'cover',
           minHeight: '100vh'
