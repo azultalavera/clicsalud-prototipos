@@ -2362,7 +2362,7 @@
           "sections": [
             {
               "id": "sec-seray9qq",
-              "name": "SERVICIOS",
+              "name": "ARQUITECTURA",
               "fields": [
                 {
                   "id": "f-nwyxjn",
@@ -2420,7 +2420,7 @@
                 },
                 {
                   "id": "f-sysmnu4r",
-                  "label": "System de aspiración automática",
+                  "label": "Sistema de aspiración automática",
                   "type": "number",
                   "options": ""
                 },
@@ -2458,7 +2458,7 @@
           "sections": [
             {
               "id": "sec-serpez2d",
-              "name": "SERVICIOS",
+              "name": "ARQUITECTURA",
               "fields": [
                 {
                   "id": "f-n6s631",

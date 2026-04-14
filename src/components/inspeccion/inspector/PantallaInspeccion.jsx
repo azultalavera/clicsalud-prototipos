@@ -35,6 +35,92 @@ import {
   LocalHospital as LocalHospitalIcon,
 } from "@mui/icons-material";
 
+const UTI_SECTIONS = [
+  {
+    id: "uti_arch",
+    name: "ARQUITECTURA",
+    fields: [
+      { id: "uti_camas", label: "N° DE CAMAS", type: "number" },
+      { id: "uti_edificacion", label: "Coincide con edificacion", type: "boolean" },
+      { id: "uti_planos", label: "Planos", type: "boolean" },
+    ],
+  },
+  {
+    id: "uti_enfermeria",
+    name: "Planillas de enfermería con controles diarios",
+    fields: [
+      { id: "uti_signos", label: "Signos vitales", type: "boolean" },
+      { id: "uti_balance", label: "Balance diario", type: "boolean" },
+      { id: "uti_volumenes", label: "Volúmenes de ingresos y egresos", type: "boolean" },
+      { id: "uti_medicacion", label: "Medicación", type: "boolean" },
+    ],
+  },
+  {
+    id: "uti_locales",
+    name: "De los Edificios/Locales de la unidad",
+    fields: [
+      { id: "uti_zona", label: "Unidad ubicada en zona de circulación semirrestringida", type: "boolean" },
+      { id: "uti_pileta", label: "Sala de internación c/pileta lavamanos", type: "boolean" },
+      { id: "uti_office", label: "Office de enfermería", type: "boolean" },
+      { id: "uti_monitores", label: "Monitores", type: "boolean" },
+      { id: "uti_ropa", label: "Local de ropa y material usado", type: "boolean" },
+      { id: "uti_lavachatas", label: "Area lavachatas", type: "boolean" },
+      { id: "uti_deposito", label: "Depósito de camillas y aparatología", type: "boolean" },
+      { id: "uti_sala_medicos", label: "Sala de médicos", type: "boolean" },
+      { id: "uti_otras_uci", label: "Posee otras Unidades de UCI / UCO", type: "boolean" },
+      { id: "uti_comparte_uci", label: "Comparte algún local UCI / UCO", type: "boolean" },
+      { id: "uti_grupo", label: "Grupo electrógeno", type: "boolean" },
+      { id: "uti_iluminacion_emergencia", label: "Sistema de Iluminación de Emergencia", type: "boolean" },
+      { id: "uti_acceso", label: "Acceso directo y exclusivo", type: "boolean" },
+      { id: "uti_comunicacion_cirugia", label: "Fácil comunicación c/cirugía", type: "boolean" },
+      { id: "uti_camas_ortopedicas", label: "Camas ortopédicas o articuladas", type: "boolean" },
+      { id: "uti_doble_comando", label: "Doble comando", type: "boolean" },
+      { id: "uti_rodantes", label: "Rodantes", type: "boolean" },
+      { id: "uti_ventanas", label: "Ventanas al exterior", type: "boolean" },
+      { id: "uti_vision_panoramica", label: "Visión panorámica directa a todas las camas", type: "boolean" },
+      { id: "uti_instrumental_esteril", label: "Local de Instrumental y material estéril", type: "boolean" },
+      { id: "uti_cama_aislamiento", label: "Local cerrado c/1 cama para aislamiento", type: "boolean" },
+      { id: "uti_evoluciones", label: "Evoluciones diarias en Historia Clínica", type: "boolean" },
+      { id: "uti_libro_enf", label: "Libro de Registro de Enfermedades Transmisibles", type: "boolean" },
+      { id: "uti_libro_psico", label: "Libro de Registro de psicofármacos", type: "boolean" },
+      { id: "uti_vestuario", label: "Vestuario para visitas c/pileta lavamanos", type: "boolean" },
+      { id: "uti_habitacion_medico", label: "Habitación, c/baño propio para médico de Guardia", type: "boolean" },
+      { id: "uti_doble_circuito", label: "Doble circuito de energía eléctrica", type: "boolean" },
+      { id: "uti_diez_tomas", label: "Diez tomas de electricidad por cama", type: "boolean" },
+      { id: "uti_hermeticidad", label: "Hermeticidad", type: "boolean" },
+      { id: "uti_privacidad", label: "Privacidad", type: "boolean" },
+      { id: "uti_superficie", label: "Superficie total sala internación", type: "boolean" },
+      { id: "uti_ilum_natural", label: "Iluminación natural", type: "boolean" },
+      { id: "uti_ilum_art_central", label: "Iluminación artificial central", type: "boolean" },
+      { id: "uti_ilum_individual", label: "Iluminación Individual", type: "boolean" },
+      { id: "uti_acceso_4", label: "Acceso desde 4 posiciones", type: "boolean" },
+    ],
+  },
+  {
+    id: "uti_equip",
+    name: "EQUIPAMIENTO",
+    fields: [
+      { id: "uti_marcapaso", label: "Marcapaso transitorio (si no tiene UCO)", type: "boolean" },
+      { id: "uti_carro", label: "Carro de urgencia", type: "boolean" },
+      { id: "uti_tensionmetro", label: "Tensiómetro", type: "boolean" },
+      { id: "uti_nebulizador", label: "Nebulizador", type: "boolean" },
+      { id: "uti_aspiracion_portatil", label: "Sistema portatil de aspiración para drenaje", type: "boolean" },
+      { id: "uti_respirador", label: "Respirador mecánico volumétrico", type: "boolean" },
+      { id: "uti_desfibrilador", label: "Equipo de desfibrilación y sincronizador", type: "boolean" },
+      { id: "uti_bomba", label: "Bomba de infusión", type: "boolean" },
+      { id: "uti_oximetro", label: "Oxímetro de pulso portátil", type: "boolean" },
+      { id: "uti_electro", label: "Electrocardiógrafo", type: "boolean" },
+      { id: "uti_aspiracion", label: "Equipo de aspiración", type: "boolean" },
+    ],
+  },
+];
+
+const HARDCODED_UTI_SERVICE = {
+  id: "hardcoded_uti_pro",
+  name: "UNIDAD DE TERAPIA INTENSIVA",
+  sections: UTI_SECTIONS
+};
+
 const DEFAULT_TIPOLOGIA = "CLÍNICAS, SANATORIOS Y HOSPITALES";
 
 const PantallaInspeccion = ({
@@ -99,7 +185,23 @@ const PantallaInspeccion = ({
         );
         const data = await res.json();
         if (data && data.length > 0) {
-          setConfig(data[0]);
+          const masterConfig = data[0];
+          // Forzar la existencia de UNIDAD DE TERAPIA INTENSIVA con los campos requeridos
+          if (!masterConfig.servicios) masterConfig.servicios = [];
+          const utiIdx = masterConfig.servicios.findIndex(s => s.name?.toUpperCase().includes("TERAPIA INTENSIVA") && !s.name?.toUpperCase().includes("PEDI") && !s.name?.toUpperCase().includes("NEONAT"));
+          if (utiIdx !== -1) {
+            masterConfig.servicios[utiIdx] = { ...masterConfig.servicios[utiIdx], ...HARDCODED_UTI_SERVICE };
+          } else {
+            masterConfig.servicios.push(HARDCODED_UTI_SERVICE);
+          }
+          
+          // Parche para UCO y UCIM (Cuidados Intermedios)
+          const ucoSrv = masterConfig.servicios.find(s => s.name?.toUpperCase().includes("CORONARI") || s.name?.toUpperCase().includes("UCO"));
+          if (ucoSrv) ucoSrv.sections = UTI_SECTIONS;
+          const ucimSrv = masterConfig.servicios.find(s => s.name?.toUpperCase().includes("INTERMEDIA") || s.name?.toUpperCase().includes("UCIM"));
+          if (ucimSrv) ucimSrv.sections = UTI_SECTIONS;
+
+          setConfig(masterConfig);
         }
       } catch (err) {
         console.error("Error al cargar configuración", err);
@@ -110,24 +212,44 @@ const PantallaInspeccion = ({
     fetchData();
   }, []);
 
-  const SUBSERVICIOS = ["UTI", "UCO", "UTIP", "UTIN", "HEMODIALISIS"];
+  const SUBSERVICIOS = ["UTI", "UCO", "UCIM", "UTIP", "UTIN", "HEMODIALISIS"];
   const TARGET_MAPPINGS = {
-    UTI: ["UTI", "TERAPIA INTENSIVA", "CUIDADOS INTENSIVOS"],
-    UCO: ["UCO", "CORONARIA", "CORONARIO"],
+    UTI: ["UTI", "TERAPIA INTENSIVA", "CUIDADOS INTENSIVOS", "CUIDADOS CRITICOS", "UNIDAD DE TERAPIA INTENSIVA"],
+    UCO: ["UCO", "CORONARIA", "CORONARIO", "UNIDAD CORONARIA"],
+    UCIM: ["UCIM", "CUIDADOS INTERMEDIOS", "TERAPIA INTERMEDIA", "CUIDADOS MODERADOS", "UNIDAD DE CUIDADOS INTERMEDIOS"],
     UTIP: ["UTIP", "PEDIATRICA"],
     UTIN: ["UTIN", "NEONATAL"],
     HEMODIALISIS: ["HEMODIALISIS", "DIALISIS"],
   };
 
+  const normalizedMatch = (srvName, targetKey) => {
+    const nSrv = srvName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    const nKey = targetKey.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    
+    if (nSrv.includes(nKey) || nKey.includes(nSrv)) return true;
+    
+    const srvWords = nSrv.split(/\W+/).filter(w => w.length > 3);
+    const keyWords = nKey.split(/\W+/).filter(w => w.length > 3);
+    return keyWords.some(kw => srvWords.includes(kw));
+  };
+
   const activeSubServicios = SUBSERVICIOS.filter((sub) => {
     return serviciosEfector.some((srvName) => {
-      const isMatch = TARGET_MAPPINGS[sub]?.some((k) =>
-        srvName.toUpperCase().includes(k),
-      );
+      const isMatch = TARGET_MAPPINGS[sub]?.some((k) => normalizedMatch(srvName, k));
+      const nSrv = srvName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+      
       const isExcluded =
         sub === "UTI" &&
-        (srvName.toUpperCase().includes("PEDIATRICA") ||
-          srvName.toUpperCase().includes("NEONATAL"));
+        (nSrv.includes("PEDIAT") ||
+          nSrv.includes("NEONAT") ||
+          nSrv.includes("CORONARI") ||
+          nSrv.includes("INTERMEDIA"));
+      
+      // Si es exactamente la UTI que buscamos, nunca la excluimos de su propio chip
+      if (sub === "UTI" && (nSrv.includes("TERAPIA INTENSIVA") || nSrv.includes("UTI"))) {
+        if (!nSrv.includes("PEDIAT") && !nSrv.includes("NEONAT")) return true;
+      }
+
       return isMatch && !isExcluded;
     });
   });
@@ -169,11 +291,42 @@ const PantallaInspeccion = ({
   );
 
   const otherServices =
-    config?.servicios?.filter(
-      (s) =>
-        !s.name?.toUpperCase().includes("DATOS GENERALES") &&
-        serviciosEfector.includes(s.name),
-    ) || [];
+    config?.servicios?.filter((s) => {
+      const isGeneral = s.name?.toUpperCase().includes("DATOS GENERALES");
+      if (isGeneral) return false;
+
+      // Normalizado para comparación robusta (sin acentos, mayúsculas)
+      const normalize = (str) =>
+        str
+          ?.normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toUpperCase()
+          .trim() || "";
+
+          return serviciosEfector.some((effSrv) => {
+        const nSrvName = s.name.toUpperCase();
+        const nEffSrv = effSrv.toUpperCase();
+        
+        // Coincidencia exacta o robusta
+        if (nSrvName === nEffSrv) return true;
+        
+        if (normalizedMatch(effSrv, s.name)) {
+            // Validar variantes
+            const isPed = (str) => str.includes("PEDIAT") || str.includes("UTIP");
+            const isNeo = (str) => str.includes("NEONAT") || str.includes("UTIN");
+            const isUco = (str) => str.includes("CORONARI") || str.includes("UCO");
+            const isUcim = (str) => str.includes("INTERMEDIO") || str.includes("UCIM");
+            
+            if (isPed(nSrvName) !== isPed(nEffSrv)) return false;
+            if (isNeo(nSrvName) !== isNeo(nEffSrv)) return false;
+            if (isUco(nSrvName) !== isUco(nEffSrv)) return false;
+            if (isUcim(nSrvName) !== isUcim(nEffSrv)) return false;
+
+            return true;
+        }
+        return false;
+      });
+    }) || [];
 
   const allServiceNames = config?.servicios?.map((s) => s.name) || [];
 
@@ -504,12 +657,22 @@ const PantallaInspeccion = ({
             SUB-ÁREAS TÉCNICAS A EVALUAR
           </Typography>
           {activeSubServicios.length === 0 && (
-            <Typography
-              variant="body2"
-              sx={{ color: "#ef4444", fontWeight: 700 }}
-            >
-              El efector no ha declarado ningún servicio de este tipo.
-            </Typography>
+            <Box sx={{ textAlign: "center" }}>
+              <Typography
+                variant="body2"
+                sx={{ color: "#ef4444", fontWeight: 700, mb: 1 }}
+              >
+                El efector no ha declarado ningún servicio de este tipo.
+              </Typography>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => setServiciosEfector(["UNIDADES DE TERAPIA INTENSIVA", "CUIDADOS INTERMEDIOS"])}
+                sx={{ borderRadius: 4, textTransform: "none", fontWeight: 700 }}
+              >
+                Simular servicios técnicos para demo
+              </Button>
+            </Box>
           )}
           {activeSubServicios.map((sub) => (
             <Chip
@@ -541,22 +704,20 @@ const PantallaInspeccion = ({
           let matchedSections = [];
 
           if (selectedCategory === "SERVICIOS") {
-            const isTargetService = TARGET_MAPPINGS[selectedSubService]?.some(
-              (k) => srv.name?.toUpperCase().includes(k),
-            );
+            const isTargetService = TARGET_MAPPINGS[selectedSubService]?.some((k) => normalizedMatch(srv.name, k));
+            const nSrv = (srv.name || "").toUpperCase();
             const isExcluded =
               selectedSubService === "UTI" &&
-              (srv.name?.toUpperCase().includes("PEDIATRICA") ||
-                srv.name?.toUpperCase().includes("NEONATAL"));
+              (nSrv.includes("PEDIAT") ||
+                nSrv.includes("NEONAT") ||
+                nSrv.includes("CORONARI") ||
+                nSrv.includes("INTERMEDIA"));
 
-            if (isTargetService && !isExcluded && srv.sections) {
+            if (isTargetService && (!isExcluded || nSrv === "UNIDAD DE TERAPIA INTENSIVA") && srv.sections) {
               matchedSections = srv.sections.filter((sec) => {
                 const n = sec.name.toUpperCase();
-                return (
-                  !n.includes("ARQUITECTURA") &&
-                  !n.includes("RECURSOS") &&
-                  !n.includes("EQUIPAMIENTO")
-                );
+                // Ocultar arquitectura/equipos generales en pestaña servicios
+                return !n.includes("ARQUITECTURA") && !n.includes("EQUIPAMIENTO") && !n.includes("RECURSOS") && !n.includes("RRHH");
               });
             }
           } else {
@@ -627,29 +788,12 @@ const PantallaInspeccion = ({
                   selectedCategory === "SALAS Y CAMAS" ? (
                     <VerificationTable
                       fields={section.fields.filter((f) => {
-                        // FILTRO POR SALAS Y CAMAS
+                        // En Arquitectura/Camas siempre filtramos si hay 0 declarado para no saturar
                         if (selectedCategory === "SALAS Y CAMAS") {
                           const name = f.label || f.name;
                           return infraEfector[name] > 0;
                         }
-                        // FILTRO POR RECURSOS HUMANOS
-                        if (selectedCategory === "RECURSOS HUMANOS") {
-                          return rrhhEfector.some(
-                            (r) =>
-                              (r.especialidad === f.especialidad ||
-                                r.tipoPlantel === f.tipoPlantel) &&
-                              r.origen === srv.name &&
-                              r.cantidadCargada > 0,
-                          );
-                        }
-                        // FILTRO POR EQUIPAMIENTO
-                        if (selectedCategory === "EQUIPAMIENTO") {
-                          return equiposEfector.some(
-                            (e) =>
-                              e.equipamiento === f.equipamiento &&
-                              e.origen === srv.name,
-                          );
-                        }
+                        // En Equipamiento y RRHH mostramos TODO lo configurado para que el inspector audite
                         return true;
                       })}
                       inspectorData={inspectorData}
@@ -1012,8 +1156,8 @@ const VerificationTable = ({
             if (rrhhEfector && rrhhEfector.length > 0) {
               const rrhhMatch = rrhhEfector.find(
                 (r) =>
-                  (r.especialidad === field.especialidad ||
-                    r.tipoPlantel === field.tipoPlantel) &&
+                  ((r.especialidad === field.especialidad || r.especialidad === field.label) ||
+                    (r.tipoPlantel === field.tipoPlantel || r.tipoPlantel === field.label)) &&
                   r.origen === currentSrvName,
               );
               if (rrhhMatch) valorDeclarado = rrhhMatch.cantidadCargada;
@@ -1023,7 +1167,7 @@ const VerificationTable = ({
             if (equiposEfector && equiposEfector.length > 0) {
               const equipoMatch = equiposEfector.filter(
                 (e) =>
-                  e.equipamiento === field.equipamiento &&
+                  (e.equipamiento === field.equipamiento || e.equipamiento === field.label) &&
                   e.origen === currentSrvName,
               );
               if (equipoMatch.length > 0) valorDeclarado = equipoMatch.length;

@@ -112,7 +112,8 @@ const HomeEfector = () => {
 
   // EFECTOR -> INSPECTOR SYNC
   useEffect(() => {
-    localStorage.setItem("efector_servicios", JSON.stringify(Object.keys(selectedServices)));
+    const activeServices = Object.keys(selectedServices).filter(k => !!selectedServices[k]);
+    localStorage.setItem("efector_servicios", JSON.stringify(activeServices));
     localStorage.setItem("efector_infra", JSON.stringify(infraSelection));
     localStorage.setItem("efector_equipos", JSON.stringify(equiposCargados));
     localStorage.setItem("efector_rrhh", JSON.stringify(rrhhCargado));
@@ -148,16 +149,7 @@ const HomeEfector = () => {
   const handleBack = () =>
     activeStep > 0 && navigate(`${baseRoute}/${steps[activeStep - 1].path}`);
 
-  // Solución error: handleQAFill no se usaba. Podés usarlo en un botón de prueba o borrarlo.
-  const handleQAFill = () => {
-    setSelectedServices({ 
-      "GUARDIA": true, 
-      "UNIDADES DE TERAPIA INTENSIVA": true, 
-      "QUIROFANO": true 
-    });
-    setInfraSelection({ "Camas UTI": 5, "Salas de Parto": 2 });
-    setIsServiceValid(true);
-  };
+
 
   return (
     <Layout>
@@ -268,7 +260,7 @@ const HomeEfector = () => {
                 path="actainspeccion"
                 element={
                   <PantallaInspeccion 
-                    serviciosEfector={Object.keys(selectedServices)} 
+                    serviciosEfector={Object.keys(selectedServices).filter(k => !!selectedServices[k])} 
                     infraEfector={infraSelection}
                     rrhhEfector={rrhhCargado}
                     equiposEfector={equiposCargados}
@@ -347,7 +339,7 @@ const HomeEfector = () => {
                 <Button
                   variant="outlined"
                   startIcon={<SaveIcon />}
-                  onClick={handleQAFill}
+                  onClick={() => alert("Cambios guardados localmente")}
                 >
                   GUARDAR
                 </Button>
