@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Typography,
@@ -53,9 +53,50 @@ const ClinicasServicioEditor = () => {
   const srvIdx = servicios.findIndex((s) => slugify(s.name) === servicioSlug);
   const srv = servicios[srvIdx];
 
+  const [optionDrafts, setOptionDrafts] = useState({});
+
   const handleUpdateServiceName = (newName) => {
     const newServicios = [...servicios];
     newServicios[srvIdx].name = newName;
+    setServicios(newServicios);
+  };
+
+  const handleAddOption = (fieldIdx, sectionIdx, fieldId) => {
+    const nextOption = (optionDrafts[fieldId] || "").trim();
+    if (!nextOption) return;
+
+    const newServicios = [...servicios];
+    const sourceField =
+      sectionIdx !== null
+        ? newServicios[srvIdx].sections[sectionIdx].fields[fieldIdx]
+        : newServicios[srvIdx].fields[fieldIdx];
+
+    const currentOptions = parseOptions(sourceField.options);
+
+    if (
+      currentOptions.some(
+        (option) => option.toLowerCase() === nextOption.toLowerCase(),
+      )
+    ) {
+      setOptionDrafts((prev) => ({ ...prev, [fieldId]: "" }));
+      return;
+    }
+
+    sourceField.options = [...currentOptions, nextOption].join(", ");
+    setServicios(newServicios);
+    setOptionDrafts((prev) => ({ ...prev, [fieldId]: "" }));
+  };
+
+  const handleRemoveOption = (fieldIdx, sectionIdx, optionToRemove) => {
+    const newServicios = [...servicios];
+    const sourceField =
+      sectionIdx !== null
+        ? newServicios[srvIdx].sections[sectionIdx].fields[fieldIdx]
+        : newServicios[srvIdx].fields[fieldIdx];
+
+    sourceField.options = parseOptions(sourceField.options)
+      .filter((option) => option !== optionToRemove)
+      .join(", ");
     setServicios(newServicios);
   };
 
@@ -196,6 +237,39 @@ const ClinicasServicioEditor = () => {
                               }}>
                                 {fieldTypes.map(opt => <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>)}
                               </Select>
+                              {(field.type === "select" || field.type === "toggle") && (
+                                <Box sx={{ mt: 1 }}>
+                                  <TextField
+                                    fullWidth
+                                    size="small"
+                                    variant="standard"
+                                    placeholder="Nueva opción + Enter"
+                                    value={optionDrafts[field.id] || ""}
+                                    onChange={(e) =>
+                                      setOptionDrafts((prev) => ({
+                                        ...prev,
+                                        [field.id]: e.target.value,
+                                      }))
+                                    }
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter" || e.key === ",") {
+                                        e.preventDefault();
+                                        handleAddOption(fIdx, sidx, field.id);
+                                      }
+                                    }}
+                                  />
+                                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
+                                    {parseOptions(field.options).map((opt, oIdx) => (
+                                      <Chip
+                                        key={oIdx}
+                                        label={opt}
+                                        size="small"
+                                        onDelete={() => handleRemoveOption(fIdx, sidx, opt)}
+                                      />
+                                    ))}
+                                  </Box>
+                                </Box>
+                              )}
                             </TableCell>
                             <TableCell align="right">
                               <IconButton size="small" onClick={() => {
@@ -242,6 +316,39 @@ const ClinicasServicioEditor = () => {
                               <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
                             ))}
                           </Select>
+                          {(field.type === "select" || field.type === "toggle") && (
+                                <Box sx={{ mt: 1 }}>
+                                  <TextField
+                                    fullWidth
+                                    size="small"
+                                    variant="standard"
+                                    placeholder="Nueva opción + Enter"
+                                    value={optionDrafts[field.id] || ""}
+                                    onChange={(e) =>
+                                      setOptionDrafts((prev) => ({
+                                        ...prev,
+                                        [field.id]: e.target.value,
+                                      }))
+                                    }
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter" || e.key === ",") {
+                                        e.preventDefault();
+                                        handleAddOption(fIdx, null, field.id);
+                                      }
+                                    }}
+                                  />
+                                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
+                                    {parseOptions(field.options).map((opt, oIdx) => (
+                                      <Chip
+                                        key={oIdx}
+                                        label={opt}
+                                        size="small"
+                                        onDelete={() => handleRemoveOption(fIdx, null, opt)}
+                                      />
+                                    ))}
+                                  </Box>
+                                </Box>
+                              )}
                         </TableCell>
                         <TableCell align="right">
                           <IconButton size="small" onClick={() => handleDeleteField(fIdx)}><DeleteOutlineIcon fontSize="small" /></IconButton>

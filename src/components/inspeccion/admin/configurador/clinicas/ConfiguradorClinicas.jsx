@@ -26,6 +26,7 @@ export const ConfigContext = createContext();
 
 export const fieldTypes = [
   { value: "boolean", label: "SI/NO", icon: <ToggleOnIcon fontSize="small" sx={{ color: "#0ea5e9" }} /> },
+  { value: "toggle", label: "Selector (Botón)", icon: <ToggleOnIcon fontSize="small" sx={{ color: "#0B85C4" }} /> },
   { value: "checkbox", label: "Casilla Verif.", icon: <CheckBoxIcon fontSize="small" sx={{ color: "#3b82f6" }} /> },
   { value: "text", label: "Texto corto", icon: <TextFieldsIcon fontSize="small" sx={{ color: "#64748b" }} /> },
   { value: "textarea", label: "Párrafo", icon: <NotesIcon fontSize="small" sx={{ color: "#64748b" }} /> },

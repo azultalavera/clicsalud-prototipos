@@ -88,8 +88,6 @@ const PantallaInspeccion = ({
     return () => window.removeEventListener("storage", handleStorageChange);
   }, [propsServicios, propsInfra, propsRrhh, propsEquipos]);
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -227,9 +225,6 @@ const PantallaInspeccion = ({
   };
 
   const renderProgressBar = (stats) => {
-    let color = "error";
-    if (stats.percent > 50) color = "warning";
-    if (stats.percent === 100) color = "success";
     return (
       <Box
         sx={{
@@ -245,8 +240,15 @@ const PantallaInspeccion = ({
           <LinearProgress
             variant="determinate"
             value={stats.percent}
-            color={color}
-            sx={{ height: 8, borderRadius: 3 }}
+            sx={{
+              height: 8,
+              borderRadius: 3,
+              bgcolor: "#f1f5f9",
+              "& .MuiLinearProgress-bar": {
+                bgcolor: "#b7b7b7",
+                borderRadius: 3,
+              },
+            }}
           />
         </Box>
         <Typography
@@ -254,12 +256,7 @@ const PantallaInspeccion = ({
           sx={{
             fontWeight: 900,
             minWidth: 45,
-            color:
-              color === "error"
-                ? "#ef4444"
-                : color === "warning"
-                  ? "#f59e0b"
-                  : "#10b981",
+            color: "#64748b",
             textAlign: "right",
           }}
         >
@@ -327,28 +324,70 @@ const PantallaInspeccion = ({
             sx={{
               px: { xs: 2, sm: 3 },
               py: 3,
-              bgcolor: "#f8fafc",
+              bgcolor: "#ffffffff",
               borderTop: "1px solid #e2e8f0",
             }}
           >
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                gap: 3,
-              }}
-            >
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {datosGeneralesSrv.sections
-                ? datosGeneralesSrv.sections.flatMap((sec) =>
-                    sec.fields.map((field) => (
-                      <FieldItem
-                        key={field.id}
-                        field={field}
-                        value={inspectorData[field.id]}
-                        onChange={handleFieldChange}
-                      />
-                    )),
-                  )
+                ? datosGeneralesSrv.sections.map((sec) => {
+                    const sectionStats = getCompletionStats(sec.fields);
+                    return (
+                      <Accordion
+                        key={sec.id}
+                        elevation={0}
+                        sx={{
+                          border: "1px solid #e2e8f0",
+                          borderRadius: "12px !important",
+                          overflow: "hidden",
+                          "&:before": { display: "none" },
+                        }}
+                      >
+                        <AccordionSummary
+                          expandIcon={
+                            <ExpandMoreIcon sx={{ color: "#0ea5e9" }} />
+                          }
+                          sx={{
+                            bgcolor: "#f8fafc",
+                            "& .MuiAccordionSummary-content": {
+                              flexDirection: "column",
+                            },
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontWeight: 800,
+                              color: "#475569",
+                              textTransform: "uppercase",
+                              fontSize: "0.8rem",
+                            }}
+                          >
+                            {sec.name}
+                          </Typography>
+                          {renderProgressBar(sectionStats)}
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ py: 3 }}>
+                          <Box
+                            sx={{
+                              display: "grid",
+                              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                              gap: 3,
+                            }}
+                          >
+                            {sec.fields.map((field) => (
+                              <FieldItem
+                                key={field.id}
+                                field={field}
+                                value={inspectorData[field.id]}
+                                onChange={handleFieldChange}
+                              />
+                            ))}
+                          </Box>
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  })
                 : datosGeneralesSrv.fields?.map((field) => (
                     <FieldItem
                       key={field.id}
@@ -721,6 +760,57 @@ const FieldItem = ({ field, value, onChange }) => {
             </ToggleButton>
           </ToggleButtonGroup>
         );
+      case "date":
+        return (
+          <TextField
+            type="date"
+            fullWidth
+            variant="outlined"
+            size="small"
+            value={value || ""}
+            onChange={(e) => onChange(field.id, e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              sx: {
+                borderRadius: 2,
+                fontSize: "14px",
+                height: 48,
+                fontWeight: 600,
+              },
+            }}
+          />
+        );
+      case "toggle":
+        return (
+          <ToggleButtonGroup
+            value={value}
+            exclusive
+            onChange={(e, val) => {
+              if (val !== null) onChange(field.id, val);
+            }}
+            fullWidth
+            sx={{ height: 48 }}
+          >
+            {field.options?.split(",").map((opt) => (
+              <ToggleButton
+                key={opt}
+                value={opt.trim()}
+                sx={{
+                  flex: 1,
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  "&.Mui-selected": {
+                    bgcolor: "#e0f2fe",
+                    color: "#0369a1",
+                    fontWeight: 900,
+                  },
+                }}
+              >
+                {opt.trim()}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        );
       case "select":
         return (
           <TextField
@@ -731,7 +821,12 @@ const FieldItem = ({ field, value, onChange }) => {
             value={value || ""}
             onChange={(e) => onChange(field.id, e.target.value)}
             InputProps={{
-              sx: { borderRadius: 2, fontSize: "14px", fontWeight: 500 },
+              sx: {
+                borderRadius: 2,
+                fontSize: "14px",
+                fontWeight: 500,
+                height: 48,
+              },
             }}
             SelectProps={{
               MenuProps: {

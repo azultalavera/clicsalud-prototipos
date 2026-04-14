@@ -18,7 +18,7 @@ const theme = createTheme({
   palette: {
     primary: { main: '#005596' },
     secondary: { main: '#29b6f6' },
-    background: { default: '#f5f5f5' },
+    background: { default: '#ffffff' },
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',

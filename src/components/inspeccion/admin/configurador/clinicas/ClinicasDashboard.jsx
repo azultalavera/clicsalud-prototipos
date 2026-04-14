@@ -448,7 +448,7 @@ const ClinicasDashboard = () => {
                                 },
                               }}
                             />
-                            {field.type === "select" && (
+                            {(field.type === "select" || field.type === "toggle") && (
                               <Box sx={{ mt: 1, px: 0.5 }}>
                                 <TextField
                                   fullWidth

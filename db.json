@@ -1804,7 +1804,7 @@
           "sections": [
             {
               "id": "sec-genbpzj4",
-              "name": "General",
+              "name": "DATOS DEL ESTABLECIMIENTO Y DE LA INSPECCIÓN",
               "fields": [
                 {
                   "id": "f-n56ha4",
@@ -1827,7 +1827,7 @@
                 {
                   "id": "f-nomtcemx",
                   "label": "Nombre Establecimiento",
-                  "type": "checkbox",
+                  "type": "text",
                   "options": ""
                 },
                 {
@@ -1861,22 +1861,10 @@
                   "options": ""
                 },
                 {
-                  "id": "f-nomymx9p",
-                  "label": "Nombre Inspector",
-                  "type": "text",
-                  "options": ""
-                },
-                {
-                  "id": "f-dnit7ekl",
-                  "label": "DNI Inspector",
-                  "type": "number",
-                  "options": ""
-                },
-                {
                   "id": "f-rad2gboj",
                   "label": "Radiofísica",
                   "type": "boolean",
-                  "options": "TRUE, FALSE"
+                  "options": "SI, NO"
                 },
                 {
                   "id": "f-tiph0tnw",
@@ -1940,7 +1928,7 @@
               "fields": [
                 {
                   "id": "f-revmhnr2",
-                  "label": "Revision de Historias Clínicas",
+                  "label": "Revisión de Historias Clínicas",
                   "type": "boolean",
                   "options": "SI, NO"
                 },
@@ -2167,12 +2155,6 @@
               "name": "SECTOR DE INTERNACIÓN CUMPLE Y AREA DE RESIDUOS",
               "fields": [
                 {
-                  "id": "f-con9yhwh",
-                  "label": "Condiciones Edilicias",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
                   "id": "f-recx8kr",
                   "label": "Área de Residuos",
                   "type": "boolean",
@@ -2191,16 +2173,10 @@
                   "options": "SI, NO"
                 },
                 {
-                  "id": "f-intanjlq",
-                  "label": "Interno/Externo",
-                  "type": "text",
-                  "options": ""
-                },
-                {
                   "id": "f-prof2qlm",
                   "label": "Propio/Tercerizado",
-                  "type": "text",
-                  "options": ""
+                  "type": "select",
+                  "options": "PROPIO, TERCERIZADO"
                 }
               ]
             }

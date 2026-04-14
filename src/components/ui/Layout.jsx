@@ -165,7 +165,7 @@ const Layout = ({ children }) => {
           backgroundColor: isInspector ? '#ffffff' : 'transparent',
           backgroundAttachment: 'fixed', 
           backgroundSize: 'cover',
-          minHeight: '100vh'
+          minHeight: 'calc(100vh - 64px)'
         }}
       >
         {children}
