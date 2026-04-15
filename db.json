@@ -2177,6 +2177,12 @@
                   "label": "Propio/Tercerizado",
                   "type": "select",
                   "options": "PROPIO, TERCERIZADO"
+                },
+                {
+                  "id": "new-1776187387395",
+                  "label": "Interno/Externo",
+                  "type": "select",
+                  "options": "INTERNO, EXTERNO"
                 }
               ]
             }
@@ -2358,7 +2364,7 @@
         },
         {
           "id": "srv-quirofano",
-          "name": "QUIROFANO",
+          "name": "QUIRÓFANO",
           "sections": [
             {
               "id": "sec-seray9qq",
