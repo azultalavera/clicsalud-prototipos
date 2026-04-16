@@ -1110,643 +1110,643 @@
       "id": "14",
       "nombre": "CIRUGÍA INFANTIL (CIRUG. PEDIÁTRICA)",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "15",
       "nombre": "CIRUGÍA PLÁSTICA Y REPARADORA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "16",
       "nombre": "CIRUGÍA PLÁSTICA/REPARAD (POSBÁSICA)",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "17",
       "nombre": "CIRUGÍA VASCULAR PERIFÉRICA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "18",
       "nombre": "CIRUGÍA/TRAUMBUCO-MAXILO-FACIAL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "19",
       "nombre": "CLÍNICA MÉDICA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "20",
       "nombre": "COLOPROCTOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "21",
       "nombre": "DERMATOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "22",
       "nombre": "DERMATOLOGÍA PEDIÁTRICA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "23",
       "nombre": "EMERGENTOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "24",
       "nombre": "ENDOCRINOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "25",
       "nombre": "ENDOCRINOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "26",
       "nombre": "ENFERMERÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "27",
       "nombre": "FARMACOLOGÍA CLÍNICA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "28",
       "nombre": "FERTILIZACIÓN ASISTIDA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "29",
       "nombre": "FISIATRÍA (MEDICINA FÍSICA/REHABILITACIÓN)",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "30",
       "nombre": "FONOAUDIOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "31",
       "nombre": "GASTROENTEROLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "32",
       "nombre": "GASTROENTEROLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "33",
       "nombre": "GENÉTICA MÉDICA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "34",
       "nombre": "GERIATRÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "35",
       "nombre": "GINECOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "36",
       "nombre": "GUARDIA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "37",
       "nombre": "HEMATOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "38",
       "nombre": "HEMATOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "39",
       "nombre": "HOSPITAL DE DIA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "40",
       "nombre": "INFECTOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "41",
       "nombre": "INFECTOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "42",
       "nombre": "INMUNIZACIONES",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "43",
       "nombre": "INMUNOLOGÍA PEDIÁTRICA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "44",
       "nombre": "INTERDISCIPLINARIA EDUCACIÓN PARA LA SALUD",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "45",
       "nombre": "INTERDISCIPLINARIA EN CUIDADOS PALIATIVOS",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "46",
       "nombre": "INTERDISCIPLINARIA EN GERONTOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "47",
       "nombre": "INTERNACIÓN DOMICILIARIA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "48",
       "nombre": "KINESIOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "49",
       "nombre": "KINESIOLOGÍA PEDIATRÍA Y NEONATOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "50",
       "nombre": "MASTOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "51",
       "nombre": "MEDICINA DEL DEPORTE",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "52",
       "nombre": "MEDICINA DEL TRABAJO",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "53",
       "nombre": "MEDICINA GENERAL/MEDICINA DE FAMILIA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "54",
       "nombre": "MEDICINA LEGAL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "55",
       "nombre": "MEDICINA NUCLEAR",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "56",
       "nombre": "MUSICOTERAPIA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "57",
       "nombre": "NEFROLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "58",
       "nombre": "NEFROLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "59",
       "nombre": "NEONATOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "60",
       "nombre": "NEUMONOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "61",
       "nombre": "NEUMONOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "62",
       "nombre": "NEUROCIRUGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "63",
       "nombre": "NEUROLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "64",
       "nombre": "NEUROLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "65",
       "nombre": "NUTRICIÓN",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "66",
       "nombre": "NUTRICIÓN INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "67",
       "nombre": "NUTRICIONISTA-DIETISTA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "68",
       "nombre": "OBSTETRICIA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "69",
       "nombre": "ODONTOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "70",
       "nombre": "ODONTOPEDIATRÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "71",
       "nombre": "OFTALMOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "72",
       "nombre": "ONCOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "73",
       "nombre": "ONCOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "74",
       "nombre": "ORTOPEDIA Y TRAUMATOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "75",
       "nombre": "ORTOPEDIA Y TRAUMATOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "76",
       "nombre": "OTORRINOLARINGOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "77",
       "nombre": "OTORRINOLARINGOLOGÍA PEDIÁTRICA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "78",
       "nombre": "OTRAS PRESTACIONES",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "79",
       "nombre": "PEDIATRÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "80",
       "nombre": "PSICOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "81",
       "nombre": "PSICOLOGÍA CLÍNICA INFANTO-JUVENIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "82",
       "nombre": "PSICOPEDAGOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "83",
       "nombre": "PSIQUIATRÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "84",
       "nombre": "PSIQUIATRÍA INFANTO-JUVENIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "85",
       "nombre": "RADIOTERAPIA O TERAPIA RADIANTE",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "86",
       "nombre": "REUMATOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "87",
       "nombre": "REUMATOLOGÍA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "88",
       "nombre": "TERAPIA INTENSIVA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "89",
       "nombre": "TERAPIA INTENSIVA INFANTIL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "90",
       "nombre": "TERAPIA OCUPACIONAL",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "91",
       "nombre": "TOCOGINECOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "92",
       "nombre": "TOXICOLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "93",
       "nombre": "TRASLADOS SANITARIOS",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "94",
       "nombre": "UROLOGÍA",
       "categoriaId": "SERVICIO",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "100",
       "nombre": "DIAGNÓSTICO X IMÁGENES",
       "categoriaId": "COMPLEMENTARIO",
-      "reconocimiento": "nacional"
+      "reconocimiento": "ambos"
     },
     {
       "id": "101",
       "nombre": "DIÁLISIS",
       "categoriaId": "COMPLEMENTARIO",
-      "reconocimiento": "nacional"
+      "reconocimiento": "ambos"
     },
     {
       "id": "102",
       "nombre": "FARMACIA",
       "categoriaId": "COMPLEMENTARIO",
-      "reconocimiento": "nacional"
+      "reconocimiento": "ambos"
     },
     {
       "id": "103",
       "nombre": "HEMODINAMIA",
       "categoriaId": "COMPLEMENTARIO",
-      "reconocimiento": "nacional"
+      "reconocimiento": "ambos"
     },
     {
       "id": "104",
       "nombre": "HEMOTERAPIA",
       "categoriaId": "COMPLEMENTARIO",
-      "reconocimiento": "nacional"
+      "reconocimiento": "ambos"
     },
     {
       "id": "105",
       "nombre": "LABORATORIO ANÁLISIS CLÍNICOS",
       "categoriaId": "COMPLEMENTARIO",
-      "reconocimiento": "nacional"
+      "reconocimiento": "ambos"
     },
     {
       "id": "200",
       "nombre": "UNIDAD DE TERAPIA INTENSIVA",
       "categoriaId": "INTERNACION",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "201",
       "nombre": "UNIDAD CORONARIA",
       "categoriaId": "INTERNACION",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "202",
       "nombre": "UNIDAD DE CUIDADOS INTERMEDIOS",
       "categoriaId": "INTERNACION",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "203",
       "nombre": "INTERNACIÓN CRÓNICA",
       "categoriaId": "INTERNACION",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "204",
       "nombre": "UNIDAD DE TERAPIA INTENSIVA NEONATAL",
       "categoriaId": "INTERNACION",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "205",
       "nombre": "UNIDAD DE TERAPIA INTENSIVA PEDIÁTRICA",
       "categoriaId": "INTERNACION",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "300",
       "nombre": "SALA DE PROCEDIMIENTO",
       "categoriaId": "SALA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "301",
       "nombre": "SALA DE PARTO",
       "categoriaId": "SALA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "302",
       "nombre": "SALA DE ENDOSCOPÍA",
       "categoriaId": "SALA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "303",
       "nombre": "QUIRÓFANO",
       "categoriaId": "SALA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "304",
       "nombre": "QUIRÓFANO PARA HEMODINAMIA",
       "categoriaId": "SALA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "400",
       "nombre": "INTERNACIÓN GENERAL",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "401",
       "nombre": "TERAPIA INTENSIVA PEDIÁTRICA",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "402",
       "nombre": "INTERNACIÓN PROLONGADA",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "403",
       "nombre": "TERAPIA INTENSIVA ADULTOS",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "404",
       "nombre": "PEDIATRÍA",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "405",
       "nombre": "UNIDAD CORONARIA",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "406",
       "nombre": "NEONATOLOGÍA",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "407",
       "nombre": "UNIDAD CUIDADOS INTERMEDIOS",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "408",
       "nombre": "HEMODIÁLISIS",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "409",
@@ -1758,13 +1758,13 @@
       "id": "410",
       "nombre": "MATERNIDAD",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     },
     {
       "id": "411",
       "nombre": "SHOCK ROOM",
       "categoriaId": "CAMA",
-      "reconocimiento": "provincial"
+      "reconocimiento": "ambos"
     }
   ],
   "tipologias": [

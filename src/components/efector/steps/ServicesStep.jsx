@@ -70,6 +70,19 @@ const QuantitySelector = ({ value, onChange }) => {
   );
 };
 
+const getRecognitionColor = (type) => {
+  switch (type) {
+    case "nacional":
+      return "#2196f3";
+    case "provincial":
+      return "#4caf50";
+    case "ambos":
+      return "#ff9800";
+    default:
+      return "#005596";
+  }
+};
+
 const ServicesStep = ({
   selectedServices,
   setSelectedServices,
@@ -291,6 +304,68 @@ const ServicesStep = ({
         }}
       >
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          {/* REFERENCIAS */}
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 1.5,
+              mb: 2,
+              bgcolor: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              gap: 3,
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{
+                fontWeight: "bold",
+                color: "#666",
+                textTransform: "uppercase",
+              }}
+            >
+              Reconocimiento:
+            </Typography>
+            <Stack direction="row" spacing={2}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <Chip
+                  label="Nacional"
+                  size="small"
+                  sx={{
+                    bgcolor: "#2196f3",
+                    color: "white",
+                    fontSize: "0.65rem",
+                    height: 20,
+                  }}
+                />
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <Chip
+                  label="Provincial"
+                  size="small"
+                  sx={{
+                    bgcolor: "#4caf50",
+                    color: "white",
+                    fontSize: "0.65rem",
+                    height: 20,
+                  }}
+                />
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <Chip
+                  label="Nacional y Provincial"
+                  size="small"
+                  sx={{
+                    bgcolor: "#ff9800",
+                    color: "white",
+                    fontSize: "0.65rem",
+                    height: 20,
+                  }}
+                />
+              </Box>
+            </Stack>
+          </Paper>
+
           <Tabs
             value={activeTab}
             onChange={(e, v) => {
@@ -374,8 +449,12 @@ const ServicesStep = ({
                                   checked={isSelected}
                                   onChange={() => toggleService(item.nombre)}
                                   sx={{
-                                    color: "#005596",
-                                    "&.Mui-checked": { color: "#005596" },
+                                    color: getRecognitionColor(item.reconocimiento),
+                                    "&.Mui-checked": {
+                                      color: getRecognitionColor(
+                                        item.reconocimiento,
+                                      ),
+                                    },
                                   }}
                                 />
                               )}
