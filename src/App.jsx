@@ -13,6 +13,7 @@ import JefeServicioConfig from './components/backoffice/JefeServicioConfig';
 import ConfiguradorInspeccionRouter from './components/inspeccion/admin/configurador/ConfiguradorRouter';
 import PantallaInspeccion from './components/inspeccion/inspector/PantallaInspeccion';
 import Layout from './components/ui/Layout';
+import RoleSelection from './components/ui/RoleSelection';
 
 const theme = createTheme({
   palette: {
@@ -31,8 +32,11 @@ function App() {
       <CssBaseline /> 
       <Router>
         <Routes>
+          {/* LANDING SELECCIÓN DE ROL */}
+          <Route path="/" element={<RoleSelection />} />
+
           {/* RUTAS ADMINISTRADOR */}
-          <Route path="/" element={<DashboardAdmin />} />
+          <Route path="/admin" element={<DashboardAdmin />} />
           <Route path="/clicsalud-backoffice/asignar-rol" element={<AsignacionRoles />} />
           <Route path="/clicsalud-backoffice/gestion-recursos" element={<GestionRecursos />} />
           <Route path="/clicsalud-backoffice/gestion-recursos/infraestructura" element={<Infraestructura />} />

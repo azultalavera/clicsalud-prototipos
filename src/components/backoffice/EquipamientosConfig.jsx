@@ -127,7 +127,8 @@ const EquipamientosConfig = () => {
   const [filtroOrigen, setFiltroOrigen] = useState(null);
   const [filtroEquipamiento, setFiltroEquipamiento] = useState(null);
   const [filtroRegla, setFiltroRegla] = useState(null);
-  const [mostrarResultados, setMostrarResultados] = useState(false);
+  const [serviciosMaster, setServiciosMaster] = useState([]);
+  const [mostrarResultados, setMostrarResultados] = useState(true);
   const [filtrosAplicados, setFiltrosAplicados] = useState({});
 
   const [currentItem, setCurrentItem] = useState({
@@ -147,9 +148,14 @@ const EquipamientosConfig = () => {
   const cargarDatos = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3001/equipamientos");
-      const json = await res.json();
-      setData(json);
+      const [resEq, resSrv] = await Promise.all([
+        fetch("http://localhost:3001/equipamientos"),
+        fetch("http://localhost:3001/configuraciones_maestras")
+      ]);
+      const jsonEq = await resEq.json();
+      const jsonSrv = await resSrv.json();
+      setData(Array.isArray(jsonEq) ? jsonEq : []);
+      setServiciosMaster(Array.isArray(jsonSrv) ? jsonSrv : []);
     } catch (err) {
       console.error("Error al cargar datos:", err);
     } finally {
@@ -301,11 +307,14 @@ const EquipamientosConfig = () => {
               <Box sx={{ display: "flex", gap: 4, width: "100%" }}>
                 <Box sx={{ flex: "1 1 50%" }}>
                   <Autocomplete
-                    options={[...new Set(data.map((i) => i.tipologia))]
+                    options={[...new Set((serviciosMaster || []).map((i) => i.tipologia))]
                       .filter(Boolean)
                       .sort()}
                     value={filtroTipologia}
-                    onChange={(e, v) => setFiltroTipologia(v)}
+                    onChange={(e, v) => {
+                      setFiltroTipologia(v);
+                      setFiltroOrigen(null);
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -316,15 +325,11 @@ const EquipamientosConfig = () => {
                     )}
                   />
                 </Box>
-                <Box sx={{ flex: "1 1 50%" }} />
               </Box>
-
               <Box sx={{ display: "flex", gap: 4, width: "100%" }}>
                 <Box sx={{ flex: "1 1 50%" }}>
                   <Autocomplete
-                    options={[...new Set(data.map((i) => i.tipo))]
-                      .filter(Boolean)
-                      .sort()}
+                    options={["SERVICIO", "SALA", "CAMA", "OTRO"]}
                     value={filtroTipoOrigen}
                     onChange={(e, v) => setFiltroTipoOrigen(v)}
                     renderInput={(params) => (
@@ -339,9 +344,12 @@ const EquipamientosConfig = () => {
                 </Box>
                 <Box sx={{ flex: "1 1 50%" }}>
                   <Autocomplete
-                    options={[...new Set(data.map((i) => i.origen))]
-                      .filter(Boolean)
-                      .sort()}
+                    options={[...new Set(
+                      (serviciosMaster || [])
+                        .filter(s => !filtroTipologia || s.tipologia === filtroTipologia)
+                        .flatMap(s => s.servicios || [])
+                        .flatMap(s => [s.name, ...(s.sections?.map(sec => sec.name) || [])])
+                    )].filter(Boolean).sort()}
                     value={filtroOrigen}
                     onChange={(e, v) => setFiltroOrigen(v)}
                     renderInput={(params) => (
@@ -409,7 +417,7 @@ const EquipamientosConfig = () => {
                     setFiltroEquipamiento(null);
                     setFiltroRegla(null);
                     setFiltrosAplicados({});
-                    setMostrarResultados(false);
+                    setMostrarResultados(true);
                   }}
                   sx={{
                     color: "#29b6f6",
@@ -614,7 +622,7 @@ const EquipamientosConfig = () => {
               <Autocomplete
                 freeSolo
                 forcePopupIcon
-                options={[...new Set(data.map((i) => i.tipologia))]
+                options={[...new Set((serviciosMaster || []).map((i) => i.tipologia))]
                   .filter(Boolean)
                   .sort()}
                 value={currentItem.tipologia || ""}
@@ -643,18 +651,13 @@ const EquipamientosConfig = () => {
                     freeSolo
                     forcePopupIcon
                     disabled={!currentItem.tipologia}
-                    options={[...new Set(data.map((i) => i.tipo))]
-                      .filter(Boolean)
-                      .sort()}
+                    options={["SERVICIO", "SALA", "CAMA", "OTRO"]}
                     value={currentItem.tipo || ""}
                     onChange={(e, newValue) =>
                       setCurrentItem({ ...currentItem, tipo: newValue || "" })
                     }
                     onInputChange={(e, newInputValue) =>
-                      setCurrentItem({
-                        ...currentItem,
-                        tipo: newInputValue || "",
-                      })
+                      setCurrentItem({ ...currentItem, tipo: newInputValue || "" })
                     }
                     renderInput={(params) => (
                       <TextField
@@ -662,6 +665,7 @@ const EquipamientosConfig = () => {
                         label="Tipo de Origen"
                         variant="standard"
                         fullWidth
+                        required
                       />
                     )}
                   />
@@ -671,18 +675,18 @@ const EquipamientosConfig = () => {
                     freeSolo
                     forcePopupIcon
                     disabled={!currentItem.tipologia}
-                    options={[...new Set(data.map((i) => i.origen))]
-                      .filter(Boolean)
-                      .sort()}
+                    options={[...new Set(
+                      (serviciosMaster || [])
+                        .filter(s => !currentItem.tipologia || s.tipologia === currentItem.tipologia)
+                        .flatMap(s => s.servicios || [])
+                        .flatMap(s => [s.name, ...(s.sections?.map(sec => sec.name) || [])])
+                    )].filter(Boolean).sort()}
                     value={currentItem.origen || ""}
                     onChange={(e, newValue) =>
                       setCurrentItem({ ...currentItem, origen: newValue || "" })
                     }
                     onInputChange={(e, newInputValue) =>
-                      setCurrentItem({
-                        ...currentItem,
-                        origen: newInputValue || "",
-                      })
+                      setCurrentItem({ ...currentItem, origen: newInputValue || "" })
                     }
                     renderInput={(params) => (
                       <TextField
@@ -690,6 +694,7 @@ const EquipamientosConfig = () => {
                         label="Origen"
                         variant="standard"
                         fullWidth
+                        required
                       />
                     )}
                   />

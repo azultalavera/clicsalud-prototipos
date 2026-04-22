@@ -34,15 +34,9 @@ export const fieldTypes = [
   { value: "date", label: "Fecha", icon: <EventIcon fontSize="small" sx={{ color: "#f59e0b" }} /> },
   { value: "time", label: "Hora", icon: <AccessTimeIcon fontSize="small" sx={{ color: "#f59e0b" }} /> },
   { value: "select", label: "Lista Desplegable", icon: <ListAltIcon fontSize="small" sx={{ color: "#8b5cf6" }} /> },
-];
-
-export const tramiteSectionsTemplate = [
-  { id: "tramite-estab", name: "ESTABLECIMIENTO", isTramite: true, isDeletable: false, fields: [] },
-  { id: "tramite-dirtec", name: "DIRECTOR TÉCNICO", isTramite: true, isDeletable: false, fields: [] },
-  { id: "tramite-serv", name: "SERVICIOS", isTramite: true, isDeletable: false, fields: [] },
-  { id: "tramite-rrhh", name: "RECURSOS HUMANOS", isTramite: true, isDeletable: false, fields: [] },
-  { id: "tramite-jefe", name: "JEFE DE SERVICIO", isTramite: true, isDeletable: false, fields: [] },
-  { id: "tramite-equip", name: "EQUIPAMIENTOS", isTramite: true, isDeletable: false, fields: [] },
+  { value: "equipamiento", label: "Equipamiento Mínimo", icon: <ListAltIcon fontSize="small" sx={{ color: "#32A430" }} /> },
+  { value: "rrhh", label: "RRHH Mínimo", icon: <ListAltIcon fontSize="small" sx={{ color: "#f59e0b" }} /> },
+  { value: "jefe_servicio", label: "Jefe de Servicio", icon: <ListAltIcon fontSize="small" sx={{ color: "#ef4444" }} /> },
 ];
 
 export const initialServiciosTemplate = [
@@ -54,12 +48,6 @@ export const initialServiciosTemplate = [
       { id: "sec-reg", name: "REGISTROS", fields: [] },
       { id: "sec-dat", name: "DATOS", fields: [] },
     ],
-  },
-  {
-    id: "srv-uti",
-    name: "Unidades de Terapia Intensiva (UTI)",
-    isDeletable: true,
-    fields: [],
   },
 ];
 

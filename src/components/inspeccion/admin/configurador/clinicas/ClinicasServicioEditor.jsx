@@ -18,7 +18,57 @@ import {
   MenuItem,
   Fab,
   TableContainer,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
+
+const TRAMITE_MAPPING = {
+  "ARQUITECTURA": [
+    "Nombre del Establecimiento",
+    "N° de Expediente",
+    "Descripción",
+    "Plano de arquitectura",
+    "Memoria descriptiva"
+  ],
+  "ESTABLECIMIENTO": [
+    "Denominación",
+    "Tipo dependencia",
+    "Propiedad",
+    "CUIT",
+    "Localidad",
+    "Dirección",
+    "Contacto (Email)",
+    "Contacto (Teléfono)"
+  ],
+  "SALAS": [
+    "QUIRÓFANOS",
+    "QUIRÓFANOS PARA HEMODINAMIA",
+    "SALA DE ENDOSCOPÍA",
+    "SALA DE PARTOS",
+    "SALA DE PROCEDIMIENTOS"
+  ],
+  "CAMAS": [
+    "HEMODIÁLISIS",
+    "INTERNACIÓN GENERAL",
+    "INTERNACIÓN PROLONGADA",
+    "MATERNIDAD",
+    "NEONATOLOGÍA",
+    "PEDIATRÍA",
+    "SHOCK ROOM",
+    "TERAPIA INTENSIVA ADULTOS",
+    "TERAPIA INTENSIVA PEDIÁTRICA",
+    "UNIDAD CORONARIA",
+    "UNIDAD CUIDADOS INTERMEDIOS",
+    "USO TRANSITORIO (Guardia, Onco, CA Quirurg)"
+  ],
+  "DOCUMENTOS ADJUNTOS": [
+    "Vto. Plan de Evacuación",
+    "Vto. Bomberos",
+    "Vto. Extinguidores",
+    "Habilitación Laboratorio",
+    "Habilitación Municipal"
+  ]
+};
 import {
   MedicalServices as MedicalServicesIcon,
   ArrowBack as ArrowBackIcon,
@@ -37,6 +87,26 @@ const ClinicasServicioEditor = () => {
 
   const { servicioSlug } = useParams();
   const navigate = useNavigate();
+  const [equipamientos, setEquipamientos] = useState([]);
+  const [rrhhList, setRrhhList] = useState([]);
+  const [jefeServicioList, setJefeServicioList] = useState([]);
+
+  React.useEffect(() => {
+    fetch("http://localhost:3001/equipamientos")
+      .then((res) => res.json())
+      .then((data) => setEquipamientos(data))
+      .catch((err) => console.error("Error fetching equipamientos:", err));
+
+    fetch("http://localhost:3001/recursos-humanos")
+      .then((res) => res.json())
+      .then((data) => setRrhhList(data))
+      .catch((err) => console.error("Error fetching rrhh:", err));
+
+    fetch("http://localhost:3001/jefe-servicio")
+      .then((res) => res.json())
+      .then((data) => setJefeServicioList(data))
+      .catch((err) => console.error("Error fetching jefe-servicio:", err));
+  }, []);
 
   const parseOptions = (options = "") =>
     String(options)
@@ -201,11 +271,11 @@ const ClinicasServicioEditor = () => {
                       Sección: {section.name}
                     </Typography>
                     <IconButton size="small" onClick={() => {
-                        const newServicios = [...servicios];
-                        newServicios[srvIdx].sections.splice(sidx, 1);
-                        setServicios(newServicios);
+                      const newServicios = [...servicios];
+                      newServicios[srvIdx].sections.splice(sidx, 1);
+                      setServicios(newServicios);
                     }}>
-                        <DeleteOutlineIcon fontSize="small" />
+                      <DeleteOutlineIcon fontSize="small" />
                     </IconButton>
                   </Box>
                   <TableContainer>
@@ -213,8 +283,9 @@ const ClinicasServicioEditor = () => {
                       <TableHead sx={{ borderBottom: "1px solid #f1f5f9" }}>
                         <TableRow>
                           <TableCell sx={{ width: 40 }}></TableCell>
-                          <TableCell sx={{ color: "#94a3b8", fontWeight: 700, fontSize: "0.8rem", textTransform: "uppercase" }}>PARÁMETRO</TableCell>
-                          <TableCell sx={{ width: "220px", color: "#94a3b8", fontWeight: 700, fontSize: "0.8rem", textTransform: "uppercase" }}>TIPO</TableCell>
+                          <TableCell sx={{ width: "180px", color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>ORIGEN</TableCell>
+                          <TableCell sx={{ color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>PARÁMETRO / REF. TRÁMITE</TableCell>
+                          <TableCell sx={{ width: "220px", color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>TIPO DE DATO</TableCell>
                           <TableCell align="right" sx={{ width: 60 }}></TableCell>
                         </TableRow>
                       </TableHead>
@@ -223,19 +294,109 @@ const ClinicasServicioEditor = () => {
                           <TableRow key={field.id} sx={{ "&:hover": { backgroundColor: "#fcfcfc" } }}>
                             <TableCell align="center"><DragIndicatorIcon sx={{ color: "#cbd5e1", opacity: 0.2 }} fontSize="small" /></TableCell>
                             <TableCell>
-                              <TextField fullWidth size="small" variant="standard" value={field.label} onChange={(e) => {
+                              <ToggleButtonGroup
+                                size="small"
+                                value={field.origin === "TRÁMITE" ? "TRÁMITE" : "ADMIN"}
+                                exclusive
+                                onChange={(e, val) => {
+                                  if (!val) return;
                                   const newServicios = [...servicios];
-                                  newServicios[srvIdx].sections[sidx].fields[fIdx].label = e.target.value;
+                                  const target = newServicios[srvIdx].sections[sidx].fields[fIdx];
+                                  target.origin = val;
+                                  if (val === "ADMIN") delete target.tramiteField;
                                   setServicios(newServicios);
-                              }} />
+                                }}
+                                sx={{
+                                  height: 32,
+                                  "& .MuiToggleButton-root": {
+                                    px: 2,
+                                    fontSize: "0.7rem",
+                                    fontWeight: 700,
+                                    border: "1px solid #e2e8f0",
+                                    "&.Mui-selected": {
+                                      bgcolor: "#0B85C4",
+                                      color: "white",
+                                      "&:hover": { bgcolor: "#096da1" }
+                                    }
+                                  }
+                                }}
+                              >
+                                <ToggleButton value="ADMIN">ADMIN</ToggleButton>
+                                <ToggleButton value="TRÁMITE">TRÁMITE</ToggleButton>
+                              </ToggleButtonGroup>
                             </TableCell>
                             <TableCell>
-                              <Select fullWidth size="small" value={field.type} variant="standard" onChange={(e) => {
-                                  const newServicios = [...servicios];
-                                  newServicios[srvIdx].sections[sidx].fields[fIdx].type = e.target.value;
-                                  setServicios(newServicios);
+                              {field.origin === "TRÁMITE" ? (
+                                <Select
+                                  fullWidth
+                                  size="small"
+                                  value={field.tramiteField || ""}
+                                  variant="standard"
+                                  sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#0B85C4' }}
+                                  onChange={(e) => {
+                                    const newServicios = [...servicios];
+                                    const val = e.target.value;
+                                    newServicios[srvIdx].sections[sidx].fields[fIdx].tramiteField = val;
+                                    newServicios[srvIdx].sections[sidx].fields[fIdx].label = val.split(" > ")[1] || val;
+                                    setServicios(newServicios);
+                                  }}
+                                  displayEmpty
+                                >
+                                  <MenuItem value="" disabled>Seleccionar campo del trámite...</MenuItem>
+                                  {Object.keys(TRAMITE_MAPPING).map(category => [
+                                    <MenuItem key={category} disabled sx={{ backgroundColor: '#f8fafc', fontWeight: 800, color: '#64748b', fontSize: '0.7rem' }}>
+                                      {category}
+                                    </MenuItem>,
+                                    ...TRAMITE_MAPPING[category].map(f => (
+                                      <MenuItem key={f} value={`${category} > ${f}`} sx={{ pl: 3, fontSize: '0.85rem' }}>
+                                        {f}
+                                      </MenuItem>
+                                    ))
+                                  ])}
+                                </Select>
+                              ) : (
+                                <>
+                                  {field.type === "equipamiento" || field.type === "rrhh" || field.type === "jefe_servicio" ? (
+                                    <Select
+                                      fullWidth size="small" variant="standard"
+                                      value={field.label || ""}
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        const newServicios = [...servicios];
+                                        newServicios[srvIdx].sections[sidx].fields[fIdx].label = val;
+                                        setServicios(newServicios);
+                                      }}
+                                      sx={{ fontSize: "0.85rem", fontWeight: 700, color: field.type === 'equipamiento' ? '#32A430' : field.type === 'rrhh' ? '#f59e0b' : '#ef4444' }}
+                                      displayEmpty
+                                    >
+                                      <MenuItem value="" disabled>Seleccionar requisito...</MenuItem>
+                                      {field.type === "equipamiento" && equipamientos.map((e) => (
+                                        <MenuItem key={e.id} value={e.equipamiento}>{e.equipamiento}</MenuItem>
+                                      ))}
+                                      {field.type === "rrhh" && rrhhList.map((r) => (
+                                        <MenuItem key={r.id} value={`${r.origen} - ${r.especialidad}`}>{r.origen} - {r.especialidad}</MenuItem>
+                                      ))}
+                                      {field.type === "jefe_servicio" && jefeServicioList.map((j) => (
+                                        <MenuItem key={j.id} value={`${j.origen} - ${j.especialidad}`}>{j.origen} - {j.especialidad}</MenuItem>
+                                      ))}
+                                    </Select>
+                                  ) : (
+                                    <TextField fullWidth size="small" variant="standard" placeholder="Nombre del parámetro..." value={field.label} onChange={(e) => {
+                                      const newServicios = [...servicios];
+                                      newServicios[srvIdx].sections[sidx].fields[fIdx].label = e.target.value;
+                                      setServicios(newServicios);
+                                    }} />
+                                  )}
+                                </>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Select fullWidth size="small" value={field.type} variant="standard" sx={{ fontSize: '0.85rem' }} onChange={(e) => {
+                                const newServicios = [...servicios];
+                                newServicios[srvIdx].sections[sidx].fields[fIdx].type = e.target.value;
+                                setServicios(newServicios);
                               }}>
-                                {fieldTypes.map(opt => <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>)}
+                                {fieldTypes.map(opt => <MenuItem key={opt.value} value={opt.value} sx={{ fontSize: '0.85rem' }}>{opt.label}</MenuItem>)}
                               </Select>
                               {(field.type === "select" || field.type === "toggle") && (
                                 <Box sx={{ mt: 1 }}>
@@ -273,9 +434,9 @@ const ClinicasServicioEditor = () => {
                             </TableCell>
                             <TableCell align="right">
                               <IconButton size="small" onClick={() => {
-                                  const newServicios = [...servicios];
-                                  newServicios[srvIdx].sections[sidx].fields.splice(fIdx, 1);
-                                  setServicios(newServicios);
+                                const newServicios = [...servicios];
+                                newServicios[srvIdx].sections[sidx].fields.splice(fIdx, 1);
+                                setServicios(newServicios);
                               }}><DeleteOutlineIcon fontSize="small" /></IconButton>
                             </TableCell>
                           </TableRow>
@@ -285,9 +446,9 @@ const ClinicasServicioEditor = () => {
                   </TableContainer>
                   <Box sx={{ p: 1, px: 4 }}>
                     <Button size="small" startIcon={<AddIcon />} onClick={() => {
-                        const newServicios = [...servicios];
-                        newServicios[srvIdx].sections[sidx].fields.push({ id: `new-${Date.now()}`, label: "", type: "text", options: "" });
-                        setServicios(newServicios);
+                      const newServicios = [...servicios];
+                      newServicios[srvIdx].sections[sidx].fields.push({ id: `new-${Date.now()}`, label: "", type: "text", options: "" });
+                      setServicios(newServicios);
                     }}>Añadir parámetro en {section.name}</Button>
                   </Box>
                 </Box>
@@ -298,8 +459,9 @@ const ClinicasServicioEditor = () => {
                   <TableHead sx={{ borderBottom: "2px solid #f1f5f9" }}>
                     <TableRow>
                       <TableCell sx={{ width: 40 }}></TableCell>
-                      <TableCell sx={{ color: "#94a3b8", fontWeight: 700, fontSize: "0.8rem", textTransform: "uppercase" }}>PARÁMETRO A EVALUAR</TableCell>
-                      <TableCell sx={{ width: "220px", color: "#94a3b8", fontWeight: 700, fontSize: "0.8rem", textTransform: "uppercase" }}>TIPO DE DATO</TableCell>
+                      <TableCell sx={{ width: "180px", color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>ORIGEN</TableCell>
+                      <TableCell sx={{ color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>PARÁMETRO / REF. TRÁMITE</TableCell>
+                      <TableCell sx={{ width: "220px", color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>TIPO DE DATO</TableCell>
                       <TableCell align="right" sx={{ width: 60 }}></TableCell>
                     </TableRow>
                   </TableHead>
@@ -308,47 +470,123 @@ const ClinicasServicioEditor = () => {
                       <TableRow key={field.id} sx={{ "& td": { borderBottom: "1px solid #f1f5f9" }, "&:hover": { backgroundColor: "#fcfcfc" } }}>
                         <TableCell align="center"><DragIndicatorIcon sx={{ color: "#cbd5e1", opacity: 0.2 }} fontSize="small" /></TableCell>
                         <TableCell>
-                          <TextField fullWidth size="small" variant="outlined" value={field.label} placeholder="Etiqueta..." onChange={(e) => handleUpdateField(fIdx, "label", e.target.value)} sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "transparent" }, "&:hover fieldset": { borderColor: "#e2e8f0" } } }} />
+                          <ToggleButtonGroup
+                            size="small"
+                            value={field.origin === "TRÁMITE" ? "TRÁMITE" : "ADMIN"}
+                            exclusive
+                            onChange={(e, val) => {
+                              if (!val) return;
+                              handleUpdateField(fIdx, "origin", val);
+                              if (val === "ADMIN") {
+                                const newServicios = [...servicios];
+                                delete newServicios[srvIdx].fields[fIdx].tramiteField;
+                                setServicios(newServicios);
+                              }
+                            }}
+                            sx={{
+                              height: 32,
+                              "& .MuiToggleButton-root": {
+                                px: 2,
+                                fontSize: "0.7rem",
+                                fontWeight: 700,
+                                border: "1px solid #e2e8f0",
+                                "&.Mui-selected": {
+                                  bgcolor: "#0B85C4",
+                                  color: "white",
+                                  "&:hover": { bgcolor: "#096da1" }
+                                }
+                              }
+                            }}
+                          >
+                            <ToggleButton value="ADMIN">ADMIN</ToggleButton>
+                            <ToggleButton value="TRÁMITE">TRÁMITE</ToggleButton>
+                          </ToggleButtonGroup>
                         </TableCell>
                         <TableCell>
-                          <Select fullWidth size="small" value={field.type} onChange={(e) => handleUpdateField(fIdx, "type", e.target.value)} sx={{ "& fieldset": { borderColor: "transparent" }, "&:hover fieldset": { borderColor: "#e2e8f0" } }}>
+                          {field.origin === "TRÁMITE" ? (
+                            <Select
+                              fullWidth
+                              size="small"
+                              value={field.tramiteField || ""}
+                              variant="standard"
+                              sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#0B85C4' }}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                const newServicios = [...servicios];
+                                newServicios[srvIdx].fields[fIdx].tramiteField = val;
+                                newServicios[srvIdx].fields[fIdx].label = val.split(" > ")[1] || val;
+                                setServicios(newServicios);
+                              }}
+                              displayEmpty
+                            >
+                              <MenuItem value="" disabled>Seleccionar campo del trámite...</MenuItem>
+                              {Object.keys(TRAMITE_MAPPING).map(category => [
+                                <MenuItem key={category} disabled sx={{ backgroundColor: '#f8fafc', fontWeight: 800, color: '#64748b', fontSize: '0.7rem' }}>
+                                  {category}
+                                </MenuItem>,
+                                ...TRAMITE_MAPPING[category].map(f => (
+                                  <MenuItem key={f} value={`${category} > ${f}`} sx={{ pl: 3, fontSize: '0.85rem' }}>
+                                    {f}
+                                  </MenuItem>
+                                ))
+                              ])}
+                            </Select>
+                          ) : (
+                            <TextField
+                              fullWidth
+                              size="small"
+                              variant="standard"
+                              placeholder="Nombre del parámetro..."
+                              value={field.label}
+                              onChange={(e) => handleUpdateField(fIdx, "label", e.target.value)}
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            fullWidth
+                            size="small"
+                            value={field.type}
+                            onChange={(e) => handleUpdateField(fIdx, "type", e.target.value)}
+                            sx={{ "& fieldset": { borderColor: "transparent" }, "&:hover fieldset": { borderColor: "#e2e8f0" }, fontSize: '0.85rem' }}
+                          >
                             {fieldTypes.map((opt) => (
-                              <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
+                              <MenuItem key={opt.value} value={opt.value} sx={{ fontSize: '0.85rem' }}>{opt.label}</MenuItem>
                             ))}
                           </Select>
                           {(field.type === "select" || field.type === "toggle") && (
-                                <Box sx={{ mt: 1 }}>
-                                  <TextField
-                                    fullWidth
+                            <Box sx={{ mt: 1 }}>
+                              <TextField
+                                fullWidth
+                                size="small"
+                                variant="standard"
+                                placeholder="Nueva opción + Enter"
+                                value={optionDrafts[field.id] || ""}
+                                onChange={(e) =>
+                                  setOptionDrafts((prev) => ({
+                                    ...prev,
+                                    [field.id]: e.target.value,
+                                  }))
+                                }
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" || e.key === ",") {
+                                    e.preventDefault();
+                                    handleAddOption(fIdx, null, field.id);
+                                  }
+                                }}
+                              />
+                              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
+                                {parseOptions(field.options).map((opt, oIdx) => (
+                                  <Chip
+                                    key={oIdx}
+                                    label={opt}
                                     size="small"
-                                    variant="standard"
-                                    placeholder="Nueva opción + Enter"
-                                    value={optionDrafts[field.id] || ""}
-                                    onChange={(e) =>
-                                      setOptionDrafts((prev) => ({
-                                        ...prev,
-                                        [field.id]: e.target.value,
-                                      }))
-                                    }
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter" || e.key === ",") {
-                                        e.preventDefault();
-                                        handleAddOption(fIdx, null, field.id);
-                                      }
-                                    }}
+                                    onDelete={() => handleRemoveOption(fIdx, null, opt)}
                                   />
-                                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
-                                    {parseOptions(field.options).map((opt, oIdx) => (
-                                      <Chip
-                                        key={oIdx}
-                                        label={opt}
-                                        size="small"
-                                        onDelete={() => handleRemoveOption(fIdx, null, opt)}
-                                      />
-                                    ))}
-                                  </Box>
-                                </Box>
-                              )}
+                                ))}
+                              </Box>
+                            </Box>
+                          )}
                         </TableCell>
                         <TableCell align="right">
                           <IconButton size="small" onClick={() => handleDeleteField(fIdx)}><DeleteOutlineIcon fontSize="small" /></IconButton>
@@ -364,17 +602,17 @@ const ClinicasServicioEditor = () => {
           {/* Botón Añadir Sección (si corresponde) */}
           <Box sx={{ p: 2, px: 4, backgroundColor: "#fcfcfc", borderTop: "1px dashed #e2e8f0" }}>
             <Button onClick={() => {
-                const newServicios = [...servicios];
-                if (!newServicios[srvIdx].sections) newServicios[srvIdx].sections = [];
-                newServicios[srvIdx].sections.push({ id: `sec-${Date.now()}`, name: "Nueva Sección", fields: [] });
-                setServicios(newServicios);
+              const newServicios = [...servicios];
+              if (!newServicios[srvIdx].sections) newServicios[srvIdx].sections = [];
+              newServicios[srvIdx].sections.push({ id: `sec-${Date.now()}`, name: "Nueva Sección", fields: [] });
+              setServicios(newServicios);
             }} startIcon={<AddIcon />} sx={{ fontWeight: 700 }}>
               Añadir nueva sección
             </Button>
             {!srv.sections && (
-               <Button onClick={handleAddField} startIcon={<AddIcon />} sx={{ fontWeight: 700, ml: 2 }}>
-                 Añadir parámetro
-               </Button>
+              <Button onClick={handleAddField} startIcon={<AddIcon />} sx={{ fontWeight: 700, ml: 2 }}>
+                Añadir parámetro
+              </Button>
             )}
           </Box>
         </Paper>

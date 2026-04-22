@@ -815,6 +815,678 @@
       "requiereModelo": true,
       "requiereSerie": true,
       "soloExistencia": false
+    },
+    {
+      "id": "54",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "GUARDIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "Oxímetro de pulso",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "55",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "GUARDIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "Nebulizador",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "56",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "QUIRÓFANO",
+      "tipo": "SERVICIO",
+      "equipamiento": "Mesa de Cirugía",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "57",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "QUIRÓFANO",
+      "tipo": "SERVICIO",
+      "equipamiento": "Lámpara Cialítica",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "58",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Sillón de Partos (transformable)",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "59",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Monitor Fetal",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "60",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Incubadora de Recepción / Servocuna",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "61",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "SALA DE PARTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Balanza Neonatal",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "62",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "CAMA",
+      "equipamiento": "Oxígeno central, aspiración central y aire comprimido central con dos (2) bocas de salida para oxígeno y 1 (una) de cada una de las otras, por cama.",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "63",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Equipo de aspiración, uno (1) cada cuatro (4) camas.",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "64",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Respirador mecánico volumétrico con presión positiva, uno (1) cada tres (3) camas y no menos de dos (2) en la Unidad.",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 3,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "65",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Equipo de desfibrilación y sincronizador, uno (1) cada cuatro (4) camas y no menos de dos (2) en la Unidad.",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "66",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "CAMA",
+      "equipamiento": "Monitores, un (1) canal por cama, con módulo central de comando.",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "67",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Bomba de infusión continua para administración de drogas intravenosas, una (1) cada cuatro (4) camas y no menos de dos (2) en la Unidad",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "68",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Oxímetro de pulso portátil, uno (1) cada cuatro (4) camas y no menos de dos (2) en la Unidad",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "69",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Electrocardiógrafos, dos (2) cada ocho (8) camas no menos de dos (2) en la Unidad.",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 8,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "70",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Equipo destinado a la generación de rayos x",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "71",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Marcapaso transitorio, con dos catéteres por marcapaso en la Unidad",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "72",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Un (1) carro de urgencia, con equipo para traqueostomía, elementos de intubación endotraqueal, laringoscopios, AMBU",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "73",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Carro de curaciones.",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "74",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Tensiómetro.",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "75",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Instrumental de examen.",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "76",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Nebulizador.",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "77",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Sistemas de aspiración torácica por agua o electrónico, uno (1) cada cuatro (4) camas",
+      "tipoRegla": "PROPORCIONAL",
+      "base": 4,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "78",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Sistema portátil de aspiración para drenaje.",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "79",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Equipos para cateterización vesical, nasogástrica y venosa.",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "80",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Equipo completo para punción raquídea, torácica y abdominal.",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "81",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTI ADULTOS",
+      "tipo": "SERVICIO",
+      "equipamiento": "Un botiquín de medicamentos (24hs), incluyendo una caja de paro.",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "82",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UCO (Unidad Coronaria)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Respirador (de respaldo)",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "83",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UCO (Unidad Coronaria)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Ecocardiógrafo",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "84",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UCO (Unidad Coronaria)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Marcapaso Transitorio",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "85",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UCO (Unidad Coronaria)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Cardiodesfibrilador c/sincronizador",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "86",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UCI (Cuidados Intermedios)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Monitor Multiparamétrico",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "87",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UCI (Cuidados Intermedios)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Carro de Urgencia",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "88",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UCI (Cuidados Intermedios)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Electrocardiógrafo",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "89",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UCI (Cuidados Intermedios)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Panel de Gases (O2, Aire, Vacío)",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "90",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTIP (Pediátrica)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Respirador Pediátrico",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "91",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTIP (Pediátrica)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Incubadora de Transporte",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "92",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTIP (Pediátrica)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Cámara Cefálica (Gregory)",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "93",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTIP (Pediátrica)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Equipo de Intubación Pediátrico",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "94",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTIN (Neonatal)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Incubadora Servocontrol",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "95",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTIN (Neonatal)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Respirador Neonatal",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "96",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTIN (Neonatal)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Blender (Mezclador O2/Aire)",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "97",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "UTIN (Neonatal)",
+      "tipo": "SERVICIO",
+      "equipamiento": "Monitor Transcutáneo",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "98",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "HEMODINAMIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "Angiógrafo (Arco en C)",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "99",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "HEMODINAMIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "Mesa de Cateterismo",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "id": "100",
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "HEMODINAMIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "Polígrafo / Monitor Digital",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": false,
+      "requiereModelo": false,
+      "requiereSerie": false,
+      "soloExistencia": true
+    },
+    {
+      "tipologia": "CLÍNICAS, SANATORIOS Y HOSPITALES",
+      "origen": "GUARDIA",
+      "tipo": "SERVICIO",
+      "equipamiento": "CARDIODESFIBRILADOR",
+      "tipoRegla": "UNICO",
+      "base": 1,
+      "cantidadMinima": 1,
+      "requiereMarca": true,
+      "requiereModelo": true,
+      "requiereSerie": true,
+      "soloExistencia": false,
+      "id": "SO6FRLvLgS0"
     }
   ],
   "infraestructura": [
@@ -1816,7 +2488,8 @@
                   "id": "f-fecqs7p6",
                   "label": "FECHA Y HORA",
                   "type": "date",
-                  "options": ""
+                  "options": "",
+                  "origin": "ADMIN"
                 },
                 {
                   "id": "f-foro7rdj",
@@ -1826,9 +2499,11 @@
                 },
                 {
                   "id": "f-nomtcemx",
-                  "label": "Nombre Establecimiento",
+                  "label": "Nombre del Establecimiento",
                   "type": "text",
-                  "options": ""
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ARQUITECTURA > Nombre del Establecimiento"
                 },
                 {
                   "id": "f-raz01uce",
@@ -1840,25 +2515,33 @@
                   "id": "f-dirs7pux",
                   "label": "Dirección",
                   "type": "text",
-                  "options": ""
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ESTABLECIMIENTO > Dirección"
                 },
                 {
                   "id": "f-locojjjz",
                   "label": "Localidad",
                   "type": "text",
-                  "options": ""
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ESTABLECIMIENTO > Localidad"
                 },
                 {
                   "id": "f-emab2jbz",
-                  "label": "Email",
+                  "label": "Contacto (Email)",
                   "type": "text",
-                  "options": ""
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ESTABLECIMIENTO > Contacto (Email)"
                 },
                 {
                   "id": "f-telkvmy6",
-                  "label": "Teléfono",
+                  "label": "Contacto (Teléfono)",
                   "type": "number",
-                  "options": ""
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ESTABLECIMIENTO > Contacto (Teléfono)"
                 },
                 {
                   "id": "f-rad2gboj",
@@ -1874,13 +2557,13 @@
                 },
                 {
                   "id": "f-fectnyn0",
-                  "label": "Fecha de Habilitación",
+                  "label": "Fecha de Habilitación M/R",
                   "type": "date",
                   "options": ""
                 },
                 {
                   "id": "f-res1c2cd",
-                  "label": "Resolución Nº",
+                  "label": "Resolución Nº M/R",
                   "type": "number",
                   "options": ""
                 },
@@ -1888,7 +2571,8 @@
                   "id": "f-direb5sd",
                   "label": "DIRECTOR TÉCNICO",
                   "type": "text",
-                  "options": ""
+                  "options": "",
+                  "origin": "ADMIN"
                 },
                 {
                   "id": "f-dni0tje9",
@@ -2270,6 +2954,89 @@
                 }
               ]
             }
+          ],
+          "fields": [
+            {
+              "id": "fld-1776800930324-0.12977963729288222",
+              "label": "CARDIODESFIBRILADOR",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800930324-0.5410822191314033",
+              "label": "ELECTROCARDIÓGRAFO",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800930324-0.385689376649032",
+              "label": "OXÍMETRO DE PULSO/MONITOR MULTIPARAMÉTRICO",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800930324-0.9725261655867817",
+              "label": "EQUIPO PARA NEBULIZACIONES",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800930324-0.8761459263331307",
+              "label": "CARRO DE PARO COMPLETO",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800930324-0.5679487685858421",
+              "label": "Oxímetro de pulso",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800930324-0.4312607351696801",
+              "label": "Nebulizador",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776801202771",
+              "label": "TIPO PLANTEL",
+              "type": "rrhh",
+              "options": "",
+              "origin": "TRÁMITE",
+              "tramiteField": "RECURSOS HUMANOS > TIPO PLANTEL"
+            },
+            {
+              "id": "fld-1776801236187",
+              "label": "ÁREA DE DESEMPEÑO",
+              "type": "rrhh",
+              "options": "",
+              "origin": "TRÁMITE",
+              "tramiteField": "RECURSOS HUMANOS > ÁREA DE DESEMPEÑO"
+            },
+            {
+              "id": "fld-1776801243952",
+              "label": "ROL DE DESEMPEÑO",
+              "type": "rrhh",
+              "options": "",
+              "origin": "TRÁMITE",
+              "tramiteField": "RECURSOS HUMANOS > ROL DE DESEMPEÑO"
+            },
+            {
+              "id": "fld-1776801251625",
+              "label": "CANTIDAD",
+              "type": "rrhh",
+              "options": "",
+              "origin": "TRÁMITE",
+              "tramiteField": "RECURSOS HUMANOS > CANTIDAD"
+            }
           ]
         },
         {
@@ -2455,6 +3222,99 @@
                   "options": ""
                 }
               ]
+            }
+          ],
+          "fields": [
+            {
+              "id": "fld-1776800943794-0.3494773974500589",
+              "label": "ELECTROBISTURÍ",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.8673115908020126",
+              "label": "MÁQUINA DE ANESTESIA",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.16291565767425542",
+              "label": "SISTEMA DE ASPIRACIÓN AUTOMÁTICA",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.12419102544569571",
+              "label": "LARINGOSCOPIO Y TUBOS ENDOTRAQUEALES",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.8861241430328234",
+              "label": "CAJA DE TRAQUEOTOMÍA",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.23352342901127843",
+              "label": "MESA DE CIRUGÍA TIPO MAYO",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.5746635525466407",
+              "label": "MONITOR MULTIPARAMÉTRICO",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.9892188468208005",
+              "label": "CAMA O CAMILLA QUIRÚRGICA REGULABLE",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.004959273538600706",
+              "label": "CARDIODESFIBRILADOR",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.5475015006386118",
+              "label": "LÁMPARA CIÁLITICA",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.28063943748596454",
+              "label": "Mesa de Cirugía",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800943794-0.8726525435801674",
+              "label": "Lámpara Cialítica",
+              "type": "equipamiento",
+              "origin": "ADMIN",
+              "options": ""
+            },
+            {
+              "id": "fld-1776800953311",
+              "label": "",
+              "type": "rrhh",
+              "options": "",
+              "origin": "TRÁMITE"
             }
           ]
         },
@@ -5778,5 +6638,6 @@
         }
       ]
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
