@@ -40,7 +40,7 @@ const Layout = ({ children }) => {
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
   const isEfector = location.pathname.startsWith('/home-efector');
   const isInspector = location.pathname.startsWith('/inspector');
-  const hideSidebar = isEfector || isInspector;
+  const hideSidebar = isInspector; // Only hide for inspector
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -58,7 +58,18 @@ const Layout = ({ children }) => {
             <IconButton color="inherit" sx={{ mr: 2 }} onClick={toggleDrawer}>
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography 
+              variant="h6" 
+              onClick={() => navigate('/')}
+              sx={{ 
+                fontWeight: 'bold', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 1,
+                cursor: 'pointer',
+                '&:hover': { opacity: 0.9 }
+              }}
+            >
               Ministerio de <span style={{ fontWeight: 900 }}>SALUD</span> 
               <span style={{ fontSize: '1.2rem', fontWeight: 300, ml: 2 }}>| ClicSALUD</span>
             </Typography>
@@ -115,8 +126,11 @@ const Layout = ({ children }) => {
           }}
         >
           <List>
-            {menuItems.map((item) => {
-              const isActive = location.pathname === item.path;
+            {(isEfector ? [
+              { text: 'Inicio', icon: <HomeIcon />, path: '/home-efector' },
+              { text: 'Mis Establecimientos', icon: <LocalHospitalIcon />, path: '/home-efector/dashboard' },
+            ] : menuItems).map((item) => {
+              const isActive = location.pathname === item.path || (item.path === '/home-efector' && location.pathname === '/home-efector/');
               return (
                 <ListItemButton 
                   key={item.text} 
@@ -169,6 +183,35 @@ const Layout = ({ children }) => {
         }}
       >
         {children}
+
+        {/* Footer */}
+        {!isInspector && (
+          <Box
+            sx={{
+              mt: 4,
+              py: 2,
+              px: 4,
+              borderTop: '1px solid #ddd',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              bgcolor: '#004a80',
+              color: 'white',
+              mx: -4,
+              mb: -4,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Escudo_de_la_Provincia_de_C%C3%B3rdoba.svg/1200px-Escudo_de_la_Provincia_de_C%C3%B3rdoba.svg.png" alt="Córdoba" style={{ height: 30 }} />
+              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                Córdoba <span style={{ fontWeight: 300 }}>GOBIERNO DE LA PROVINCIA</span>
+              </Typography>
+            </Box>
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              Versión 2.0.0
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -6,10 +6,10 @@ import {
   Divider,
   TextField,
   MenuItem,
-  Stack,
+  Stack, Grid,
   Button,
   ToggleButton,
-  ToggleButtonGroup,
+  ToggleButtonGroup, Alert,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -24,297 +24,59 @@ import {
   Checkbox,
   Paper,
   Autocomplete,
+  Tooltip,
 } from "@mui/material";
-import {
-  ExpandMore as ExpandMoreIcon,
-  ErrorOutline as ErrorOutlineIcon,
-  Domain as DomainIcon,
-  People as PeopleIcon,
-  MedicalServices as MedicalServicesIcon,
-  Bed as BedIcon,
-  LocalHospital as LocalHospitalIcon,
-  PhotoCamera,
-  CloudUpload,
-  Close,
-  Delete,
-  DriveFileRenameOutline,
-  Visibility as VisibilityIcon,
-  ChatBubbleOutline as ChatBubbleOutlineIcon,
-  OpenInNew as OpenInNewIcon,
-} from "@mui/icons-material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlined";
+import DomainIcon from "@mui/icons-material/Domain";
+import PeopleIcon from "@mui/icons-material/People";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import BedIcon from "@mui/icons-material/Bed";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import CloudUpload from "@mui/icons-material/CloudUpload";
+import Close from "@mui/icons-material/Close";
+import Delete from "@mui/icons-material/Delete";
+import DriveFileRenameOutline from "@mui/icons-material/DriveFileRenameOutline";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import DescriptionIcon from "@mui/icons-material/Description";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutlined";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
+import ErrorIcon from "@mui/icons-material/Error";
+import InfoIcon from "@mui/icons-material/Info";
+import CancelIcon from "@mui/icons-material/Cancel";
+import ChatIcon from "@mui/icons-material/Chat";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   IconButton,
+  Fab,
 } from "@mui/material";
+import { useNavigate, Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
+import RevisionActa from "./RevisionActa";
 
-const UTI_SECTIONS = [
-  {
-    id: "uti_arch",
-    name: "ARQUITECTURA",
-    fields: [
-      {
-        id: "uti_edificacion",
-        label: "Coincide con edificacion",
-        type: "boolean",
-      },
-      { id: "uti_planos", label: "Planos", type: "boolean" },
-    ],
-  },
-  {
-    id: "uti_salas",
-    name: "SALAS Y CAMAS",
-    fields: [
-      { id: "uti_camas", label: "TERAPIA INTENSIVA ADULTOS", type: "number" },
-    ],
-  },
-  {
-    id: "uti_enfermeria",
-    name: "Planillas de enfermería con controles diarios",
-    fields: [
-      { id: "uti_signos", label: "Signos vitales", type: "boolean" },
-      { id: "uti_balance", label: "Balance diario", type: "boolean" },
-      {
-        id: "uti_volumenes",
-        label: "Volúmenes de ingresos y egresos",
-        type: "boolean",
-      },
-      { id: "uti_medicacion", label: "Medicación", type: "boolean" },
-    ],
-  },
-  {
-    id: "uti_locales",
-    name: "De los Edificios/Locales de la unidad",
-    fields: [
-      {
-        id: "uti_zona",
-        label: "Unidad ubicada en zona de circulación semirrestringida",
-        type: "boolean",
-      },
-      {
-        id: "uti_pileta",
-        label: "Sala de internación c/pileta lavamanos",
-        type: "boolean",
-      },
-      { id: "uti_office", label: "Office de enfermería", type: "boolean" },
-      { id: "uti_monitores", label: "Monitores", type: "boolean" },
-      {
-        id: "uti_ropa",
-        label: "Local de ropa y material usado",
-        type: "boolean",
-      },
-      { id: "uti_lavachatas", label: "Area lavachatas", type: "boolean" },
-      {
-        id: "uti_deposito",
-        label: "Depósito de camillas y aparatología",
-        type: "boolean",
-      },
-      { id: "uti_sala_medicos", label: "Sala de médicos", type: "boolean" },
-      {
-        id: "uti_otras_uci",
-        label: "Posee otras Unidades de UCI / UCO",
-        type: "boolean",
-      },
-      {
-        id: "uti_comparte_uci",
-        label: "Comparte algún local UCI / UCO",
-        type: "boolean",
-      },
-      { id: "uti_grupo", label: "Grupo electrógeno", type: "boolean" },
-      {
-        id: "uti_iluminacion_emergencia",
-        label: "Sistema de Iluminación de Emergencia",
-        type: "boolean",
-      },
-      {
-        id: "uti_acceso",
-        label: "Acceso directo y exclusivo",
-        type: "boolean",
-      },
-      {
-        id: "uti_comunicacion_cirugia",
-        label: "Fácil comunicación c/cirugía",
-        type: "boolean",
-      },
-      {
-        id: "uti_camas_ortopedicas",
-        label: "Camas ortopédicas o articuladas",
-        type: "boolean",
-      },
-      { id: "uti_doble_comando", label: "Doble comando", type: "boolean" },
-      { id: "uti_rodantes", label: "Rodantes", type: "boolean" },
-      { id: "uti_ventanas", label: "Ventanas al exterior", type: "boolean" },
-      {
-        id: "uti_vision_panoramica",
-        label: "Visión panorámica directa a todas las camas",
-        type: "boolean",
-      },
-      {
-        id: "uti_instrumental_esteril",
-        label: "Local de Instrumental y material estéril",
-        type: "boolean",
-      },
-      {
-        id: "uti_cama_aislamiento",
-        label: "Local cerrado c/1 cama para aislamiento",
-        type: "boolean",
-      },
-      {
-        id: "uti_evoluciones",
-        label: "Evoluciones diarias en Historia Clínica",
-        type: "boolean",
-      },
-      {
-        id: "uti_libro_enf",
-        label: "Libro de Registro de Enfermedades Transmisibles",
-        type: "boolean",
-      },
-      {
-        id: "uti_libro_psico",
-        label: "Libro de Registro de psicofármacos",
-        type: "boolean",
-      },
-      {
-        id: "uti_vestuario",
-        label: "Vestuario para visitas c/pileta lavamanos",
-        type: "boolean",
-      },
-      {
-        id: "uti_habitacion_medico",
-        label: "Habitación, c/baño propio para médico de Guardia",
-        type: "boolean",
-      },
-      {
-        id: "uti_doble_circuito",
-        label: "Doble circuito de energía eléctrica",
-        type: "boolean",
-      },
-      {
-        id: "uti_diez_tomas",
-        label: "Diez tomas de electricidad por cama",
-        type: "boolean",
-      },
-      { id: "uti_hermeticidad", label: "Hermeticidad", type: "boolean" },
-      { id: "uti_privacidad", label: "Privacidad", type: "boolean" },
-      {
-        id: "uti_superficie",
-        label: "Superficie total sala internación",
-        type: "boolean",
-      },
-      { id: "uti_ilum_natural", label: "Iluminación natural", type: "boolean" },
-      {
-        id: "uti_ilum_art_central",
-        label: "Iluminación artificial central",
-        type: "boolean",
-      },
-      {
-        id: "uti_ilum_individual",
-        label: "Iluminación Individual",
-        type: "boolean",
-      },
-      {
-        id: "uti_acceso_4",
-        label: "Acceso desde 4 posiciones",
-        type: "boolean",
-      },
-    ],
-  },
-  {
-    id: "uti_equip",
-    name: "EQUIPAMIENTO",
-    fields: [
-      {
-        id: "uti_marcapaso",
-        label: "Marcapaso transitorio (si no tiene UCO)",
-        type: "boolean",
-      },
-      { id: "uti_carro", label: "Carro de urgencia", type: "boolean" },
-      { id: "uti_tensionmetro", label: "Tensiómetro", type: "boolean" },
-      { id: "uti_nebulizador", label: "Nebulizador", type: "boolean" },
-      {
-        id: "uti_aspiracion_portatil",
-        label: "Sistema portatil de aspiración para drenaje",
-        type: "boolean",
-      },
-      {
-        id: "uti_respirador",
-        label: "Respirador mecánico volumétrico",
-        type: "boolean",
-      },
-      {
-        id: "uti_desfibrilador",
-        label: "Equipo de desfibrilación y sincronizador",
-        type: "boolean",
-      },
-      { id: "uti_bomba", label: "Bomba de infusión", type: "boolean" },
-      {
-        id: "uti_oximetro",
-        label: "Oxímetro de pulso portátil",
-        type: "boolean",
-      },
-      { id: "uti_electro", label: "Electrocardiógrafo", type: "boolean" },
-      { id: "uti_aspiracion", label: "Equipo de aspiración", type: "boolean" },
-    ],
-  },
-];
 
-const QUIROFANO_SECTIONS = [
-  {
-    id: "quir_arch",
-    name: "ARQUITECTURA",
-    fields: [
-      { id: "quir_lavabo", label: "Lavabo de cirujanos", type: "boolean" },
-      {
-        id: "quir_climatizacion",
-        label: "Climatización (Filtro HEPA)",
-        type: "boolean",
-      },
-    ],
-  },
-  {
-    id: "quir_salas",
-    name: "SALAS Y CAMAS",
-    fields: [{ id: "quir_num", label: "QUIRÓFANO", type: "number" }],
-  },
-  {
-    id: "quir_equip",
-    name: "EQUIPAMIENTO",
-    fields: [
-      { id: "quir_electrobisturi", label: "ELECTROBISTURÍ", type: "number" },
-      { id: "quir_anestesia", label: "MÁQUINA DE ANESTESIA", type: "number" },
-      { id: "quir_traqueo", label: "CAJA DE TRAQUEOTOMÍA", type: "number" },
-      { id: "quir_monitor", label: "MONITOR MULTIPARAMÉTRICO", type: "number" },
-      {
-        id: "quir_cama",
-        label: "CAMA O CAMILLA QUIRÚRGICA REGULABLE",
-        type: "number",
-      },
-      {
-        id: "quir_aspiracion",
-        label: "SISTEMA DE ASPIRACIÓN AUTOMÁTICA",
-        type: "number",
-      },
-      {
-        id: "quir_laringo",
-        label: "LARINGOSCOPIO Y TUBOS ENDOTRAQUEALES",
-        type: "number",
-      },
-      { id: "quir_mesa", label: "MESA DE CIRUGÍA TIPO MAYO", type: "number" },
-      { id: "quir_cardio", label: "CARDIODESFIBRILADOR", type: "number" },
-      { id: "quir_lamp", label: "LÁMPARA CIÁLITICA", type: "number" },
-    ],
-  },
-];
+const normalize = (str) =>
+  str
+    ?.normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase()
+    .trim() || "";
 
-const HARDCODED_UTI_SERVICE = {
-  id: "hardcoded_uti_pro",
-  name: "UNIDAD DE TERAPIA INTENSIVA",
-  sections: UTI_SECTIONS,
+const getFlatFields = (sectionsObj) => {
+  if (!sectionsObj) return [];
+  if (Array.isArray(sectionsObj)) {
+    return sectionsObj.reduce((acc, sec) => [...acc, ...(sec.fields || [])], []);
+  }
+  return [];
 };
-
-const DEFAULT_TIPOLOGIA = "CLÍNICAS, SANATORIOS Y HOSPITALES";
 
 const PantallaInspeccion = ({
   serviciosEfector: propsServicios,
@@ -322,10 +84,15 @@ const PantallaInspeccion = ({
   rrhhEfector: propsRrhh,
   equiposEfector: propsEquipos,
 }) => {
+  const navigate = useNavigate();
+  const [currentActa, setCurrentActa] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [efectorResponses, setEfectorResponses] = useState({});
   const [config, setConfig] = useState(null);
   const [inspectorData, setInspectorData] = useState({});
   const [viewerFile, setViewerFile] = useState(null);
+  const [obsDatosGenerales, setObsDatosGenerales] = useState([]);
+  const [obsDatosTramite, setObsDatosTramite] = useState([]);
   const [generalObs, setGeneralObs] = useState("");
   const [attachments, setAttachments] = useState([]);
   const [signatureModalOpen, setSignatureModalOpen] = useState(false);
@@ -335,12 +102,123 @@ const PantallaInspeccion = ({
     inspector: null,
   });
 
-  const photoInputRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const [obsDialog, setObsDialog] = useState({
+    open: false,
+    fieldId: null,
+    label: "",
+    value: "",
+    category: "TRAMITE",
+  });
+
+  const signatureCanvasRef = useRef(null);
+  const [isDrawingSignature, setIsDrawingSignature] = useState(false);
+
+  const startDrawingSignature = (e) => {
+    const canvas = signatureCanvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+
+    const ctx = canvas.getContext("2d");
+    ctx.lineWidth = 4;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#1e293b";
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    setIsDrawingSignature(true);
+  };
+
+  const drawSignature = (e) => {
+    if (!isDrawingSignature) return;
+
+    const canvas = signatureCanvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+
+    const ctx = canvas.getContext("2d");
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    if (e.cancelable) e.preventDefault();
+  };
+
+  const stopDrawingSignature = () => {
+    setIsDrawingSignature(false);
+  };
+
+  const clearSignature = () => {
+    const canvas = signatureCanvasRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  const saveSignature = () => {
+    const dataUrl = signatureCanvasRef.current.toDataURL();
+    handleSaveSignature(dataUrl);
+    clearSignature();
+  };
+
+  const [serviciosEfector, setServiciosEfector] = useState([]);
+  const [infraEfector, setInfraEfector] = useState({});
+  const [rrhhEfector, setRrhhEfector] = useState([]);
+  const [equiposEfector, setEquiposEfector] = useState([]);
+
+  const [expandedDatosGenerales, setExpandedDatosGenerales] = useState(true);
+  const [expandedEstablecimiento, setExpandedEstablecimiento] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("ARQUITECTURA");
+  const [selectedSubService, setSelectedSubService] = useState("");
+
+  const handleOpenObsDialog = (fieldId, label, currentValue, category = "TRAMITE") => {
+    setObsDialog({
+      open: true,
+      fieldId,
+      label,
+      value: currentValue || "",
+      category,
+    });
+  };
+
+  const handleSaveObs = (text) => {
+    const currentData = inspectorData[obsDialog.fieldId];
+    const isObject = currentData && typeof currentData === 'object' && !Array.isArray(currentData);
+
+    handleFieldChange(obsDialog.fieldId, {
+      ...(isObject ? currentData : { value: currentData }),
+      obs: text,
+      observado: text.trim().length > 0
+    });
+
+    setObsDialog({ ...obsDialog, open: false });
+  };
 
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
     setAttachments((prev) => [...prev, ...files]);
+
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        const currentPhotos = JSON.parse(localStorage.getItem("inspector_photos") || "[]");
+        localStorage.setItem("inspector_photos", JSON.stringify([...currentPhotos, { name: file.name, data: base64String }]));
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSaveSignature = (dataUrl) => {
@@ -354,162 +232,119 @@ const PantallaInspeccion = ({
     }
   };
 
-  const [expandedDatosGenerales, setExpandedDatosGenerales] = useState(true);
-  const [expandedEstablecimiento, setExpandedEstablecimiento] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("ARQUITECTURA");
-  const [selectedSubService, setSelectedSubService] = useState("UTI");
-  const [serviciosEfector, setServiciosEfector] = useState([]);
-  const [infraEfector, setInfraEfector] = useState({});
-  const [rrhhEfector, setRrhhEfector] = useState([]);
-  const [equiposEfector, setEquiposEfector] = useState([]);
+  const handleClearAll = () => {
+    if (window.confirm("¿Está seguro que desea eliminar TODAS las observaciones y reiniciar la inspección?")) {
+      setInspectorData({ "f-fecqs7p6": new Date().toISOString().split("T")[0] });
+      setObsDatosGenerales([]);
+      setObsDatosTramite([]);
+      setGeneralObs("");
+      setSignatures({ representative: null, inspector: null });
+      localStorage.removeItem("inspector_data");
+      localStorage.removeItem("obs_datos_generales");
+      localStorage.removeItem("general_obs");
+      localStorage.removeItem("acta_inspeccion_actual");
+      localStorage.removeItem("inspector_photos");
+      alert("Inspección reiniciada.");
+    }
+  };
 
   useEffect(() => {
-    const loadFromCache = () => {
-      const cachedSrv = localStorage.getItem("efector_servicios");
-      const cachedInfra = localStorage.getItem("efector_infra");
-      const cachedRrhh = localStorage.getItem("efector_rrhh");
-      const cachedEquipos = localStorage.getItem("efector_equipos");
-      if (cachedSrv) setServiciosEfector(JSON.parse(cachedSrv));
-      if (cachedInfra) setInfraEfector(JSON.parse(cachedInfra));
-      if (cachedRrhh) setRrhhEfector(JSON.parse(cachedRrhh));
-      if (cachedEquipos) setEquiposEfector(JSON.parse(cachedEquipos));
-    };
-
-    // 1. Prioridad: Props
-    if (propsServicios) {
-      setServiciosEfector(propsServicios);
-      setInfraEfector(propsInfra || {});
-      setRrhhEfector(propsRrhh || []);
-      setEquiposEfector(propsEquipos || []);
-    } else {
-      // 2. Fallback: LocalStorage
-      loadFromCache();
-    }
-
-    // 3. Escuchar cambios en otras pestañas (Sincronización automática)
-    const handleStorageChange = (e) => {
-      if (e.key?.startsWith("efector_")) {
-        loadFromCache();
-      }
+    const handleStorageChange = () => {
+      setInfraEfector(JSON.parse(localStorage.getItem("efector_infra") || "{}"));
+      setEquiposEfector(JSON.parse(localStorage.getItem("efector_equipos") || "[]"));
+      setRrhhEfector(JSON.parse(localStorage.getItem("efector_rrhh") || "[]"));
+      setServiciosEfector(JSON.parse(localStorage.getItem("efector_servicios") || "[]"));
+      setEfectorResponses(JSON.parse(localStorage.getItem("efector_responses") || "{}"));
     };
     window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, [propsServicios, propsInfra, propsRrhh, propsEquipos]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(
-          `http://localhost:3001/configuraciones_maestras?tipologia=${encodeURIComponent(
-            DEFAULT_TIPOLOGIA,
-          )}`,
-        );
-        const data = await res.json();
-        if (data && data.length > 0) {
-          const masterConfig = data[0];
-          // Forzar la existencia de UNIDAD DE TERAPIA INTENSIVA con los campos requeridos
-          if (!masterConfig.servicios) masterConfig.servicios = [];
-          const utiIdx = masterConfig.servicios.findIndex(
-            (s) =>
-              s.name?.toUpperCase().includes("TERAPIA INTENSIVA") &&
-              !s.name?.toUpperCase().includes("PEDI") &&
-              !s.name?.toUpperCase().includes("NEONAT"),
-          );
-          if (utiIdx !== -1) {
-            masterConfig.servicios[utiIdx] = {
-              ...masterConfig.servicios[utiIdx],
-              ...HARDCODED_UTI_SERVICE,
-            };
-          } else {
-            masterConfig.servicios.push(HARDCODED_UTI_SERVICE);
-          }
-
-          // Parche para UCO y UCIM (Cuidados Intermedios)
-          const ucoSrv = masterConfig.servicios.find(
-            (s) =>
-              s.name?.toUpperCase().includes("CORONARI") ||
-              s.name?.toUpperCase().includes("UCO"),
-          );
-          if (ucoSrv) ucoSrv.sections = UTI_SECTIONS;
-          const ucimSrv = masterConfig.servicios.find(
-            (s) =>
-              s.name?.toUpperCase().includes("INTERMEDIA") ||
-              s.name?.toUpperCase().includes("UCIM"),
-          );
-          if (ucimSrv) ucimSrv.sections = UTI_SECTIONS;
-
-          // Parche para QUIRÓFANO
-          let quirSrv = masterConfig.servicios.find((s) => {
-            const n = s.name?.toUpperCase() || "";
-            return n.includes("QUIRÓFANO") || n.includes("QUIRÓFANO");
-          });
-
-          if (!quirSrv) {
-            quirSrv = { id: "srv-quirofano-hardcoded", name: "QUIRÓFANO" };
-            masterConfig.servicios.push(quirSrv);
-          }
-          quirSrv.sections = QUIROFANO_SECTIONS;
-
-          setConfig(masterConfig);
-        }
-      } catch (err) {
-        console.error("Error al cargar configuración", err);
-      } finally {
-        setLoading(false);
-      }
+    const interval = setInterval(handleStorageChange, 2000);
+    handleStorageChange();
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
     };
-    fetchData();
   }, []);
 
+  const handleFinalize = (result) => {
+    const actaData = {
+      id: "ACTA-" + Date.now(),
+      fecha: new Date().toLocaleDateString(),
+      estado: result,
+      inspectorData,
+      generalObs,
+      attachments: attachments.map(f => f.name),
+      signatures
+    };
+    localStorage.setItem("acta_inspeccion_actual", JSON.stringify(actaData));
+    alert(`Inspección finalizada con éxito: ${result}. El acta ha sido enviada al establecimiento.`);
+    navigate("/");
+  };
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/configuraciones_maestras");
+        const data = await res.json();
+        setConfig(data[0]);
+        const savedData = JSON.parse(localStorage.getItem("inspector_data") || "{}");
+        if (Object.keys(savedData).length === 0) {
+          setInspectorData({ "f-fecqs7p6": new Date().toISOString().split("T")[0] });
+        } else {
+          setInspectorData(savedData);
+        }
+        setLoading(false);
+      } catch (e) {
+        console.error("Error loading config:", e);
+      }
+    };
+    loadConfig();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && inspectorData) {
+      localStorage.setItem("inspector_data", JSON.stringify(inspectorData));
+    }
+  }, [inspectorData, loading]);
+
+  const datosGeneralesSrv = config?.servicios?.find((s) => s.id === "srv-gen");
+  const datosTramiteSrv = config?.servicios?.find((s) => s.id === "srv-tramite");
+
+  const directorTecnico = {
+    nombre: inspectorData["f-nomdtcemx"] || "Dr. Juan",
+    apellido: inspectorData["f-apedtcemx"] || "Pérez",
+    dni: inspectorData["f-dnidtcemx"] || "20.123.456",
+  };
+
+  const tipologia = inspectorData["f-tipdtcemx"] || "CLÍNICA CON INTERNACIÓN";
+
   const SUBSERVICIOS = [
+    "GUARDIA",
+    "QUIROFANO",
+    "SALA DE PARTO",
     "UTI",
-    "UCO",
-    "UCIM",
+    "UNIDAD CORONARIA",
     "UTIP",
     "UTIN",
-    "HEMODIALISIS",
-    "QUIRÓFANO",
+    "HEMODINAMIA",
+    "HOSPITAL DE DIA",
   ];
+
   const TARGET_MAPPINGS = {
-    UTI: [
-      "UTI",
-      "TERAPIA INTENSIVA",
-      "CUIDADOS INTENSIVOS",
-      "CUIDADOS CRITICOS",
-      "UNIDAD DE TERAPIA INTENSIVA",
-    ],
-    UCO: ["UCO", "CORONARIA", "CORONARIO", "UNIDAD CORONARIA"],
-    UCIM: [
-      "UCIM",
-      "CUIDADOS INTERMEDIOS",
-      "TERAPIA INTERMEDIA",
-      "CUIDADOS MODERADOS",
-      "UNIDAD DE CUIDADOS INTERMEDIOS",
-    ],
-    UTIP: ["UTIP", "PEDIATRICA"],
-    UTIN: ["UTIN", "NEONATAL"],
-    HEMODIALISIS: ["HEMODIALISIS", "DIALISIS"],
-    QUIRÓFANO: [
-      "QUIROFANO",
-      "QUIRÓFANO",
-      "CENTRO QUIRÚRGICO",
-      "ÁREA QUIRÚRGICA",
-    ],
+    "GUARDIA": ["GUARDIA"],
+    "QUIROFANO": ["QUIROFANO", "QUIRÓFANO", "CENTRO QUIRÚRGICO", "ÁREA QUIRÚRGICA"],
+    "SALA DE PARTO": ["SALA DE PARTO", "OBSTETRICIA", "MATERNIDAD"],
+    "UTI": ["UNIDADES DE TERAPIA INTENSIVA", "UTI", "TERAPIA INTENSIVA"],
+    "UNIDAD CORONARIA": ["UNIDAD CORONARIA", "UCO"],
+    "UTIP": ["UNIDAD DE TERAPIA INTENSIVA PEDIATRICA", "UTIP"],
+    "UTIN": ["UNIDAD DE TERAPIA INTENSIVA NEONATAL", "UTIN"],
+    "HEMODINAMIA": ["HEMODINAMIA"],
+    "HOSPITAL DE DIA": ["HOSPITAL DE DIA"],
   };
 
   const normalizedMatch = (srvName, targetKey) => {
-    const nSrv = srvName
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toUpperCase();
-    const nKey = targetKey
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toUpperCase();
-
+    const nSrv = srvName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    const nKey = targetKey.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
     if (nSrv.includes(nKey) || nKey.includes(nSrv)) return true;
-
     const srvWords = nSrv.split(/\W+/).filter((w) => w.length > 3);
     const keyWords = nKey.split(/\W+/).filter((w) => w.length > 3);
     return keyWords.some((kw) => srvWords.includes(kw));
@@ -518,1886 +353,580 @@ const PantallaInspeccion = ({
   const activeSubServicios = SUBSERVICIOS.filter((sub) => {
     const allEfectorSelection = [
       ...serviciosEfector,
-      ...Object.keys(infraEfector || {}).filter(
-        (k) => (infraEfector[k] || 0) > 0,
-      ),
+      ...Object.keys(infraEfector || {}).filter((k) => (infraEfector[k] || 0) > 0),
     ];
-
     return allEfectorSelection.some((srvName) => {
-      const isMatch = TARGET_MAPPINGS[sub]?.some((k) =>
-        normalizedMatch(srvName, k),
-      );
-      const nSrv = srvName
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toUpperCase();
-
-      const isExcluded =
-        sub === "UTI" &&
-        (nSrv.includes("PEDIAT") ||
-          nSrv.includes("NEONAT") ||
-          nSrv.includes("CORONARI") ||
-          nSrv.includes("INTERMEDIA"));
-
-      // Si es exactamente la UTI que buscamos, nunca la excluimos de su propio chip
-      if (
-        sub === "UTI" &&
-        (nSrv.includes("TERAPIA INTENSIVA") || nSrv.includes("UTI"))
-      ) {
+      const isMatch = TARGET_MAPPINGS[sub]?.some((k) => normalizedMatch(srvName, k));
+      const nSrv = srvName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+      const isExcluded = sub === "UTI" && (nSrv.includes("PEDIAT") || nSrv.includes("NEONAT") || nSrv.includes("CORONARI") || nSrv.includes("INTERMEDIA"));
+      if (sub === "UTI" && (nSrv.includes("TERAPIA INTENSIVA") || nSrv.includes("UTI"))) {
         if (!nSrv.includes("PEDIAT") && !nSrv.includes("NEONAT")) return true;
       }
-
       return isMatch && !isExcluded;
     });
   });
 
   useEffect(() => {
-    if (
-      activeSubServicios.length > 0 &&
-      !activeSubServicios.includes(selectedSubService)
-    ) {
+    if (activeSubServicios.length > 0 && !activeSubServicios.includes(selectedSubService)) {
       setSelectedSubService(activeSubServicios[0]);
     }
   }, [activeSubServicios, selectedSubService]);
 
-  const handleFieldChange = (fieldId, value) => {
-    setInspectorData((prev) => ({
-      ...prev,
-      [fieldId]: value,
-    }));
+  const handleFieldChange = (fieldId, newValue) => {
+    setInspectorData((prev) => {
+      const current = prev[fieldId];
+      const isObject = current && typeof current === 'object' && !Array.isArray(current);
+      if (newValue && typeof newValue === 'object' && !Array.isArray(newValue) && 'obs' in newValue) {
+        return { ...prev, [fieldId]: newValue };
+      }
+      return {
+        ...prev,
+        [fieldId]: isObject ? { ...current, value: newValue } : newValue
+      };
+    });
   };
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          bgcolor: "#ffffffff",
-        }}
-      >
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", bgcolor: "#ffffffff" }}>
         <CircularProgress size={80} thickness={4} />
       </Box>
     );
   }
 
-  const datosGeneralesSrv = config?.servicios?.find((s) =>
-    s.name?.toUpperCase().includes("DATOS GENERALES"),
-  );
-
-  const otherServices =
-    config?.servicios?.filter((s) => {
-      const isGeneral = s.name?.toUpperCase().includes("DATOS GENERALES");
-      if (isGeneral) return false;
-
-      // Normalizado para comparación robusta (sin acentos, mayúsculas)
-      const normalize = (str) =>
-        str
-          ?.normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .toUpperCase()
-          .trim() || "";
-
-      const allEfectorSelection = [
-        ...serviciosEfector,
-        ...Object.keys(infraEfector || {}).filter(
-          (k) => (infraEfector[k] || 0) > 0,
-        ),
-      ];
-
-      return allEfectorSelection.some((effSrv) => {
-        const nSrvName = s.name.toUpperCase();
-        const nEffSrv = effSrv.toUpperCase();
-
-        // Coincidencia exacta o robusta
-        if (nSrvName === nEffSrv) return true;
-
-        if (normalizedMatch(effSrv, s.name)) {
-          // Validar variantes
-          const isPed = (str) => str.includes("PEDIAT") || str.includes("UTIP");
-          const isNeo = (str) => str.includes("NEONAT") || str.includes("UTIN");
-          const isUco = (str) =>
-            str.includes("CORONARI") || str.includes("UCO");
-          const isUcim = (str) =>
-            str.includes("INTERMEDIO") || str.includes("UCIM");
-
-          if (isPed(nSrvName) !== isPed(nEffSrv)) return false;
-          if (isNeo(nSrvName) !== isNeo(nEffSrv)) return false;
-          if (isUco(nSrvName) !== isUco(nEffSrv)) return false;
-          if (isUcim(nSrvName) !== isUcim(nEffSrv)) return false;
-
-          return true;
-        }
-        return false;
-      });
-    }) || [];
-
-  const allServiceNames = config?.servicios?.map((s) => s.name) || [];
-
   const PESTAÑAS = [
-    {
-      id: "ARQUITECTURA",
-      label: "ARQUITECTURA",
-      icon: <DomainIcon sx={{ fontSize: 28 }} />,
-    },
-    {
-      id: "RECURSOS HUMANOS",
-      label: "RRHH",
-      icon: <PeopleIcon sx={{ fontSize: 28 }} />,
-    },
-    {
-      id: "EQUIPAMIENTO",
-      label: "EQUIPAMIENTO",
-      icon: <MedicalServicesIcon sx={{ fontSize: 28 }} />,
-    },
-    {
-      id: "SALAS Y CAMAS",
-      label: "SALAS Y CAMAS",
-      icon: <BedIcon sx={{ fontSize: 28 }} />,
-    },
-    {
-      id: "SERVICIOS",
-      label: "SERVICIOS",
-      icon: <LocalHospitalIcon sx={{ fontSize: 28 }} />,
-    },
+    { id: "ARQUITECTURA", label: "ARQUITECTURA", icon: <DomainIcon sx={{ fontSize: 28 }} /> },
+    { id: "SALAS Y CAMAS", label: "SALAS Y CAMAS", icon: <BedIcon sx={{ fontSize: 28 }} /> },
+    { id: "RECURSOS HUMANOS", label: "RRHH", icon: <PeopleIcon sx={{ fontSize: 28 }} /> },
+    { id: "JEFE DE SERVICIO", label: "JS", icon: <FaceRetouchingNaturalIcon sx={{ fontSize: 28 }} /> },
+    { id: "EQUIPAMIENTO", label: "EQUIPAMIENTO", icon: <MedicalServicesIcon sx={{ fontSize: 28 }} /> },
+    { id: "DOCUMENTACION", label: "DOCUMENTOS ADJUNTOS", icon: <DescriptionIcon sx={{ fontSize: 28 }} /> },
   ];
 
-  const getFlatFields = (sectionsObj) => {
-    return sectionsObj?.flatMap((sec) => sec.fields || []) || [];
-  };
-
   const getCompletionStats = (fieldsArray) => {
-    if (!fieldsArray || fieldsArray.length === 0)
-      return { total: 0, filled: 0, percent: 100 };
+    if (!fieldsArray || fieldsArray.length === 0) return { total: 0, filled: 0, percent: 100 };
     const total = fieldsArray.length;
     const filled = fieldsArray.filter((f) => {
       const val = inspectorData[f.id];
       if (val === undefined || val === null) return false;
-      if (typeof val === "object")
-        return val.observado !== undefined && val.observado !== false;
+      if (typeof val === "object") return val.observado !== undefined && val.observado !== false;
       return String(val).trim() !== "";
     }).length;
-    const percent = Math.round((filled / total) * 100);
-    return { total, filled, percent };
+    return { total, filled, percent: Math.round((filled / total) * 100) };
   };
 
   const renderProgressBar = (stats) => {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 2,
-          mb: 1,
-          mt: 1,
-          width: "100%",
-        }}
-      >
-        <Box sx={{ flexGrow: 1 }}>
-          <LinearProgress
-            variant="determinate"
-            value={stats.percent}
-            sx={{
-              height: 8,
-              borderRadius: 3,
-              bgcolor: "#f1f5f9",
-              "& .MuiLinearProgress-bar": {
-                bgcolor: "#b7b7b7",
-                borderRadius: 3,
-              },
-            }}
-          />
-        </Box>
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: 900,
-            minWidth: 45,
-            color: "#64748b",
-            textAlign: "right",
-          }}
-        >
-          {stats.percent}%
-        </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
+        <Chip label={`${stats.percent}%`} size="small" sx={{ fontWeight: 800, fontSize: "0.75rem", bgcolor: stats.percent === 100 ? "#def7ed" : "#f1f5f9", color: stats.percent === 100 ? "#065f46" : "#64748b", height: 20, "& .MuiChip-label": { px: 1 } }} />
       </Box>
     );
   };
 
+  const fieldsActuales = datosTramiteSrv?.sections?.find((sec) => sec.id === selectedCategory)?.fields || [];
+  const hasObservations = Object.values(inspectorData).some(v => v && typeof v === 'object' && v.observado);
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "calc(100vh - 64px)",
-        width: "89%",
-        bgcolor: "#ffffff",
-        overflowX: "hidden",
-        mx: "auto",
-        maxWidth: 800,
-        pt: 4,
-        pb: 10,
-      }}
-    >
-      {/* Header del Establecimiento (Lo primero que ve) */}
-      <Box
-        sx={{
-          mb: 4,
-          p: 4,
-          bgcolor: "#f8fafc",
-          borderRadius: 6,
-          border: "1px solid #e2e8f0",
-          boxShadow:
-            "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-          display: "flex",
-          flexDirection: "column",
-          position: "relative",
-          overflow: "hidden",
-          width: "100%",
-        }}
-      >
-        <Box
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "calc(100vh - 64px)", width: "89%", bgcolor: "#ffffff", overflowX: "hidden", mx: "auto", maxWidth: 850, pt: 2, pb: 6 }}>
+
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
+        <ToggleButtonGroup
+          value={currentActa}
+          exclusive
+          onChange={(e, v) => v && setCurrentActa(v)}
+          size="small"
           sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "6px",
-            height: "100%",
-            bgcolor: "#0ea5e9",
-          }}
-        />
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 950,
-            color: "#1e293b",
-            mb: 1,
-            letterSpacing: "-0.025em",
-            fontSize: { xs: "2rem", sm: "2.5rem" },
+            bgcolor: '#f8fafc', p: 0.5, borderRadius: 4, border: '1px solid #e2e8f0',
+            '& .MuiToggleButton-root': { px: 4, py: 1, borderRadius: 3.5, border: 'none', fontWeight: 900, fontSize: '0.75rem', color: '#94a3b8', letterSpacing: 1.2, transition: 'all 0.2s', '&.Mui-selected': { bgcolor: 'white', color: '#0090d0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', '&:hover': { bgcolor: 'white' } } }
           }}
         >
-          SANATORIO ALLENDE
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-          <LocalHospitalIcon sx={{ color: "#0ea5e9", fontSize: 24 }} />
-          <Typography
-            variant="h6"
-            sx={{
-              color: "#64748b",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              fontSize: "0.9rem",
-            }}
-          >
-            Clínicas, Sanatorios y Hospitales
-          </Typography>
-        </Box>
+          <ToggleButton value={1}>ACTA 1: REVISIÓN</ToggleButton>
+          <ToggleButton value={2}>ACTA 2: INSPECCIÓN</ToggleButton>
+        </ToggleButtonGroup>
       </Box>
 
-      {datosGeneralesSrv && (
-        <Accordion
-          expanded={expandedDatosGenerales}
-          onChange={() => setExpandedDatosGenerales(!expandedDatosGenerales)}
-          sx={{
-            mb: 4,
-            boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-            borderRadius: "16px !important",
-            "&:before": { display: "none" },
-            border: "1px solid #e2e8f0",
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />}
-            sx={{ px: { xs: 2, sm: 3 }, py: 1 }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                pr: 2,
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{ fontWeight: 900, color: "#1e293b" }}
-              >
-                DATOS GENERALES
-              </Typography>
-              {renderProgressBar(
-                getCompletionStats(
-                  datosGeneralesSrv.sections
-                    ? getFlatFields(datosGeneralesSrv.sections)
-                    : datosGeneralesSrv.fields,
-                ),
-              )}
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails
-            sx={{
-              px: { xs: 2, sm: 3 },
-              py: 3,
-              bgcolor: "#ffffffff",
-              borderTop: "1px solid #e2e8f0",
-            }}
-          >
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {datosGeneralesSrv.sections
-                ? datosGeneralesSrv.sections.map((sec) => {
-                    const sectionStats = getCompletionStats(sec.fields);
-                    return (
-                      <Accordion
-                        key={sec.id}
-                        elevation={0}
-                        sx={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: "12px !important",
-                          overflow: "hidden",
-                          "&:before": { display: "none" },
-                        }}
-                      >
-                        <AccordionSummary
-                          expandIcon={
-                            <ExpandMoreIcon sx={{ color: "#0ea5e9" }} />
-                          }
-                          sx={{
-                            bgcolor: "#f8fafc",
-                            "& .MuiAccordionSummary-content": {
-                              flexDirection: "column",
-                            },
-                          }}
-                        >
-                          <Typography
-                            variant="subtitle2"
-                            sx={{
-                              fontWeight: 800,
-                              color: "#475569",
-                              textTransform: "uppercase",
-                              fontSize: "0.8rem",
-                            }}
-                          >
-                            {sec.name}
-                          </Typography>
-                          {renderProgressBar(sectionStats)}
-                        </AccordionSummary>
-                        <AccordionDetails sx={{ py: 3 }}>
-                          <Box
-                            sx={{
-                              display: "grid",
-                              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                              gap: 3,
-                            }}
-                          >
-                            {sec.fields.map((field) => (
-                              <FieldItem
-                                key={field.id}
-                                field={field}
-                                value={inspectorData[field.id]}
-                                onChange={handleFieldChange}
-                              />
-                            ))}
-                          </Box>
-                        </AccordionDetails>
-                      </Accordion>
-                    );
-                  })
-                : datosGeneralesSrv.fields?.map((field) => (
-                    <FieldItem
-                      key={field.id}
-                      field={field}
-                      value={inspectorData[field.id]}
-                      onChange={handleFieldChange}
-                    />
-                  ))}
-            </Box>
-          </AccordionDetails>
-        </Accordion>
-      )}
-
-      <Accordion
-        expanded={expandedEstablecimiento}
-        onChange={() => setExpandedEstablecimiento(!expandedEstablecimiento)}
-        sx={{
-          mb: 4,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-          borderRadius: "16px !important",
-          "&:before": { display: "none" },
-          border: "1px solid #e2e8f0",
-        }}
+      <Paper
+        elevation={0}
+        sx={{ p: 3, mb: 4, borderRadius: 4, borderLeft: `8px solid ${currentActa === 1 ? '#0090d0' : '#f59e0b'}`, bgcolor: 'white', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0', width: '100%' }}
       >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />}
-          sx={{ px: { xs: 2, sm: 3 }, py: 1 }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              width: "100%",
-              pr: 2,
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: 900, color: "#1e293b" }}
-            >
-              DATOS DEL ESTABLECIMIENTO
-            </Typography>
-            <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 700 }}>
-               Estado de carga por áreas técnicas
-            </Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails sx={{ px: { xs: 2, sm: 3 }, py: 3, bgcolor: "#ffffffff", borderTop: "1px solid #e2e8f0" }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              mb: 3,
-              px: { xs: 1, sm: 4 },
-              width: "100%",
-              position: "relative",
-            }}
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                top: 28,
-                left: { xs: 30, sm: 80 },
-                right: { xs: 30, sm: 80 },
-                height: 2,
-                bgcolor: "#e2e8f0",
-                zIndex: 0,
-              }}
-            />
-
-            {PESTAÑAS.map((tab) => {
-              const isSelected = selectedCategory === tab.id;
-              return (
-                <Box
-                  key={tab.id}
-                  onClick={() => setSelectedCategory(tab.id)}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    zIndex: 1,
-                    width: "20%",
-                    gap: 1,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: 56,
-                      height: 56,
-                      borderRadius: "50%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      bgcolor: isSelected ? "#0ea5e9" : "#ffffff",
-                      color: isSelected ? "white" : "#64748b",
-                      border: "2px solid",
-                      borderColor: isSelected ? "#0ea5e9" : "#cbd5e1",
-                      boxShadow: isSelected
-                        ? "0 4px 10px rgba(14,165,233,0.3)"
-                        : "none",
-                      transition: "all 0.2s",
-                    }}
-                  >
-                    {tab.icon}
-                  </Box>
-                  <Typography
-                    align="center"
-                    sx={{
-                      fontWeight: 800,
-                      fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.8rem" },
-                      color: isSelected ? "#0f172a" : "#64748b",
-                      lineHeight: 1.1,
-                    }}
-                  >
-                    {tab.label}
-                  </Typography>
-                </Box>
-              );
-            })}
-          </Box>
-
-          {selectedCategory === "SERVICIOS" && (
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 1,
-                mb: 4,
-                mt: 3,
-                justifyContent: "center",
-                p: 2,
-                bgcolor: "#f8fafc",
-                borderRadius: 4,
-                border: "1px dashed #cbd5e1",
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{
-                  width: "100%",
-                  textAlign: "center",
-                  fontWeight: 700,
-                  mb: 1,
-                  color: "#94a3b8",
-                }}
-              >
-                SUB-ÁREAS TÉCNICAS A EVALUAR
-              </Typography>
-              {activeSubServicios.length === 0 && (
-                <Box sx={{ textAlign: "center" }}>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: "#ef4444", fontWeight: 700, mb: 1 }}
-                  >
-                    El efector no ha declarado ningún servicio de este tipo.
-                  </Typography>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() =>
-                      setServiciosEfector([
-                        "UNIDADES DE TERAPIA INTENSIVA",
-                        "CUIDADOS INTERMEDIOS",
-                      ])
-                    }
-                    sx={{ borderRadius: 4, textTransform: "none", fontWeight: 700 }}
-                  >
-                    Simular servicios técnicos para demo
-                  </Button>
-                </Box>
-              )}
-              {activeSubServicios.map((sub) => (
-                <Chip
-                  key={sub}
-                  size="medium"
-                  label={sub}
-                  clickable
-                  onClick={() => setSelectedSubService(sub)}
-                  sx={{
-                    fontWeight: 800,
-                    fontSize: "0.85rem",
-                    px: 1,
-                    bgcolor: selectedSubService === sub ? "#e0f2fe" : "white",
-                    color: selectedSubService === sub ? "#0369a1" : "#64748b",
-                    border: "2px solid",
-                    borderColor: selectedSubService === sub ? "#0ea5e9" : "#e2e8f0",
-                  }}
-                />
-              ))}
-            </Box>
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+          <Typography variant="h3" sx={{ fontWeight: 950, color: '#0f172a', mb: 1, letterSpacing: -1.5 }}>
+            {inspectorData["f-nomtcemx"] || "SANATORIO ALLENDE"}
+          </Typography>
+          {currentActa === 2 && (
+            <Chip label="SEGUIMIENTO" sx={{ bgcolor: '#fef3c7', color: '#b45309', fontWeight: 900, fontSize: '0.65rem', borderRadius: 1.5, height: 24 }} />
           )}
+        </Stack>
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+          <Box sx={{ bgcolor: currentActa === 1 ? '#0090d0' : '#f59e0b', color: 'white', borderRadius: 1.5, p: 0.4, display: 'flex' }}>
+            <LocalHospitalIcon sx={{ fontSize: 20 }} />
+          </Box>
+          <Typography variant="caption" sx={{ fontWeight: 850, color: '#64748b', letterSpacing: 1.5, textTransform: 'uppercase' }}>{tipologia}</Typography>
+          <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 20, my: 'auto' }} />
+          <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b' }}>DIRECTOR TÉCNICO: <Box component="span" sx={{ color: '#0f172a', fontWeight: 900 }}>{directorTecnico.nombre} {directorTecnico.apellido}</Box></Typography>
+          <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 20, my: 'auto' }} />
+          <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b' }}>DNI: <Box component="span" sx={{ color: '#0f172a', fontWeight: 900 }}>{directorTecnico.dni}</Box></Typography>
+          <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 20, my: 'auto' }} />
+          <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b' }}>FECHA Y HORA: <Box component="span" sx={{ color: currentActa === 1 ? '#e11d48' : '#b45309', fontWeight: 900 }}>{new Date().toLocaleDateString()} HS</Box></Typography>
+        </Stack>
+      </Paper>
 
-          {selectedCategory !== "SERVICIOS" && <Box sx={{ mb: 4 }} />}
-
-          <Box
-            sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1 }}
-          >
-            {/* Header del Establecimiento */}
-
-            {selectedCategory === "ARQUITECTURA" && (
-              <Box sx={{ mb: 6 }}>
-                <Box sx={{ mb: 3, display: "flex", flexDirection: "column" }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Box
-                      sx={{
-                        width: 8,
-                        height: 32,
-                        bgcolor: "#0ea5e9",
-                        borderRadius: 4,
-                      }}
-                    />
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 900,
-                        color: "#1e293b",
-                        letterSpacing: -0.5,
-                      }}
-                    >
-                      VISUALIZACIÓN DE PLANOS Y DOCUMENTACIÓN
-                    </Typography>
-                  </Box>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: "#64748b", mt: 1, fontWeight: 700 }}
-                  >
-                    Revise la documentación técnica cargada por el establecimiento
-                    para validar su coincidencia con la realidad.
-                  </Typography>
+      {currentActa === 1 ? (
+        <RevisionActa efectorResponses={efectorResponses} onValidate={(id, s) => alert(id + ":" + s)} />
+      ) : (
+        <>
+          {/* 1. DATOS GENERALES */}
+          {datosGeneralesSrv && (
+            <Accordion expanded={expandedDatosGenerales} onChange={() => setExpandedDatosGenerales(!expandedDatosGenerales)} sx={{ mb: 2, boxShadow: "0 2px 10px rgba(0,0,0,0.05)", borderRadius: "12px !important", "&:before": { display: "none" }, border: "1px solid #e2e8f0" }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />} sx={{ px: 3, py: 0.5 }}>
+                <Box sx={{ display: "flex", flexDirection: "column", width: "100%", pr: 2 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b" }}>1. DATOS GENERALES</Typography>
+                  {renderProgressBar(getCompletionStats(datosGeneralesSrv.sections ? getFlatFields(datosGeneralesSrv.sections) : datosGeneralesSrv.fields))}
                 </Box>
-
-                <PlansTable
-                  inspectorData={inspectorData}
-                  onChange={handleFieldChange}
-                  onOpenViewer={setViewerFile}
-                />
-              </Box>
-            )}
-
-            <FileViewerModal
-              file={viewerFile}
-              onClose={() => setViewerFile(null)}
-            />
-
-            {selectedCategory === "SALAS Y CAMAS" && (
-              <Box sx={{ mb: 4 }}>
-                <Box sx={{ mb: 3, display: "flex", flexDirection: "column" }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Box
-                      sx={{
-                        width: 8,
-                        height: 32,
-                        bgcolor: "#0ea5e9",
-                        borderRadius: 4,
-                      }}
-                    />
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 900,
-                        color: "#1e293b",
-                        letterSpacing: -0.5,
-                      }}
-                    >
-                      GLOBAL: SALAS Y CAMAS CARGADAS
-                    </Typography>
-                  </Box>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: "#64748b", mt: 1, fontWeight: 600 }}
-                  >
-                    A continuación se listan todas las salas y camas declaradas por
-                    el efector para su validación general.
-                  </Typography>
-                </Box>
-
-                <VerificationTable
-                  fields={Object.keys(infraEfector || {})
-                    .filter((key) => infraEfector[key] > 0)
-                    .map((key) => ({
-                      id: `global_infra_${key}`,
-                      label: key,
-                      name: key,
-                    }))}
-                  inspectorData={inspectorData}
-                  onChange={handleFieldChange}
-                  infraEfector={infraEfector}
-                  currentSrvName="GENERAL"
-                />
-                <Divider sx={{ my: 4, borderStyle: "dashed" }} />
-              </Box>
-            )}
-            {otherServices.map((srv) => {
-              let matchedSections = [];
-
-              if (selectedCategory === "SERVICIOS") {
-                const isTargetService = TARGET_MAPPINGS[selectedSubService]?.some(
-                  (k) => normalizedMatch(srv.name, k),
-                );
-                const nSrv = (srv.name || "").toUpperCase();
-                const isExcluded =
-                  selectedSubService === "UTI" &&
-                  (nSrv.includes("PEDIAT") ||
-                    nSrv.includes("NEONAT") ||
-                    nSrv.includes("CORONARI") ||
-                    nSrv.includes("INTERMEDIA"));
-
-                if (
-                  isTargetService &&
-                  (!isExcluded || nSrv === "UNIDAD DE TERAPIA INTENSIVA") &&
-                  srv.sections
-                ) {
-                  matchedSections = srv.sections.filter((sec) => {
-                    const n = sec.name.toUpperCase();
-                    // Ocultar arquitectura/equipos generales en pestaña servicios
-                    return (
-                      !n.includes("ARQUITECTURA") &&
-                      !n.includes("EQUIPAMIENTO") &&
-                      !n.includes("RECURSOS") &&
-                      !n.includes("RRHH")
-                    );
-                  });
-                }
-              } else {
-                if (srv.sections) {
-                  const keyword =
-                    selectedCategory === "RECURSOS HUMANOS"
-                      ? "RECURSOS"
-                      : selectedCategory === "SALAS Y CAMAS"
-                        ? "SALA"
-                        : selectedCategory;
-                  matchedSections = srv.sections.filter(
-                    (sec) =>
-                      sec.name.toUpperCase().includes(keyword) ||
-                      (selectedCategory === "SALAS Y CAMAS" &&
-                        sec.name.toUpperCase().includes("CAMA")),
-                  );
-                }
-              }
-
-              if (!matchedSections || matchedSections.length === 0) return null;
-
-              const blockStats = getCompletionStats(getFlatFields(matchedSections));
-
-              return (
-                <Box key={srv.id} sx={{ mb: 2 }}>
-                  <Box sx={{ mb: 3, display: "flex", flexDirection: "column" }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 32,
-                          bgcolor: "#475569",
-                          borderRadius: 4,
-                        }}
-                      />
-                      <Typography
-                        variant="h5"
-                        sx={{
-                          fontWeight: 900,
-                          color: "#1e293b",
-                          letterSpacing: -0.5,
-                        }}
-                      >
-                        {srv.name}
-                      </Typography>
-                    </Box>
-                    {renderProgressBar(blockStats)}
-                  </Box>
-
-                  {matchedSections.map((section) => (
-                    <Box key={section.id} sx={{ mb: 4 }}>
-                      {selectedCategory === "SERVICIOS" && (
-                        <Typography
-                          variant="subtitle2"
-                          sx={{
-                            fontWeight: 800,
-                            mb: 2,
-                            color: "#64748b",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          {section.name}
-                        </Typography>
-                      )}
-
-                      {selectedCategory === "EQUIPAMIENTO" ||
-                      selectedCategory === "RECURSOS HUMANOS" ||
-                      selectedCategory === "SALAS Y CAMAS" ? (
-                        <VerificationTable
-                          fields={section.fields.filter((f) => {
-                            // En Arquitectura/Camas siempre filtramos si hay 0 declarado para no saturar
-                            if (selectedCategory === "SALAS Y CAMAS") {
-                              const name = f.label || f.name;
-                              return infraEfector[name] > 0;
-                            }
-                            // En Equipamiento y RRHH mostramos TODO lo configurado para que el inspector audite
-                            return true;
-                          })}
-                          inspectorData={inspectorData}
-                          onChange={handleFieldChange}
-                          infraEfector={infraEfector}
-                          rrhhEfector={rrhhEfector}
-                          equiposEfector={equiposEfector}
-                          currentSrvName={srv.name}
-                        />
-                      ) : (
-                        <Box
-                          sx={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                            gap: 3,
-                          }}
-                        >
-                          {section.fields?.map((field) => (
-                            <FieldItem
-                              key={field.id}
-                              field={field}
-                              value={inspectorData[field.id]}
-                              onChange={handleFieldChange}
-                            />
+              </AccordionSummary>
+              <AccordionDetails sx={{ px: 3, py: 2, bgcolor: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {datosGeneralesSrv.sections ? datosGeneralesSrv.sections.map((sec) => (
+                    <Accordion key={sec.id} elevation={0} defaultExpanded sx={{ border: "1px solid #e2e8f0", borderRadius: "12px !important", overflow: "hidden", "&:before": { display: "none" } }}>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />} sx={{ bgcolor: "#f8fafc", "& .MuiAccordionSummary-content": { flexDirection: "column" } }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#475569", textTransform: "uppercase", fontSize: "0.8rem" }}>{sec.name}</Typography>
+                        {renderProgressBar(getCompletionStats(sec.fields))}
+                      </AccordionSummary>
+                      <AccordionDetails sx={{ py: 2 }}>
+                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 2 }}>
+                          {sec.fields.map((f) => (
+                            <FieldItem key={f.id} field={f} value={inspectorData[f.id]} efectorResponse={efectorResponses[f.id]} currentActa={currentActa} onChange={handleFieldChange} onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "GENERAL")} />
                           ))}
                         </Box>
-                      )}
-                    </Box>
+                      </AccordionDetails>
+                    </Accordion>
+                  )) : datosGeneralesSrv.fields?.map((f) => (
+                    <FieldItem key={f.id} field={f} value={inspectorData[f.id]} efectorResponse={efectorResponses[f.id]} currentActa={currentActa} onChange={handleFieldChange} onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "GENERAL")} />
                   ))}
-                  <Divider sx={{ mb: 2, mt: 4, opacity: 0.5 }} />
                 </Box>
-              );
-            })}
-          </Box>
-        </AccordionDetails>
-      </Accordion>
+              </AccordionDetails>
+            </Accordion>
+          )}
 
-      {/* Observación General */}
-      <Box sx={{ mt: 6, mb: 4 }}>
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: 900, color: "#1e293b", mb: 2 }}
-        >
-          OBSERVACIONES GENERALES
-        </Typography>
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          placeholder="Escriba aquí cualquier observación general sobre la inspección..."
-          value={generalObs}
-          onChange={(e) => setGeneralObs(e.target.value)}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 6,
-              bgcolor: "#f8fafc",
-              border: "2px solid #e2e8f0",
-              "&:hover": { borderColor: "#cbd5e1" },
-              "&.Mui-focused": { borderColor: "#0ea5e9" },
-            },
-          }}
-        />
-      </Box>
+          {/* 2. DATOS DEL TRÁMITE */}
+          <Accordion expanded={expandedEstablecimiento} onChange={() => setExpandedEstablecimiento(!expandedEstablecimiento)} sx={{ mb: 2, boxShadow: "0 2px 10px rgba(0,0,0,0.05)", borderRadius: "12px !important", "&:before": { display: "none" }, border: "1px solid #e2e8f0" }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />} sx={{ px: 3, py: 0.5 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", width: "100%", pr: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b" }}>2. DATOS DEL TRÁMITE</Typography>
+                <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 700 }}>Infraestructura, RRHH y Equipamiento</Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails sx={{ px: 3, py: 2, bgcolor: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3, px: 4, width: "100%", position: "relative" }}>
+                <Box sx={{ position: "absolute", top: 24, left: 40, right: 40, height: 2, bgcolor: "#e2e8f0", zIndex: 0 }} />
+                {PESTAÑAS.map((tab) => {
+                  const isSelected = selectedCategory === tab.id;
+                  return (
+                    <Box key={tab.id} onClick={() => setSelectedCategory(tab.id)} sx={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer", zIndex: 1, flex: 1, gap: 0.5 }}>
+                      <Box sx={{ width: 48, height: 48, borderRadius: "50%", display: "flex", justifyContent: "center", alignItems: "center", bgcolor: isSelected ? "#0ea5e9" : "#ffffff", color: isSelected ? "white" : "#64748b", border: isSelected ? "none" : "1px solid #e2e8f0", boxShadow: isSelected ? "0 4px 12px rgba(14, 165, 233, 0.4)" : "none", transition: "all 0.3s", "&:hover": { transform: "scale(1.1)", bgcolor: isSelected ? "#0ea5e9" : "#f8fafc" } }}>
+                        {tab.icon}
+                      </Box>
+                      <Typography variant="caption" sx={{ fontWeight: 900, fontSize: "0.65rem", color: isSelected ? "#0ea5e9" : "#64748b", textAlign: "center", mt: 0.5 }}>{tab.label}</Typography>
+                    </Box>
+                  );
+                })}
+              </Box>
+              <Divider sx={{ mb: 4, borderStyle: "dashed" }} />
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 950, color: "#0f172a", mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <ArrowBackIcon sx={{ transform: 'rotate(180deg)', fontSize: 20, color: '#0ea5e9' }} />
+                  DETALLE DE {selectedCategory}
+                </Typography>
+                {selectedCategory === "SALAS Y CAMAS" ? (
+                  <VerificationTable fields={fieldsActuales} inspectorData={inspectorData} onChange={handleFieldChange} onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "TRAMITE")} infraEfector={infraEfector} rrhhEfector={rrhhEfector} equiposEfector={equiposEfector} currentSrvName={selectedCategory} />
+                ) : selectedCategory === "EQUIPAMIENTO" ? (
+                  <Box>
+                    <Alert severity="info" sx={{ mb: 3, borderRadius: 3, fontWeight: 700 }}>
+                      EQUIPAMIENTOS REPORTADOS POR EL EFECTOR:
+                    </Alert>
+                    <Grid container spacing={2}>
+                      {equiposEfector && equiposEfector.length > 0 ? (
+                        equiposEfector.map((eq, i) => (
+                          <Grid item xs={12} md={6} key={i}>
+                            <Paper sx={{ p: 2, borderRadius: 3, border: '1px solid #e2e8f0', bgcolor: '#f8fafc' }}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 900, color: '#005596' }}>{eq.nombre}</Typography>
+                              <Stack direction="row" justifyContent="space-between" sx={{ mt: 1 }}>
+                                <Typography variant="caption">CANTIDAD: <b>{eq.cantidad}</b></Typography>
+                                <Typography variant="caption">ESTADO: <b>{eq.estado}</b></Typography>
+                              </Stack>
+                            </Paper>
+                          </Grid>
+                        ))
+                      ) : (
+                        <Grid item xs={12}>
+                          <Typography variant="body2" sx={{ fontStyle: 'italic', color: '#64748b' }}>No se detectó carga de equipamiento por parte del efector.</Typography>
+                        </Grid>
+                      )}
+                    </Grid>
+                    <Divider sx={{ my: 4 }} />
+                    <Typography variant="subtitle2" sx={{ fontWeight: 900, mb: 2 }}>CONSTACIÓN DEL INSPECTOR:</Typography>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 2.5 }}>
+                      {fieldsActuales.map((f) => (
+                        <FieldItem key={f.id} field={f} value={inspectorData[f.id]} efectorResponse={efectorResponses[f.id]} currentActa={currentActa} onChange={handleFieldChange} onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "TRAMITE")} />
+                      ))}
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 2.5 }}>
+                    {fieldsActuales.map((f) => (
+                      <FieldItem key={f.id} field={f} value={inspectorData[f.id]} efectorResponse={efectorResponses[f.id]} currentActa={currentActa} onChange={handleFieldChange} onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "TRAMITE")} />
+                    ))}
+                  </Box>
+                )}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
 
-      {/* Fotos y Adjuntos */}
-      <Box sx={{ mb: 6 }}>
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: 900, color: "#1e293b", mb: 2 }}
-        >
-          FOTOS Y ADJUNTOS
-        </Typography>
-        <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-          <Button
-            variant="outlined"
-            onClick={() => photoInputRef.current.click()}
-            startIcon={<PhotoCamera />}
-            sx={{
-              borderRadius: 4,
-              textTransform: "none",
-              fontWeight: 800,
-              px: 3,
-              py: 1.5,
-              borderColor: "#e2e8f0",
-              color: "#475569",
-              "&:hover": { bgcolor: "#f1f5f9", borderColor: "#cbd5e1" },
-            }}
-          >
-            Abrir Cámara
-          </Button>
-          <input
-            ref={photoInputRef}
-            type="file"
-            hidden
-            accept="image/*"
-            capture="environment"
-            onChange={handleFileSelect}
-          />
+          {/* 3. RESUMEN OBSERVACIONES (Inhabilitado para edición) */}
+          <Accordion sx={{ mb: 2, boxShadow: "0 2px 10px rgba(0,0,0,0.05)", borderRadius: "12px !important", "&:before": { display: "none" }, border: "1px solid #e2e8f0" }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: "#ef4444" }} />} sx={{ px: 3, py: 0.5 }}>
+              <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b" }}>3. RESUMEN OBSERVACIONES</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ px: 3, py: 2, bgcolor: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
+              <Stack spacing={3}>
+                {/* Sub-apartado: Datos Generales */}
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#475569", mb: 1, textTransform: 'uppercase', fontSize: '0.75rem' }}>Observaciones datos generales</Typography>
+                  <Stack spacing={1}>
+                    {Object.entries(inspectorData)
+                      .filter(([k, v]) => {
+                        const isGeneral = getFlatFields(datosGeneralesSrv?.sections || datosGeneralesSrv?.fields).some(f => f.id === k);
+                        const isNo = v === "NO" || v === false || (v && typeof v === 'object' && (v.value === "NO" || v.value === false));
+                        const hasObs = v && typeof v === 'object' && v.observado;
+                        return isGeneral && (isNo || hasObs);
+                      })
+                      .map(([k, v]) => (
+                        <Box key={k} sx={{ p: 1.5, bgcolor: '#f8fafc', borderRadius: 2, border: '1px solid #e2e8f0' }}>
+                          <Typography variant="caption" sx={{ fontWeight: 900, color: '#ef4444' }}>{k}</Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                            {v === "NO" || v?.value === "NO" ? "Incumplimiento detectado (Marcado como NO)" : v?.obs}
+                          </Typography>
+                        </Box>
+                      ))}
+                    {Object.entries(inspectorData).filter(([k, v]) => {
+                      const isGeneral = getFlatFields(datosGeneralesSrv?.sections || datosGeneralesSrv?.fields).some(f => f.id === k);
+                      const isNo = v === "NO" || (v && typeof v === 'object' && v.value === "NO");
+                      const hasObs = v && typeof v === 'object' && v.observado;
+                      return isGeneral && (isNo || hasObs);
+                    }).length === 0 && (
+                        <Typography variant="caption" sx={{ color: '#94a3b8', fontStyle: 'italic' }}>Sin observaciones en esta categoría.</Typography>
+                      )}
+                  </Stack>
+                </Box>
 
-          <Button
-            variant="outlined"
-            onClick={() => fileInputRef.current.click()}
-            startIcon={<CloudUpload />}
-            sx={{
-              borderRadius: 4,
-              textTransform: "none",
-              fontWeight: 800,
-              px: 3,
-              py: 1.5,
-              borderColor: "#e2e8f0",
-              color: "#475569",
-              "&:hover": { bgcolor: "#f1f5f9", borderColor: "#cbd5e1" },
-            }}
-          >
-            Adjuntar Archivo
-          </Button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            hidden
-            multiple
-            onChange={handleFileSelect}
-          />
-        </Box>
+                <Divider />
 
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2.5 }}>
-          {attachments.map((file, idx) => (
-            <Paper
-              key={idx}
-              elevation={0}
-              sx={{
-                p: 0.5,
-                borderRadius: 4,
-                position: "relative",
-                width: 110,
-                height: 110,
-                border: "2px solid #e2e8f0",
-                bgcolor: "#f8fafc",
-                overflow: "visible",
-              }}
-            >
-              {file.type.startsWith("image/") ? (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="preview"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "12px",
-                  }}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100%",
-                    p: 1,
-                    textAlign: "center",
-                  }}
+                {/* Sub-apartado: Datos del Trámite */}
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#475569", mb: 1, textTransform: 'uppercase', fontSize: '0.75rem' }}>Observaciones datos del trámite</Typography>
+                  <Stack spacing={1}>
+                    {Object.entries(inspectorData)
+                      .filter(([k, v]) => {
+                        const isGeneral = getFlatFields(datosGeneralesSrv?.sections || datosGeneralesSrv?.fields).some(f => f.id === k);
+                        const isNo = v === "NO" || v === false || (v && typeof v === 'object' && (v.value === "NO" || v.value === false));
+                        const hasObs = v && typeof v === 'object' && v.observado;
+                        return !isGeneral && (isNo || hasObs);
+                      })
+                      .map(([k, v]) => (
+                        <Box key={k} sx={{ p: 1.5, bgcolor: '#fef2f2', borderRadius: 2, border: '1px solid #fee2e2' }}>
+                          <Typography variant="caption" sx={{ fontWeight: 900, color: '#ef4444' }}>{k}</Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                            {v === "NO" || v?.value === "NO" ? "Requisito No Cumplido" : v?.obs}
+                          </Typography>
+                        </Box>
+                      ))}
+                    {Object.entries(inspectorData).filter(([k, v]) => {
+                      const isGeneral = getFlatFields(datosGeneralesSrv?.sections || datosGeneralesSrv?.fields).some(f => f.id === k);
+                      const isNo = v === "NO" || (v && typeof v === 'object' && v.value === "NO");
+                      const hasObs = v && typeof v === 'object' && v.observado;
+                      return !isGeneral && (isNo || hasObs);
+                    }).length === 0 && (
+                        <Typography variant="caption" sx={{ color: '#94a3b8', fontStyle: 'italic' }}>Sin observaciones técnicas registradas.</Typography>
+                      )}
+                  </Stack>
+                </Box>
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* 4. OBSERVACIONES GENERALES (Editable) */}
+          <Accordion sx={{ mb: 2, boxShadow: "0 2px 10px rgba(0,0,0,0.05)", borderRadius: "12px !important", "&:before": { display: "none" }, border: "1px solid #e2e8f0" }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: "#f59e0b" }} />} sx={{ px: 3, py: 0.5 }}>
+              <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b" }}>4. OBSERVACIONES GENERALES</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ px: 3, py: 2, bgcolor: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                variant="outlined"
+                placeholder="El inspector puede agregar aquí notas adicionales o conclusiones finales..."
+                value={generalObs}
+                onChange={(e) => setGeneralObs(e.target.value)}
+                sx={{ bgcolor: '#f8fafc', '& .MuiOutlinedInput-root': { borderRadius: 3 } }}
+              />
+              <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
+                <Button fullWidth variant="outlined" startIcon={<PhotoCamera />} component="label" sx={{ py: 1.5, borderRadius: 3, fontWeight: 800 }}>
+                  SACAR FOTO / SUBIR ARCHIVO
+                  <input type="file" hidden multiple accept="image/*,application/pdf" onChange={handleFileSelect} />
+                </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<DriveFileRenameOutline />}
+                  onClick={() => { setSignatureStep(1); setSignatureModalOpen(true); }}
+                  sx={{ py: 1.5, borderRadius: 3, fontWeight: 900, bgcolor: signatures.representative && signatures.inspector ? "#059669" : "#0ea5e9" }}
                 >
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 700,
-                      color: "#64748b",
-                      wordBreak: "break-all",
-                      fontSize: "0.65rem",
-                    }}
-                  >
-                    {file.name}
-                  </Typography>
+                  FIRMAR ACTA
+                </Button>
+              </Stack>
+              {attachments.length > 0 && (
+                <Box sx={{ mt: 2, p: 2, bgcolor: '#f1f5f9', borderRadius: 2 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 900, color: '#64748b' }}>ARCHIVOS ADJUNTOS: {attachments.length}</Typography>
                 </Box>
               )}
-              <IconButton
-                size="small"
-                onClick={() =>
-                  setAttachments(attachments.filter((_, i) => i !== idx))
-                }
-                sx={{
-                  position: "absolute",
-                  top: -12,
-                  right: -12,
-                  bgcolor: "#ef4444",
-                  color: "white",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                  "&:hover": { bgcolor: "#dc2626" },
-                  "& .MuiSvgIcon-root": { fontSize: 16 },
-                }}
-              >
-                <Close />
-              </IconButton>
-            </Paper>
-          ))}
-        </Box>
-      </Box>
+            </AccordionDetails>
+          </Accordion>
 
-      {/* Visualización de Firmas */}
-      {(signatures.representative || signatures.inspector) && (
-        <Box
-          sx={{
-            mb: 4,
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 3,
-            p: 3,
-            bgcolor: "#f8fafc",
-            borderRadius: 6,
-            border: "1px solid #e2e8f0",
-          }}
-        >
-          <Box sx={{ textAlign: "center" }}>
-            <Typography
-              variant="caption"
-              sx={{ fontWeight: 800, color: "#64748b", textTransform: "uppercase" }}
+          {/* Botones de Acción Final (Fuera de los apartados) */}
+          <Stack spacing={2} sx={{ mt: 4, mb: 4, px: 1 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              size="large"
+              disabled={!signatures.inspector || !signatures.representative}
+              onClick={() => handleFinalize("APROBADO")}
+              sx={{ py: 2.5, borderRadius: 8, fontWeight: 950, fontSize: "1.2rem", bgcolor: "#059669", boxShadow: '0 4px 14px 0 rgba(5, 150, 105, 0.39)' }}
             >
-              Firma Responsable
-            </Typography>
-            <Box sx={{ height: 100, mt: 1, bgcolor: "white", borderRadius: 3, border: "1px solid #e2e8f0", overflow: 'hidden' }}>
-              {signatures.representative && <img src={signatures.representative} alt="firma responsable" style={{ height: '100%' }} />}
-            </Box>
-          </Box>
-          <Box sx={{ textAlign: "center" }}>
-            <Typography
-              variant="caption"
-              sx={{ fontWeight: 800, color: "#64748b", textTransform: "uppercase" }}
+              APROBAR ACTA
+            </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              size="large"
+              disabled={!signatures.inspector || !signatures.representative}
+              onClick={() => handleFinalize("NO APROBADO")}
+              sx={{ py: 2.5, borderRadius: 8, fontWeight: 950, fontSize: "1.2rem", bgcolor: "#ef4444", boxShadow: '0 4px 14px 0 rgba(239, 68, 68, 0.39)' }}
             >
-              Firma Inspector
-            </Typography>
-            <Box sx={{ height: 100, mt: 1, bgcolor: "white", borderRadius: 3, border: "1px solid #e2e8f0", overflow: 'hidden' }}>
-              {signatures.inspector && <img src={signatures.inspector} alt="firma inspector" style={{ height: '100%' }} />}
-            </Box>
-          </Box>
-        </Box>
+              NO APROBAR (NOTIFICAR EMPLAZAMIENTO)
+            </Button>
+          </Stack>
+        </>
       )}
 
-      <Stack direction="row" spacing={3} sx={{ mt: 2 }}>
-        <Button
-          fullWidth
-          variant="outlined"
-          size="large"
-          onClick={() => {
-            setSignatureStep(1);
-            setSignatureModalOpen(true);
-          }}
-          startIcon={<DriveFileRenameOutline />}
-          sx={{
-            py: 2.5,
-            borderRadius: 8,
-            fontWeight: 900,
-            fontSize: "1.1rem",
-            color: "#0ea5e9",
-            border: "3px solid #0ea5e9",
-            "&:hover": {
-              border: "3px solid #0284c7",
-              bgcolor: "#f0f9ff",
-            },
-          }}
-        >
-          FIRMAR ACTA
-        </Button>
-        <Button
-          fullWidth
-          variant="contained"
-          size="large"
-          disabled={!signatures.inspector || !signatures.representative}
-          sx={{
-            py: 2.5,
-            borderRadius: 8,
-            fontWeight: 900,
-            fontSize: "1.1rem",
-            bgcolor: "#059669",
-            boxShadow: "0 10px 15px -3px rgba(5, 150, 105, 0.3)",
-            "&:hover": { bgcolor: "#047857" },
-            "&.Mui-disabled": {
-              bgcolor: "#e2e8f0",
-              color: "#94a3b8",
-            },
-          }}
-        >
-          FINALIZAR ACTA
-        </Button>
-      </Stack>
+      <Fab color="error" sx={{ position: 'fixed', bottom: 32, right: 32 }} onClick={handleClearAll}><Delete /></Fab>
 
-      <SignatureModal
+      <Dialog open={obsDialog.open} onClose={() => setObsDialog({ ...obsDialog, open: false })} fullWidth maxWidth="xs">
+        <DialogTitle sx={{ fontWeight: 900 }}>OBSERVACIÓN: {obsDialog.label}</DialogTitle>
+        <DialogContent><TextField fullWidth multiline rows={4} variant="outlined" placeholder="Escriba la observación técnica..." value={obsDialog.value} onChange={(e) => setObsDialog({ ...obsDialog, value: e.target.value })} sx={{ mt: 1 }} /></DialogContent>
+        <DialogActions><Button onClick={() => setObsDialog({ ...obsDialog, open: false })}>Cancelar</Button><Button onClick={() => handleSaveObs(obsDialog.value)} variant="contained">Guardar</Button></DialogActions>
+      </Dialog>
+
+      {/* MODAL DE FIRMAS EXACTO */}
+      <Dialog
         open={signatureModalOpen}
-        step={signatureStep}
-        onClose={() => {
-          setSignatureModalOpen(false);
-          setSignatureStep(0);
-        }}
-        onSave={handleSaveSignature}
-      />
+        onClose={() => setSignatureModalOpen(false)}
+        fullWidth
+        maxWidth="md"
+        PaperProps={{ sx: { borderRadius: 6, overflow: 'hidden' } }}
+      >
+        <DialogTitle
+          sx={{
+            fontWeight: 950,
+            textAlign: "center",
+            bgcolor: "#f8fafc",
+            borderBottom: "1px solid #e2e8f0",
+            py: 3,
+            color: "#1e293b",
+            fontSize: "1.2rem",
+          }}
+        >
+          {signatureStep === 1 ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ bgcolor: '#0ea5e9', color: 'white', px: 2, py: 0.5, borderRadius: 2, fontSize: '0.7rem', fontWeight: 900 }}>PASO 1 DE 2</Box>
+              FIRMA: RESPONSABLE ESTABLECIMIENTO
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ bgcolor: '#059669', color: 'white', px: 2, py: 0.5, borderRadius: 2, fontSize: '0.7rem', fontWeight: 900 }}>PASO 2 DE 2</Box>
+              FIRMA: INSPECTOR INTERVINIENTE
+            </Box>
+          )}
+        </DialogTitle>
+        <DialogContent sx={{ p: 4 }}>
+          <Box
+            sx={{
+              border: "3px dashed #cbd5e1",
+              borderRadius: 6,
+              height: 350,
+              bgcolor: "#ffffff",
+              cursor: "crosshair",
+              touchAction: "none",
+              overflow: "hidden",
+              position: "relative",
+              "&:hover": { borderColor: "#94a3b8" },
+            }}
+            onMouseDown={startDrawingSignature}
+            onMouseMove={drawSignature}
+            onMouseUp={stopDrawingSignature}
+            onMouseLeave={stopDrawingSignature}
+            onTouchStart={startDrawingSignature}
+            onTouchMove={drawSignature}
+            onTouchEnd={stopDrawingSignature}
+          >
+            <canvas
+              ref={signatureCanvasRef}
+              width={800}
+              height={350}
+              style={{ width: "100%", height: "100%" }}
+            />
+            <Box sx={{ position: 'absolute', bottom: 20, left: 0, right: 0, textAlign: 'center', pointerEvents: 'none' }}>
+              <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 700, letterSpacing: 1 }}>
+                ESCRIBA SU FIRMA AQUÍ
+              </Typography>
+            </Box>
+          </Box>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            p: 4,
+            pt: 1,
+            justifyContent: "space-between",
+            bgcolor: "#f8fafc",
+            borderTop: "1px solid #e2e8f0",
+          }}
+        >
+          <Button
+            onClick={() => setSignatureModalOpen(false)}
+            sx={{
+              fontWeight: 800,
+              borderRadius: 3,
+              color: "#64748b",
+              px: 3,
+            }}
+          >
+            Cancelar
+          </Button>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              onClick={clearSignature}
+              variant="outlined"
+              color="error"
+              sx={{
+                fontWeight: 800,
+                borderRadius: 3,
+                px: 3,
+                borderWidth: "2px",
+                "&:hover": { borderWidth: "2px" },
+              }}
+            >
+              Limpiar
+            </Button>
+            <Button
+              onClick={saveSignature}
+              variant="contained"
+              sx={{
+                fontWeight: 900,
+                borderRadius: 3,
+                px: 4,
+                bgcolor: signatureStep === 1 ? "#0ea5e9" : "#059669",
+                boxShadow: signatureStep === 1
+                  ? "0 4px 10px rgba(14,165,233,0.3)"
+                  : "0 4px 10px rgba(5,150,105,0.3)",
+              }}
+            >
+              {signatureStep === 1 ? "Siguiente Firma" : "Confirmar Firma"}
+            </Button>
+          </Box>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
 
-const FieldItem = ({ field, value, onChange }) => {
+
+const FieldItem = ({ field, value, efectorResponse, currentActa, onChange, onOpenObs }) => {
+  const isObj = value && typeof value === 'object' && !Array.isArray(value);
+  const realValue = isObj ? value.value : value;
+  const obsText = isObj ? value.obs : "";
+  const hasResponse = efectorResponse && (efectorResponse.descargo || efectorResponse.files?.length > 0);
+
   const renderInput = () => {
     switch (field.type) {
       case "boolean":
       case "checkbox":
         return (
-          <ToggleButtonGroup
-            value={value === undefined ? null : value ? "si" : "no"}
-            exclusive
-            onChange={(e, val) => {
-              if (val !== null) onChange(field.id, val === "si");
-            }}
-            fullWidth
-            sx={{ height: 48 }}
-          >
-            <ToggleButton
-              value="si"
-              sx={{
-                flex: 1,
-                borderRadius: "8px 0 0 8px",
-                border: "1px solid #cbd5e1",
-                fontSize: "14px",
-                fontWeight: 700,
-                color: "#64748b",
-                "&.Mui-selected": {
-                  bgcolor: "#dcfce7",
-                  color: "#166534",
-                  fontWeight: 900,
-                },
-              }}
-            >
-              SÍ
-            </ToggleButton>
-            <ToggleButton
-              value="no"
-              sx={{
-                flex: 1,
-                borderRadius: "0 8px 8px 0",
-                border: "1px solid #cbd5e1",
-                borderLeft: "none",
-                fontSize: "14px",
-                fontWeight: 700,
-                color: "#64748b",
-                "&.Mui-selected": {
-                  bgcolor: "#fee2e2",
-                  color: "#991b1b",
-                  fontWeight: 900,
-                },
-              }}
-            >
-              NO
-            </ToggleButton>
+          <ToggleButtonGroup value={realValue === undefined ? null : realValue ? "si" : "no"} exclusive disabled={field.origin === "TRÁMITE"} onChange={(e, v) => v && onChange(field.id, v === "si")} fullWidth sx={{ height: 48 }}>
+            <ToggleButton value="si" sx={{ flex: 1, fontWeight: 700, "&.Mui-selected": { bgcolor: "#dcfce7", color: "#166534" } }}>SÍ</ToggleButton>
+            <ToggleButton value="no" sx={{ flex: 1, fontWeight: 700, "&.Mui-selected": { bgcolor: "#fee2e2", color: "#991b1b" } }}>NO</ToggleButton>
           </ToggleButtonGroup>
         );
       case "date":
-        return (
-          <TextField
-            type="date"
-            fullWidth
-            variant="outlined"
-            size="small"
-            value={value || ""}
-            onChange={(e) => onChange(field.id, e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{
-              sx: {
-                borderRadius: 2,
-                fontSize: "14px",
-                height: 48,
-                fontWeight: 600,
-              },
-            }}
-          />
-        );
-      case "toggle":
-        return (
-          <ToggleButtonGroup
-            value={value}
-            exclusive
-            onChange={(e, val) => {
-              if (val !== null) onChange(field.id, val);
-            }}
-            fullWidth
-            sx={{ height: 48 }}
-          >
-            {field.options?.split(",").map((opt) => (
-              <ToggleButton
-                key={opt}
-                value={opt.trim()}
-                sx={{
-                  flex: 1,
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  "&.Mui-selected": {
-                    bgcolor: "#e0f2fe",
-                    color: "#0369a1",
-                    fontWeight: 900,
-                  },
-                }}
-              >
-                {opt.trim()}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-        );
-      case "select":
-        return (
-          <TextField
-            select
-            fullWidth
-            variant="outlined"
-            size="small"
-            value={value || ""}
-            onChange={(e) => onChange(field.id, e.target.value)}
-            InputProps={{
-              sx: {
-                borderRadius: 2,
-                fontSize: "14px",
-                fontWeight: 500,
-                height: 48,
-              },
-            }}
-            SelectProps={{
-              MenuProps: {
-                PaperProps: {
-                  sx: {
-                    borderRadius: 2,
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                  },
-                },
-              },
-            }}
-          >
-            {field.options?.split(",").map((opt) => (
-              <MenuItem
-                key={opt}
-                value={opt.trim()}
-                sx={{
-                  py: 1,
-                  fontSize: "0.9rem",
-                  borderBottom: "1px solid #f1f5f9",
-                }}
-              >
-                {opt.trim()}
-              </MenuItem>
-            ))}
-          </TextField>
-        );
-      case "number":
-        return (
-          <TextField
-            type="number"
-            fullWidth
-            variant="outlined"
-            size="small"
-            placeholder="0"
-            value={value || ""}
-            onChange={(e) => onChange(field.id, e.target.value)}
-            InputProps={{
-              sx: {
-                borderRadius: 2,
-                fontSize: "14px",
-                height: 48,
-                fontWeight: 600,
-              },
-            }}
-          />
-        );
+        return <TextField type="date" fullWidth variant="outlined" size="small" disabled={field.origin === "TRÁMITE"} value={realValue || ""} onChange={(e) => onChange(field.id, e.target.value)} InputLabelProps={{ shrink: true }} sx={{ "& .MuiInputBase-root": { height: 48 } }} />;
       default:
-        return (
-          <TextField
-            fullWidth
-            variant="outlined"
-            size="small"
-            placeholder="Escriba aquí..."
-            value={value || ""}
-            multiline={field.type === "textarea"}
-            rows={field.type === "textarea" ? 3 : 1}
-            onChange={(e) => onChange(field.id, e.target.value)}
-            InputProps={{
-              sx: {
-                borderRadius: 2,
-                fontSize: "14px",
-                fontWeight: 500,
-                minHeight: 48,
-              },
-            }}
-          />
-        );
+        return <TextField fullWidth variant="outlined" size="small" disabled={field.origin === "TRÁMITE"} value={realValue || ""} onChange={(e) => onChange(field.id, e.target.value)} sx={{ "& .MuiInputBase-root": { height: 48 } }} />;
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        width: "100%",
-        boxSizing: "border-box",
-        minWidth: 0,
-      }}
-    >
-      <Box
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          alignItems: "flex-end",
-          mb: 0.5,
-          width: "100%",
-          boxSizing: "border-box",
-          minWidth: 0,
-        }}
-      >
-        <Typography
-          sx={{
-            fontWeight: 800,
-            color: "#334155",
-            lineHeight: 1.2,
-            fontSize: "13px",
-            textTransform: "uppercase",
-            whiteSpace: "normal",
-            wordWrap: "break-word",
-            overflowWrap: "break-word",
-            maxWidth: "100%",
-            display: "block",
-          }}
-        >
-          {field.label}
-        </Typography>
-      </Box>
-      <Box sx={{ width: "100%", boxSizing: "border-box", minWidth: 0 }}>
-        {renderInput()}
-      </Box>
+    <Box sx={{ p: 2, border: '1px solid #e2e8f0', borderRadius: 3, bgcolor: '#ffffff' }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
+        <Typography variant="caption" sx={{ fontWeight: 900, color: '#475569', textTransform: 'uppercase' }}>{field.label}</Typography>
+        {onOpenObs && (
+          <IconButton size="small" onClick={() => onOpenObs(field.id, field.label, obsText)} color={obsText ? "primary" : "default"}>
+            {obsText ? <ChatBubbleIcon sx={{ fontSize: 16 }} /> : <ChatBubbleOutlineIcon sx={{ fontSize: 16 }} />}
+          </IconButton>
+        )}
+      </Stack>
+      {renderInput()}
+      {hasResponse && (
+        <Box sx={{ mt: 1.5, p: 1, bgcolor: '#f0f9ff', borderRadius: 2, border: '1px dashed #0ea5e9' }}>
+          <Typography variant="caption" sx={{ fontWeight: 900, color: '#0369a1', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <InfoIcon sx={{ fontSize: 14 }} /> RESPUESTA DEL EFECTOR
+          </Typography>
+          <Typography variant="body2" sx={{ fontSize: '0.7rem', fontStyle: 'italic' }}>"{efectorResponse.descargo}"</Typography>
+        </Box>
+      )}
+      {currentActa === 2 && field.origin === "TRÁMITE" && (
+        <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <ReportProblemIcon sx={{ fontSize: 14, color: '#f59e0b' }} />
+          <Typography variant="caption" sx={{ fontWeight: 800, color: '#b45309', fontSize: '0.6rem' }}>EMPLAZAMIENTO PREVIO (ACTA-1)</Typography>
+        </Box>
+      )}
     </Box>
   );
 };
 
-const VerificationTable = ({
-  fields,
-  inspectorData,
-  onChange,
-  infraEfector,
-  rrhhEfector,
-  equiposEfector,
-  currentSrvName,
-}) => {
-  return (
-    <TableContainer
-      component={Paper}
-      elevation={0}
-      sx={{ border: "1px solid #e2e8f0", borderRadius: 3, overflowX: "auto" }}
-    >
-      <Table size="small" sx={{ minWidth: 650 }}>
-        <TableHead sx={{ bgcolor: "#f1f5f9" }}>
-          <TableRow>
-            <TableCell
-              sx={{ fontWeight: 900, color: "#334155", width: "35%", py: 2 }}
-            >
-              Elemento a Inspeccionar
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{ fontWeight: 900, color: "#334155", py: 2 }}
-            >
-              Valor Declarado
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{ fontWeight: 900, color: "#334155", py: 2, width: 90 }}
-            >
-              Observado
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{ fontWeight: 900, color: "#334155", py: 2, width: 140 }}
-            >
-              Valor Observado
-            </TableCell>
-            <TableCell
-              sx={{ fontWeight: 900, color: "#334155", width: "30%", py: 2 }}
-            >
-              Observación
+const VerificationTable = ({ fields, inspectorData, onChange, onOpenObs, infraEfector }) => (
+  <TableContainer component={Paper} elevation={0} sx={{ border: "1px solid #e2e8f0", borderRadius: 3 }}>
+    <Table size="small">
+      <TableHead sx={{ bgcolor: "#f1f5f9" }}>
+        <TableRow>
+          <TableCell sx={{ fontWeight: 900 }}>Elemento</TableCell>
+          <TableCell align="center" sx={{ fontWeight: 900 }}>Trámite</TableCell>
+          <TableCell align="center" sx={{ fontWeight: 900, bgcolor: '#e0f2fe' }}>Efector</TableCell>
+          <TableCell align="center" sx={{ fontWeight: 900 }}>Inspector</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {fields.map((f) => (
+          <TableRow key={f.id}>
+            <TableCell sx={{ fontSize: '0.8rem', fontWeight: 700 }}>{f.label}</TableCell>
+            <TableCell align="center">{f.valorTramite}</TableCell>
+            <TableCell align="center" sx={{ bgcolor: '#f0f9ff', fontWeight: 900 }}>{infraEfector[f.id] || "-"}</TableCell>
+            <TableCell align="center">
+              <TextField size="small" value={inspectorData[f.id] || ""} onChange={(e) => onChange(f.id, e.target.value)} sx={{ width: 80 }} />
             </TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {fields?.map((field) => {
-            const currentVal = inspectorData[field.id] || {};
-            const isObservado = currentVal.observado || false;
-            const valorObj = currentVal.valor || "";
-            const obsText = currentVal.obs || "";
-
-            let valorDeclarado =
-              field.cantidadMinima ?? field.valorDeclarado ?? 1;
-
-            // 1. INFRAESTRUCTURA (Camas/Salas)
-            const name = field.label || field.name;
-            if (infraEfector && infraEfector[name] !== undefined) {
-              valorDeclarado = infraEfector[name];
-            }
-
-            // 2. RECURSOS HUMANOS
-            if (rrhhEfector && rrhhEfector.length > 0) {
-              const rrhhMatch = rrhhEfector.find(
-                (r) =>
-                  (r.especialidad === field.especialidad ||
-                    r.especialidad === field.label ||
-                    r.tipoPlantel === field.tipoPlantel ||
-                    r.tipoPlantel === field.label) &&
-                  r.origen === currentSrvName,
-              );
-              if (rrhhMatch) valorDeclarado = rrhhMatch.cantidadCargada;
-            }
-
-            // 3. EQUIPAMIENTO
-            const isQuirofano = currentSrvName
-              ?.toUpperCase()
-              .includes("QUIROFANO");
-            if (isQuirofano || (equiposEfector && equiposEfector.length > 0)) {
-              const equipoMatch =
-                equiposEfector?.filter(
-                  (e) =>
-                    (e.equipamiento === field.equipamiento ||
-                      e.equipamiento === field.label) &&
-                    e.origen === currentSrvName,
-                ) || [];
-
-              if (isQuirofano) {
-                const orCount = Number(
-                  infraEfector["QUIRÓFANO"] || infraEfector["QUIROFANO"] || 1,
-                );
-                // El valor esperado es al menos 1 por cada quirófano declarado
-                valorDeclarado = Math.max(orCount, equipoMatch.length);
-              } else if (equipoMatch.length > 0) {
-                valorDeclarado = equipoMatch.length;
-              }
-            }
-
-            const isNumeric = !isNaN(valorDeclarado);
-            const hasError =
-              isObservado &&
-              valorObj !== "" &&
-              isNumeric &&
-              Number(valorObj) !== Number(valorDeclarado);
-
-            const update = (key, val) =>
-              onChange(field.id, { ...currentVal, [key]: val });
-
-            return (
-              <TableRow
-                key={field.id}
-                hover
-                sx={{
-                  "&:last-child td, &:last-child th": { border: 0 },
-                  bgcolor: hasError ? "#fef2f2" : "inherit",
-                }}
-              >
-                <TableCell
-                  component="th"
-                  scope="row"
-                  sx={{
-                    fontWeight: 700,
-                    color: "#1e293b",
-                    fontSize: "0.85rem",
-                    py: 1.5,
-                  }}
-                >
-                  {field.label ||
-                    field.name ||
-                    field.equipamiento ||
-                    field.especialidad ||
-                    "Elemento Sin Nombre"}
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: 800 }}>
-                  <Box
-                    sx={{
-                      bgcolor: "#e2e8f0",
-                      color: "#0f172a",
-                      display: "inline-block",
-                      px: 1.5,
-                      py: 0.5,
-                      borderRadius: 1.5,
-                    }}
-                  >
-                    {valorDeclarado}
-                  </Box>
-                </TableCell>
-                <TableCell align="center">
-                  <Checkbox
-                    checked={isObservado}
-                    onChange={(e) => update("observado", e.target.checked)}
-                    color="success"
-                    sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
-                  />
-                </TableCell>
-                <TableCell align="center">
-                  {isObservado && (
-                    <TextField
-                      size="small"
-                      type="number"
-                      placeholder="Cant."
-                      value={valorObj}
-                      onChange={(e) => update("valor", e.target.value)}
-                      error={hasError}
-                      sx={{
-                        width: "100%",
-                        "& .MuiInputBase-root": {
-                          bgcolor: "white",
-                          fontWeight: 800,
-                          height: 38,
-                        },
-                      }}
-                    />
-                  )}
-                </TableCell>
-                <TableCell>
-                  {isObservado && (
-                    <TextField
-                      fullWidth
-                      size="small"
-                      placeholder="Razones, marcas, estado..."
-                      value={obsText}
-                      onChange={(e) => update("obs", e.target.value)}
-                      sx={{
-                        "& .MuiInputBase-root": {
-                          bgcolor: "white",
-                          minHeight: 38,
-                          fontSize: "0.85rem",
-                        },
-                      }}
-                    />
-                  )}
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-};
-
-const PlansTable = ({ inspectorData, onChange, onOpenViewer }) => {
-  const plansData = [
-    { category: "Plano General", files: ["plano1.pdf", "plano2.pdf"] },
-    { category: "Plano General - Anexo", files: ["plano3.pdf"] },
-  ];
-
-  return (
-    <TableContainer
-      component={Paper}
-      elevation={0}
-      sx={{ border: "1px solid #e2e8f0", borderRadius: 4, overflow: "hidden" }}
-    >
-      <Table size="small">
-        <TableHead>
-          <TableRow sx={{ bgcolor: "#f8fafc" }}>
-            <TableCell
-              sx={{ fontWeight: 900, color: "#0369a1", fontSize: "0.80rem", py: 2 }}
-            >
-              DOCUMENTO
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{ fontWeight: 900, color: "#0369a1", fontSize: "0.80rem" }}
-            >
-              VISUALIZAR DOCUMENTO
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{ fontWeight: 900, color: "#0369a1", fontSize: "0.80rem" }}
-            >
-              OBSERVADO
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{ fontWeight: 900, color: "#0369a1", fontSize: "0.80rem" }}
-            >
-              OBSERVACIÓN
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {plansData.map((group) => (
-            <React.Fragment key={group.category}>
-              <TableRow sx={{ bgcolor: "#f1f5f9" }}>
-                <TableCell
-                  colSpan={4}
-                  sx={{
-                    fontWeight: 900,
-                    color: "#475569",
-                    py: 1,
-                    fontSize: "0.85rem",
-                    letterSpacing: "0.025em",
-                  }}
-                >
-                  {group.category}
-                </TableCell>
-              </TableRow>
-              {group.files.map((file) => {
-                const fieldId = `plan_auth_${file.replace(".", "_")}`;
-                const currentVal = inspectorData[fieldId] || {};
-                const isObserved = currentVal.observado || false;
-
-                return (
-                  <TableRow key={file} hover sx={{ "&:last-child td": { border: 0 } }}>
-                    <TableCell sx={{ fontWeight: 700, color: "#1e293b", py: 1.5 }}>
-                      {file}
-                    </TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        size="small"
-                        sx={{ color: "#0ea5e9" }}
-                        onClick={() => onOpenViewer(file)}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Checkbox
-                        checked={isObserved}
-                        onChange={(e) =>
-                          onChange(fieldId, { ...currentVal, observado: e.target.checked })
-                        }
-                        color="primary"
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        size="small"
-                        sx={{ color: isObserved ? "#0ea5e9" : "#cbd5e1" }}
-                      >
-                        <ChatBubbleOutlineIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-};
-
-const FileViewerModal = ({ file, onClose }) => {
-  if (!file) return null;
-
-  const filePath = `/src/assets/archivos/planos/${file}`;
-
-  return (
-    <Dialog
-      open={!!file}
-      onClose={onClose}
-      fullWidth
-      maxWidth="lg"
-      PaperProps={{
-        sx: {
-          borderRadius: 4,
-          height: "90vh",
-          display: "flex",
-          flexDirection: "column",
-        },
-      }}
-    >
-      <DialogTitle
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          bgcolor: "#f8fafc",
-          borderBottom: "1px solid #e2e8f0",
-          py: 2,
-        }}
-      >
-        <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b" }}>
-          VISUALIZADOR: {file}
-        </Typography>
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <IconButton
-            size="small"
-            color="primary"
-            title="Abrir en nueva pestaña"
-            onClick={() => window.open(filePath, "_blank")}
-          >
-            <OpenInNewIcon />
-          </IconButton>
-          <IconButton size="small" onClick={onClose} sx={{ color: "#64748b" }}>
-            <Close />
-          </IconButton>
-        </Box>
-      </DialogTitle>
-      <DialogContent sx={{ p: 0, flexGrow: 1, overflow: "hidden" }}>
-        <iframe
-          src={filePath}
-          title="File Viewer"
-          width="100%"
-          height="100%"
-          style={{ border: "none" }}
-        />
-      </DialogContent>
-    </Dialog>
-  );
-};
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+);
 
 export default PantallaInspeccion;
-
-const SignatureModal = ({ open, step, onClose, onSave }) => {
-  const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-
-  useEffect(() => {
-    if (open && canvasRef.current) {
-      setTimeout(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        ctx.lineWidth = 4;
-        ctx.lineJoin = "round";
-        ctx.lineCap = "round";
-        ctx.strokeStyle = "#1e293b";
-        // Limpiar por si acaso al abrir
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }, 100);
-    }
-  }, [open, step]);
-
-  const getPointerPos = (e) => {
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return {
-      x: clientX - rect.left,
-      y: clientY - rect.top,
-    };
-  };
-
-  const startDrawing = (e) => {
-    const { x, y } = getPointerPos(e);
-    const ctx = canvasRef.current.getContext("2d");
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    setIsDrawing(true);
-    if (e.touches) e.preventDefault();
-  };
-
-  const draw = (e) => {
-    if (!isDrawing) return;
-    const { x, y } = getPointerPos(e);
-    const ctx = canvasRef.current.getContext("2d");
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    if (e.touches) e.preventDefault();
-  };
-
-  const stopDrawing = () => {
-    if (isDrawing) {
-      canvasRef.current.getContext("2d").closePath();
-      setIsDrawing(false);
-    }
-  };
-
-  const clear = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  };
-
-  const save = () => {
-    const canvas = canvasRef.current;
-    // Verificar si el canvas está vacío (opcional, pero buena práctica)
-    onSave(canvas.toDataURL());
-  };
-
-  return (
-    <Dialog
-      open={open}
-      fullWidth
-      maxWidth="sm"
-      PaperProps={{
-        sx: {
-          borderRadius: 8,
-          overflow: "hidden",
-        },
-      }}
-    >
-      <DialogTitle
-        sx={{
-          fontWeight: 950,
-          textAlign: "center",
-          bgcolor: "#f8fafc",
-          borderBottom: "1px solid #e2e8f0",
-          py: 3,
-          color: "#1e293b",
-          fontSize: "1.2rem",
-        }}
-      >
-        {step === 1 ? (
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ bgcolor: '#0ea5e9', color: 'white', px: 2, py: 0.5, borderRadius: 2, fontSize: '0.7rem', fontWeight: 900 }}>PASO 1 DE 2</Box>
-            FIRMA: RESPONSABLE ESTABLECIMIENTO
-          </Box>
-        ) : (
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ bgcolor: '#059669', color: 'white', px: 2, py: 0.5, borderRadius: 2, fontSize: '0.7rem', fontWeight: 900 }}>PASO 2 DE 2</Box>
-            FIRMA: INSPECTOR INTERVINIENTE
-          </Box>
-        )}
-      </DialogTitle>
-      <DialogContent sx={{ p: 4 }}>
-        <Box
-          sx={{
-            border: "3px dashed #cbd5e1",
-            borderRadius: 6,
-            height: 350,
-            bgcolor: "#ffffff",
-            cursor: "crosshair",
-            touchAction: "none",
-            overflow: "hidden",
-            position: "relative",
-            "&:hover": { borderColor: "#94a3b8" },
-          }}
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-          onTouchStart={startDrawing}
-          onTouchMove={draw}
-          onTouchEnd={stopDrawing}
-        >
-          <canvas
-            ref={canvasRef}
-            width={512} // Ajustar al ancho del dialogo aprox
-            height={350}
-            style={{ width: "100%", height: "100%" }}
-          />
-          <Box sx={{ position: 'absolute', bottom: 20, left: 0, right: 0, textAlign: 'center', pointerEvents: 'none' }}>
-             <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 700, letterSpacing: 1 }}>
-                ESCRIBA SU FIRMA AQUÍ
-             </Typography>
-          </Box>
-        </Box>
-      </DialogContent>
-      <DialogActions
-        sx={{
-          p: 4,
-          pt: 1,
-          justifyContent: "space-between",
-          bgcolor: "#f8fafc",
-          borderTop: "1px solid #e2e8f0",
-        }}
-      >
-        <Button
-          onClick={onClose}
-          sx={{
-            fontWeight: 800,
-            borderRadius: 3,
-            color: "#64748b",
-            px: 3,
-          }}
-        >
-          Cancelar
-        </Button>
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <Button
-            onClick={clear}
-            variant="outlined"
-            color="error"
-            sx={{
-              fontWeight: 800,
-              borderRadius: 3,
-              px: 3,
-              borderWidth: "2px",
-              "&:hover": { borderWidth: "2px" },
-            }}
-          >
-            Limpiar
-          </Button>
-          <Button
-            onClick={save}
-            variant="contained"
-            sx={{
-              fontWeight: 900,
-              borderRadius: 3,
-              px: 4,
-              bgcolor: step === 1 ? "#0ea5e9" : "#059669",
-              boxShadow: step === 1 
-                ? "0 4px 10px rgba(14,165,233,0.3)"
-                : "0 4px 10px rgba(5,150,105,0.3)",
-            }}
-          >
-            {step === 1 ? "Siguiente Firma" : "Confirmar Firma"}
-          </Button>
-        </Box>
-      </DialogActions>
-    </Dialog>
-  );
-};

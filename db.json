@@ -2480,36 +2480,26 @@
               "fields": [
                 {
                   "id": "f-n56ha4",
-                  "label": "N° Expt. Digital",
+                  "label": "N° de Expediente",
                   "type": "text",
-                  "options": ""
-                },
-                {
-                  "id": "f-fecqs7p6",
-                  "label": "FECHA Y HORA",
-                  "type": "date",
                   "options": "",
-                  "origin": "ADMIN"
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ARQUITECTURA > N° de Expediente"
                 },
                 {
                   "id": "f-foro7rdj",
                   "label": "FORMATO INSPECCIÓN",
-                  "type": "select",
+                  "type": "toggle",
                   "options": "VIRTUAL, PRESENCIAL"
                 },
                 {
-                  "id": "f-nomtcemx",
-                  "label": "Nombre del Establecimiento",
+                  "id": "f-raz01uce",
+                  "label": "Denominación",
                   "type": "text",
                   "options": "",
                   "origin": "TRÁMITE",
-                  "tramiteField": "ARQUITECTURA > Nombre del Establecimiento"
-                },
-                {
-                  "id": "f-raz01uce",
-                  "label": "Razón Social",
-                  "type": "text",
-                  "options": ""
+                  "tramiteField": "ESTABLECIMIENTO > Denominación",
+                  "valorTramiteMock": "Obispo oro 90"
                 },
                 {
                   "id": "f-dirs7pux",
@@ -2517,7 +2507,8 @@
                   "type": "text",
                   "options": "",
                   "origin": "TRÁMITE",
-                  "tramiteField": "ESTABLECIMIENTO > Dirección"
+                  "tramiteField": "ESTABLECIMIENTO > Dirección",
+                  "valorTramiteMock": "Obispo oro 90"
                 },
                 {
                   "id": "f-locojjjz",
@@ -2565,26 +2556,8 @@
                   "id": "f-res1c2cd",
                   "label": "Resolución Nº M/R",
                   "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-direb5sd",
-                  "label": "DIRECTOR TÉCNICO",
-                  "type": "text",
                   "options": "",
                   "origin": "ADMIN"
-                },
-                {
-                  "id": "f-dni0tje9",
-                  "label": "DNI DT",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-matcvj8l",
-                  "label": "MATRÍCULA DT",
-                  "type": "number",
-                  "options": ""
                 }
               ]
             },
@@ -4231,14 +4204,7 @@
             {
               "id": "sec-jefrbpbw",
               "name": "JEFE DE SERVICIO",
-              "fields": [
-                {
-                  "id": "f-jeflhdxr",
-                  "label": "Jefe de servicio",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-rec5oh4c",
@@ -5155,14 +5121,7 @@
             {
               "id": "sec-jef0xvu9",
               "name": "JEFE DE SERVICIO",
-              "fields": [
-                {
-                  "id": "f-jefbgkl2",
-                  "label": "Jefe de servicio",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-recne3qd",
@@ -5287,14 +5246,7 @@
             {
               "id": "sec-jefud66t",
               "name": "JEFE DE SERVICIO",
-              "fields": [
-                {
-                  "id": "f-jefm6kp0",
-                  "label": "Jefe de Servicio",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-rec91gj1",
