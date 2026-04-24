@@ -25,6 +25,7 @@ import {
   Paper,
   Autocomplete,
 } from "@mui/material";
+<<<<<<< Updated upstream
 import {
   ExpandMore as ExpandMoreIcon,
   ErrorOutline as ErrorOutlineIcon,
@@ -42,6 +43,27 @@ import {
   ChatBubbleOutline as ChatBubbleOutlineIcon,
   OpenInNew as OpenInNewIcon,
 } from "@mui/icons-material";
+=======
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlined";
+import DomainIcon from "@mui/icons-material/Domain";
+import PeopleIcon from "@mui/icons-material/People";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import BedIcon from "@mui/icons-material/Bed";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import Close from "@mui/icons-material/Close";
+import Delete from "@mui/icons-material/Delete";
+import DriveFileRenameOutline from "@mui/icons-material/DriveFileRenameOutline";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import DescriptionIcon from "@mui/icons-material/Description";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutlined";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
+import ErrorIcon from "@mui/icons-material/Error";
+import InfoIcon from "@mui/icons-material/Info";
+>>>>>>> Stashed changes
 import {
   Dialog,
   DialogTitle,
@@ -336,7 +358,6 @@ const PantallaInspeccion = ({
   });
 
   const photoInputRef = useRef(null);
-  const fileInputRef = useRef(null);
 
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
@@ -354,6 +375,18 @@ const PantallaInspeccion = ({
     }
   };
 
+  const handleClearActa = () => {
+    setInspectorData({});
+    setObsDatosGenerales([]);
+    setObsDatosTramite([]);
+    setGeneralObs("");
+    setAttachments([]);
+    setSignatures({ representative: null, inspector: null });
+    setSignatureStep(0);
+    setSignatureModalOpen(false);
+    localStorage.removeItem("inspector_photos");
+  };
+
   const [expandedDatosGenerales, setExpandedDatosGenerales] = useState(true);
   const [expandedEstablecimiento, setExpandedEstablecimiento] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("ARQUITECTURA");
@@ -362,6 +395,51 @@ const PantallaInspeccion = ({
   const [infraEfector, setInfraEfector] = useState({});
   const [rrhhEfector, setRrhhEfector] = useState([]);
   const [equiposEfector, setEquiposEfector] = useState([]);
+<<<<<<< Updated upstream
+=======
+  const [tipologia, setTipologia] = useState("CLÍNICAS, SANATORIOS Y HOSPITALES");
+  const [directorTecnico, setDirectorTecnico] = useState({ nombre: "JUAN CARLOS", apellido: "PÉREZ", dni: "20.455.123" });
+
+  const datosGeneralesSrv = React.useMemo(() =>
+    config?.servicios?.find((s) => normalize(s.name).includes("DATOS GENERALES")),
+    [config]
+  );
+
+  const otherServices = React.useMemo(() => {
+    return config?.servicios?.filter((s) => {
+      const isGeneral = normalize(s.name).includes("DATOS GENERALES");
+      if (isGeneral) return false;
+
+      const allEfectorSelection = [
+        ...(serviciosEfector || []),
+        ...Object.keys(infraEfector || {}).filter((k) => (infraEfector[k] || 0) > 0)
+      ];
+
+      return allEfectorSelection.some((effSrv) => {
+        const nSrvName = (s.name || "").toUpperCase();
+        const nEffSrv = (effSrv || "").toUpperCase();
+
+        if (nSrvName === nEffSrv) return true;
+
+        // Lógica de variantes
+        if (nSrvName.includes(nEffSrv) || nEffSrv.includes(nSrvName)) {
+          const isPed = (str) => str.includes("PEDIAT") || str.includes("UTIP");
+          const isNeo = (str) => str.includes("NEONAT") || str.includes("UTIN");
+          const isUco = (str) => str.includes("CORONARI") || str.includes("UCO");
+          const isUcim = (str) => str.includes("INTERMEDIO") || str.includes("UCIM");
+
+          if (isPed(nSrvName) !== isPed(nEffSrv)) return false;
+          if (isNeo(nSrvName) !== isNeo(nEffSrv)) return false;
+          if (isUco(nSrvName) !== isUco(nEffSrv)) return false;
+          if (isUcim(nSrvName) !== isUcim(nEffSrv)) return false;
+
+          return true;
+        }
+        return false;
+      });
+    }) || [];
+  }, [config, serviciosEfector, infraEfector]);
+>>>>>>> Stashed changes
 
   useEffect(() => {
     const loadFromCache = () => {
@@ -386,6 +464,28 @@ const PantallaInspeccion = ({
       loadFromCache();
     }
 
+<<<<<<< Updated upstream
+=======
+    // 4. Cargar persistencia
+    const savedData = localStorage.getItem("inspector_data");
+    const savedGenObs = localStorage.getItem("obs_datos_generales");
+    const savedTraObs = localStorage.getItem("obs_datos_tramite");
+    const savedManualObs = localStorage.getItem("general_obs");
+
+    if (savedData) setInspectorData(JSON.parse(savedData));
+    else {
+      setInspectorData({ "f-fecqs7p6": new Date().toISOString().split("T")[0] });
+    }
+
+    if (savedGenObs) {
+      try { setObsDatosGenerales(JSON.parse(savedGenObs)); } catch (e) { setObsDatosGenerales([]); }
+    }
+    if (savedTraObs) {
+      try { setObsDatosTramite(JSON.parse(savedTraObs)); } catch (e) { setObsDatosTramite([]); }
+    }
+    if (savedManualObs) setGeneralObs(savedManualObs);
+
+>>>>>>> Stashed changes
     // 3. Escuchar cambios en otras pestañas (Sincronización automática)
     const handleStorageChange = (e) => {
       if (e.key?.startsWith("efector_")) {
@@ -396,6 +496,120 @@ const PantallaInspeccion = ({
     return () => window.removeEventListener("storage", handleStorageChange);
   }, [propsServicios, propsInfra, propsRrhh, propsEquipos]);
 
+<<<<<<< Updated upstream
+=======
+  // Guardar datos automáticamente
+  useEffect(() => {
+    if (Object.keys(inspectorData).length > 0) {
+      localStorage.setItem("inspector_data", JSON.stringify(inspectorData));
+    }
+  }, [inspectorData]);
+
+  useEffect(() => {
+    localStorage.setItem("general_obs", generalObs);
+  }, [generalObs]);
+
+  // Sincronización automática de sumarios de observaciones
+  useEffect(() => {
+    if (!config) return;
+
+    const extractValue = (val) => (val && typeof val === 'object' && !Array.isArray(val) ? val.value : val);
+    const extractObs = (val) => (val && typeof val === 'object' && !Array.isArray(val) ? val.obs : "");
+
+    // 1. Datos Generales
+    let genSummary = [];
+    const genFields = datosGeneralesSrv?.sections
+      ? getFlatFields(datosGeneralesSrv.sections)
+      : datosGeneralesSrv?.fields || [];
+
+    genFields.forEach(f => {
+      const fieldData = inspectorData[f.id];
+      const val = extractValue(fieldData);
+      const obs = extractObs(fieldData);
+
+      if ((f.type === 'boolean' || f.type === 'checkbox') && val === false) {
+        genSummary.push({ label: f.label, text: `NO CUMPLE${obs ? ` (${obs})` : ''}`, type: 'ERROR' });
+      } else if (obs) {
+        genSummary.push({ label: f.label, text: obs, type: 'OBS' });
+      }
+    });
+    setObsDatosGenerales(genSummary);
+
+    // 2. Datos Trámite
+    let traSummary = [];
+    let emplazamientos = []; // Nuevos emplazamientos para el efector
+
+    otherServices.forEach(srv => {
+      const srvFields = srv.sections ? getFlatFields(srv.sections) : srv.fields || [];
+      srvFields.forEach(f => {
+        const fieldData = inspectorData[f.id];
+        const val = extractValue(fieldData);
+        const obs = extractObs(fieldData);
+        const isDoc = f.id?.includes('doc') || f.label?.toUpperCase().includes('DOCUMENTO');
+        let isIrregularidadTramite = false;
+        let razonIrregular = "";
+
+        // Regla 1: Datos Generales / Otros (Boolean NO CUMPLE) -> OBSERVACIÓN DE ACTA
+        if ((f.type === 'boolean' || f.type === 'checkbox') && val === false) {
+          traSummary.push({ label: f.label, service: srv.name, text: `NO CUMPLE${obs ? ` (${obs})` : ''}`, type: 'ERROR' });
+        } else if (obs && !isDoc) {
+          // Observaciones manuales en campos normales -> OBSERVACIÓN DE ACTA
+          traSummary.push({ label: f.label, service: srv.name, text: obs, type: 'OBS' });
+        }
+
+        // Regla 2: Camas y Salas (Actual > Declarado) -> IRREGULARIDAD TRÁMITE
+        const isCamaSala = f.label?.toUpperCase().includes('CAMA') || f.label?.toUpperCase().includes('SALA') || f.label?.toUpperCase().includes('HABITACIÓN');
+        if (isCamaSala && typeof val === 'number') {
+          const declarado = infraEfector[f.label] || 0;
+          if (val > declarado) {
+            isIrregularidadTramite = true;
+            razonIrregular = `Cantidad superior a la declarada (${val} vs ${declarado})`;
+          }
+        }
+
+        // Regla 3: Equipamiento (Actual < Declarado) -> IRREGULARIDAD TRÁMITE
+        const isEquip = f.label?.toUpperCase().includes('EQUIPO') || f.label?.toUpperCase().includes('EQUIPAMIENTO') || f.id?.includes('eq');
+        if (isEquip && typeof val === 'number') {
+          const equipoMatch = equiposEfector?.filter(e => e.equipamiento === f.label && e.origen === srv.name) || [];
+          const declarado = equipoMatch.reduce((acc, curr) => acc + (curr.actualQty || 1), 0);
+          if (val < declarado) {
+            isIrregularidadTramite = true;
+            razonIrregular = `Faltante de equipamiento (${val} de ${declarado} requeridos)`;
+          }
+        }
+
+        // Regla 4: Documentos (Cualquier observación) -> IRREGULARIDAD TRÁMITE
+        if (isDoc && obs) {
+          isIrregularidadTramite = true;
+          razonIrregular = obs;
+        }
+
+        if (isIrregularidadTramite) {
+          emplazamientos.push({
+            etapa: "Inspección",
+            servicio: srv.name,
+            item: f.label,
+            observacion: razonIrregular,
+            valorObservado: val,
+            tipoObs: "IRREGULARIDAD",
+            estado: "PENDIENTE DE SUBIR"
+          });
+        }
+      });
+    });
+    setObsDatosTramite(traSummary);
+
+    localStorage.setItem("obs_datos_generales", JSON.stringify(genSummary));
+    localStorage.setItem("obs_datos_tramite", JSON.stringify(traSummary));
+    localStorage.setItem("inspector_emplazamientos", JSON.stringify(emplazamientos));
+  }, [inspectorData, config, datosGeneralesSrv, otherServices]);
+
+  const hasObservations =
+    (obsDatosGenerales?.length || 0) > 0 ||
+    (obsDatosTramite?.length || 0) > 0 ||
+    (generalObs || "").trim().length > 0;
+
+>>>>>>> Stashed changes
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -560,11 +774,45 @@ const PantallaInspeccion = ({
     }
   }, [activeSubServicios, selectedSubService]);
 
+<<<<<<< Updated upstream
   const handleFieldChange = (fieldId, value) => {
     setInspectorData((prev) => ({
       ...prev,
       [fieldId]: value,
     }));
+=======
+  const handleFieldChange = (fieldId, newValue) => {
+    setInspectorData((prev) => {
+      const current = prev[fieldId];
+      const isCurrentObject = current && typeof current === 'object' && !Array.isArray(current);
+      const isNewValueObject = newValue && typeof newValue === 'object' && !Array.isArray(newValue);
+
+      if (isCurrentObject && isNewValueObject) {
+        return {
+          ...prev,
+          [fieldId]: {
+            ...current,
+            ...newValue,
+          },
+        };
+      }
+
+      if (isNewValueObject && 'obs' in newValue && !isCurrentObject) {
+        return {
+          ...prev,
+          [fieldId]: {
+            value: current,
+            ...newValue,
+          },
+        };
+      }
+
+      return {
+        ...prev,
+        [fieldId]: newValue,
+      };
+    });
+>>>>>>> Stashed changes
   };
 
   if (loading) {
@@ -1104,11 +1352,83 @@ const PantallaInspeccion = ({
           >
             {/* Header del Establecimiento */}
 
+<<<<<<< Updated upstream
             {selectedCategory === "ARQUITECTURA" && (
               <Box sx={{ mb: 6 }}>
                 <Box sx={{ mb: 3, display: "flex", flexDirection: "column" }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <Box
+=======
+                    if (
+                      isTargetService &&
+                      (!isExcluded || nSrv === "UNIDAD DE TERAPIA INTENSIVA") &&
+                      srv.sections
+                    ) {
+                      matchedSections = srv.sections.filter((sec) => {
+                        const n = sec.name.toUpperCase();
+                        const isRelevant =
+                          !n.includes("ARQUITECTURA") &&
+                          !n.includes("EQUIPAMIENTO") &&
+                          !n.includes("RECURSOS") &&
+                          !n.includes("RRHH") &&
+                          !n.includes("JEFE");
+
+                        if (!isRelevant) return false;
+                        return sec.fields && sec.fields.length > 0;
+                      });
+                    }
+                  } else {
+                    if (srv.sections) {
+                      const keyword =
+                        selectedCategory === "RECURSOS HUMANOS"
+                          ? "RECURSOS"
+                          : selectedCategory === "SALAS Y CAMAS"
+                            ? "SALA"
+                            : selectedCategory === "DOCUMENTACION"
+                              ? "DOCUMENTO"
+                              : selectedCategory;
+                      matchedSections = srv.sections.filter((sec) => {
+                        const isMatch =
+                          sec.name.toUpperCase().includes(keyword) ||
+                          (selectedCategory === "DOCUMENTACION" &&
+                            sec.name.toUpperCase().includes("DOCUMENTA")) ||
+                          (selectedCategory === "RECURSOS HUMANOS" &&
+                            sec.name.toUpperCase().includes("JEFE")) ||
+                          (selectedCategory === "SALAS Y CAMAS" &&
+                            sec.name.toUpperCase().includes("CAMA"));
+
+                        if (!isMatch) return false;
+
+                        // Verificar si tiene campos válidos después de filtrar por infraEfector si aplica
+                        const validFields = (sec.fields || []).filter((f) => {
+                          if (
+                            sec.name.toUpperCase().includes("SALA") ||
+                            sec.name.toUpperCase().includes("CAMA")
+                          ) {
+                            const label = f.label || f.name;
+                            const uLabel = label.toUpperCase();
+                            const isGenericLabel = uLabel.includes("CAMAS") || uLabel.includes("SALAS") || uLabel.includes("HABITACION") || (uLabel.includes("N") && uLabel.includes("DE"));
+
+                            // Si es etiqueta genérica, basta con que el servicio esté en infraEfector
+                            if (isGenericLabel && infraEfector && (infraEfector[srv.name] || infraEfector[srv.id])) return true;
+
+                            return (infraEfector && (infraEfector[label] || 0) > 0);
+                          }
+                          return true;
+                        });
+
+                        return validFields.length > 0;
+                      });
+                    }
+                  }
+
+                  if (!matchedSections || matchedSections.length === 0) return null;
+
+                  return (
+                    <Accordion
+                      key={srv.id}
+                      defaultExpanded
+>>>>>>> Stashed changes
                       sx={{
                         width: 8,
                         height: 32,
@@ -1339,6 +1659,7 @@ const PantallaInspeccion = ({
         </AccordionDetails>
       </Accordion>
 
+<<<<<<< Updated upstream
       {/* Observación General */}
       <Box sx={{ mt: 6, mb: 4 }}>
         <Typography
@@ -1364,6 +1685,95 @@ const PantallaInspeccion = ({
             },
           }}
         />
+=======
+
+      <ObservationDialog
+        open={obsDialog.open}
+        label={obsDialog.label}
+        value={obsDialog.value}
+        onClose={() => setObsDialog({ ...obsDialog, open: false })}
+        onSave={handleSaveObs}
+      />
+
+      {/* Observaciones Agregadas */}
+      <Box sx={{ mt: 6, mb: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b", mb: 2 }}>
+            OBSERVACIONES DE DATOS GENERALES
+          </Typography>
+          <Paper variant="outlined" sx={{ p: 3, bgcolor: "white", borderRadius: 4, minHeight: 100, border: '2px solid #f1f5f9' }}>
+            {obsDatosGenerales.length === 0 ? (
+              <Typography sx={{ color: "#94a3b8", fontStyle: "italic", fontSize: "0.9rem" }}>No hay observaciones pendientes.</Typography>
+            ) : (
+              <Box component="ul" sx={{ m: 0, pl: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {obsDatosGenerales.map((obs, idx) => (
+                  <Box component="li" key={idx} sx={{ color: obs.type === 'ERROR' ? '#ef4444' : '#475569', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Box component="span" sx={{ fontWeight: 800 }}>{obs.label}: </Box>
+                      {obs.text}
+                    </Box>
+                    <IconButton size="small" onClick={() => photoInputRef.current.click()} sx={{ color: '#0ea5e9', bgcolor: '#f0f9ff', '&:hover': { bgcolor: '#e0f2fe' } }} title="Adjuntar foto a esta observación">
+                      <PhotoCamera fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Paper>
+        </Box>
+
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b", mb: 2 }}>
+            OBSERVACIONES DE DATOS DEL TRÁMITE
+          </Typography>
+          <Paper variant="outlined" sx={{ p: 3, bgcolor: "white", borderRadius: 4, minHeight: 100, border: '2px solid #f1f5f9' }}>
+            {obsDatosTramite.length === 0 ? (
+              <Typography sx={{ color: "#94a3b8", fontStyle: "italic", fontSize: "0.9rem" }}>No hay observaciones pendientes.</Typography>
+            ) : (
+              <Box component="ul" sx={{ m: 0, pl: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {obsDatosTramite.map((obs, idx) => (
+                  <Box component="li" key={idx} sx={{ color: obs.type === 'ERROR' ? '#ef4444' : '#475569', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Box component="span" sx={{ fontWeight: 800 }}>{obs.label}</Box>
+                      <Box component="span" sx={{ color: '#94a3b8', fontSize: '0.75rem', mx: 0.5 }}>({obs.service})</Box>
+                      : {obs.text}
+                    </Box>
+                    <IconButton size="small" onClick={() => photoInputRef.current.click()} sx={{ color: '#0ea5e9', bgcolor: '#f0f9ff', '&:hover': { bgcolor: '#e0f2fe' } }} title="Adjuntar foto a esta observación">
+                      <PhotoCamera fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Paper>
+        </Box>
+
+        <Box>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 900, color: "#1e293b", mb: 2 }}
+          >
+            OBSERVACIONES GENERALES
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            placeholder="Escriba aquí cualquier observación general sobre la inspección..."
+            value={generalObs}
+            onChange={(e) => setGeneralObs(e.target.value)}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 6,
+                bgcolor: "#f8fafc",
+                border: "2px solid #e2e8f0",
+                "&:hover": { borderColor: "#cbd5e1" },
+                "&.Mui-focused": { borderColor: "#0ea5e9" },
+              },
+            }}
+          />
+        </Box>
+>>>>>>> Stashed changes
       </Box>
 
       {/* Fotos y Adjuntos */}
@@ -1401,30 +1811,7 @@ const PantallaInspeccion = ({
             onChange={handleFileSelect}
           />
 
-          <Button
-            variant="outlined"
-            onClick={() => fileInputRef.current.click()}
-            startIcon={<CloudUpload />}
-            sx={{
-              borderRadius: 4,
-              textTransform: "none",
-              fontWeight: 800,
-              px: 3,
-              py: 1.5,
-              borderColor: "#e2e8f0",
-              color: "#475569",
-              "&:hover": { bgcolor: "#f1f5f9", borderColor: "#cbd5e1" },
-            }}
-          >
-            Adjuntar Archivo
-          </Button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            hidden
-            multiple
-            onChange={handleFileSelect}
-          />
+
         </Box>
 
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2.5 }}>
@@ -1597,6 +1984,34 @@ const PantallaInspeccion = ({
         }}
         onSave={handleSaveSignature}
       />
+
+      <Box
+        sx={{
+          position: "fixed",
+          right: 24,
+          bottom: 24,
+          zIndex: 1200,
+        }}
+      >
+        <Tooltip title="Eliminar todo lo cargado en el acta">
+          <Button
+            variant="contained"
+            color="error"
+            startIcon={<Delete />}
+            onClick={handleClearActa}
+            sx={{
+              borderRadius: 8,
+              py: 1.5,
+              px: 3,
+              boxShadow: "0 10px 20px rgba(239, 68, 68, 0.25)",
+              textTransform: "none",
+              fontWeight: 900,
+            }}
+          >
+            Limpiar acta
+          </Button>
+        </Tooltip>
+      </Box>
     </Box>
   );
 };
@@ -1860,7 +2275,7 @@ const VerificationTable = ({
             <TableCell
               sx={{ fontWeight: 900, color: "#334155", width: "35%", py: 2 }}
             >
-              Elemento a Inspeccionar
+              Equipo
             </TableCell>
             <TableCell
               align="center"
@@ -1881,6 +2296,7 @@ const VerificationTable = ({
               Valor Observado
             </TableCell>
             <TableCell
+              align="center"
               sx={{ fontWeight: 900, color: "#334155", width: "30%", py: 2 }}
             >
               Observación
@@ -1891,7 +2307,7 @@ const VerificationTable = ({
           {fields?.map((field) => {
             const currentVal = inspectorData[field.id] || {};
             const isObservado = currentVal.observado || false;
-            const valorObj = currentVal.valor || "";
+            const valorObj = currentVal.valor !== undefined && currentVal.valor !== null ? currentVal.valor : "";
             const obsText = currentVal.obs || "";
 
             let valorDeclarado =
@@ -1899,8 +2315,30 @@ const VerificationTable = ({
 
             // 1. INFRAESTRUCTURA (Camas/Salas)
             const name = field.label || field.name;
+<<<<<<< Updated upstream
             if (infraEfector && infraEfector[name] !== undefined) {
               valorDeclarado = infraEfector[name];
+=======
+            if (infraEfector) {
+              if (infraEfector[name] !== undefined) {
+                valorDeclarado = infraEfector[name];
+              } else if (currentSrvName) {
+                const upperLabel = normalize(name);
+                const isGeneric = upperLabel.includes("CAMA") || upperLabel.includes("SALA") || upperLabel.includes("HABITACION") || (upperLabel.includes("N") && upperLabel.includes("DE"));
+
+                if (isGeneric) {
+                  if (infraEfector[currentSrvName] !== undefined) {
+                    valorDeclarado = infraEfector[currentSrvName];
+                  } else {
+                    const foundKey = Object.keys(infraEfector).find(k =>
+                      normalize(k).includes(normalize(currentSrvName)) ||
+                      normalize(currentSrvName).includes(normalize(k))
+                    );
+                    if (foundKey) valorDeclarado = infraEfector[foundKey];
+                  }
+                }
+              }
+>>>>>>> Stashed changes
             }
 
             // 2. RECURSOS HUMANOS
@@ -1947,16 +2385,66 @@ const VerificationTable = ({
               isNumeric &&
               Number(valorObj) !== Number(valorDeclarado);
 
+            const isEquipmentRow = Boolean(
+              field.equipamiento ||
+              (field.label?.toUpperCase().includes("EQUIPO")) ||
+              currentSrvName?.toUpperCase().includes("EQUIPAMIENTO")
+            );
+            const inputError = isEquipmentRow && isObservado && valorObj !== "" && isNumeric && Number(valorObj) < Number(valorDeclarado);
+
             const update = (key, val) =>
               onChange(field.id, { ...currentVal, [key]: val });
 
+<<<<<<< Updated upstream
+=======
+            const vObs = Number(valorObj);
+            const vDec = Number(valorDeclarado);
+            const isFilled = valorObj !== "";
+            const isMatch = isFilled && vObs === vDec;
+
+            // Lógica de Validación de Iconos (HU)
+            const getStatusIndicator = () => {
+              if (!isObservado || !isFilled) return null;
+
+              const upperSrv = currentSrvName?.toUpperCase() || "";
+              const upperLabel = (field.label || "").toUpperCase();
+
+              const isJefe = upperLabel.includes("JEFE") || upperSrv.includes("JEFE");
+              const isServiciosCamas = upperLabel.includes("CAMA") || upperLabel.includes("SALA") || upperLabel.includes("PUESTO") || upperSrv.includes("CAMA") || upperSrv.includes("SALA");
+              const isRrhhEquip = !isJefe && !isServiciosCamas; // Por descarte según HU
+
+              if (isMatch) return <InfoIcon sx={{ color: "#94a3b8", fontSize: 20 }} />; // Igual
+
+              if (isServiciosCamas) {
+                return vObs < vDec
+                  ? <ReportProblemIcon sx={{ color: "#eab308", fontSize: 20 }} /> // Amarillo (Advertencia)
+                  : <ErrorIcon sx={{ color: "#ef4444", fontSize: 20 }} />; // Rojo (Error)
+              }
+
+              if (isJefe) {
+                return vObs < vDec
+                  ? <ErrorIcon sx={{ color: "#ef4444", fontSize: 20 }} /> // Rojo (Error)
+                  : <ReportProblemIcon sx={{ color: "#eab308", fontSize: 20 }} />; // Amarillo (Advertencia)
+              }
+
+              if (isRrhhEquip) {
+                return vObs < vDec
+                  ? <ErrorIcon sx={{ color: "#ef4444", fontSize: 20 }} /> // Rojo (Error)
+                  : null;
+              }
+              return null;
+            };
+
+            const statusIcon = getStatusIndicator();
+
+>>>>>>> Stashed changes
             return (
               <TableRow
                 key={field.id}
                 hover
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
-                  bgcolor: hasError ? "#fef2f2" : "inherit",
+                  bgcolor: hasError ? "#fef2f200" : "inherit",
                 }}
               >
                 <TableCell
@@ -1999,6 +2487,7 @@ const VerificationTable = ({
                 </TableCell>
                 <TableCell align="center">
                   {isObservado && (
+<<<<<<< Updated upstream
                     <TextField
                       size="small"
                       type="number"
@@ -2033,6 +2522,54 @@ const VerificationTable = ({
                         },
                       }}
                     />
+=======
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <TextField
+                        size="small"
+                        type="number"
+                        placeholder="Cant."
+                        value={valorObj !== "" ? String(valorObj) : (field.origin === "TRÁMITE" ? String(valorDeclarado) : "")}
+                        onChange={(e) => update("valor", e.target.value)}
+                        error={inputError}
+                        inputProps={{ min: 0, inputMode: "numeric" }}
+                        sx={{
+                          flexGrow: 1,
+                          "& .MuiInputBase-root": {
+                            bgcolor: "white",
+                            fontWeight: 800,
+                            height: 38,
+                          },
+                          "& input": {
+                            MozAppearance: "textfield",
+                          },
+                          "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                            WebkitAppearance: "none",
+                            margin: 0,
+                          },
+                        }}
+                      />
+                      {statusIcon}
+                    </Box>
+                  )}
+                </TableCell>
+                <TableCell align="center">
+                  {isObservado && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => onOpenObs(field.id, `[${currentSrvName}] ${field.label || field.name}`, obsText)}
+                        sx={{
+                          color: obsText ? "#0ea5e9" : "#cbd5e1",
+                          border: "1px solid",
+                          borderColor: obsText ? "#0ea5e9" : "#e2e8f0",
+                          bgcolor: obsText ? "#f0f9ff" : "transparent",
+                          "&:hover": { bgcolor: "#e0f2fe" }
+                        }}
+                      >
+                        {obsText ? <ChatBubbleIcon /> : <ChatBubbleOutlineIcon />}
+                      </IconButton>
+                    </Box>
+>>>>>>> Stashed changes
                   )}
                 </TableCell>
               </TableRow>
