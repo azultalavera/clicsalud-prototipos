@@ -217,37 +217,57 @@ const RectificacionTramite = () => {
     </Box>
   );
 
-  const renderActa2 = () => (
-    <Box>
-      <Alert severity="info" sx={{ mb: 4, borderRadius: 3, borderLeft: '8px solid #0ea5e9', fontWeight: 700 }}>
-        EN TIEMPO REAL: Estas observaciones se están cargando actualmente en la tablet del inspector.
-      </Alert>
-      {dataGroupsActa2.generales.items.length > 0 && (
-        <Paper sx={{ p: 2, mb: 4, borderRadius: 4, border: '1px solid #e2e8f0' }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 900, mb: 2 }}>OBSERVACIONES DATOS GENERALES (ACTUAL)</Typography>
-          {renderDynamicTable(dataGroupsActa2.generales.items)}
-        </Paper>
-      )}
-      {Object.entries(dataGroupsActa2.tramite.itemsByService).map(([srv, items]) => (
-        <Paper key={srv} sx={{ p: 2, mb: 4, borderRadius: 4, border: '1px solid #e2e8f0' }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 900, mb: 2, textTransform: 'uppercase' }}>{srv}</Typography>
-          {renderDynamicTable(items)}
-        </Paper>
-      ))}
-      {dataGroupsActa2.generales.items.length === 0 && Object.keys(dataGroupsActa2.tramite.itemsByService).length === 0 && (
-        <Box sx={{ py: 8, textAlign: 'center', bgcolor: '#f8fafc', borderRadius: 4, border: '2px dashed #e2e8f0' }}>
-           <AssignmentIcon sx={{ fontSize: 48, color: '#cbd5e1', mb: 2 }} />
-           <Typography variant="body1" sx={{ color: '#64748b', fontWeight: 700 }}>No hay observaciones cargadas en el Acta 2 aún.</Typography>
-        </Box>
-      )}
-    </Box>
-  );
+  const renderActa2 = () => {
+    const hasGenerales = dataGroupsActa2.generales.items.length > 0;
+    const hasTramite = Object.keys(dataGroupsActa2.tramite.itemsByService).length > 0;
 
-  const renderDynamicTable = (items) => (
+    return (
+      <Box>
+        <Alert severity="info" sx={{ mb: 4, borderRadius: 3, borderLeft: '8px solid #0ea5e9', fontWeight: 700 }}>
+          EN TIEMPO REAL: Estas observaciones se están cargando actualmente en la tablet del inspector.
+        </Alert>
+
+        {hasGenerales && (
+          <Paper sx={{ mb: 4, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+            <Box sx={{ p: 2, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <InfoIcon color="primary" /> <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>DATOS GENERALES</Typography>
+            </Box>
+            <Box sx={{ p: 2 }}>
+              {renderDynamicTable(dataGroupsActa2.generales.items)}
+            </Box>
+          </Paper>
+        )}
+
+        {hasTramite && (
+          <Paper sx={{ mb: 4, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+            <Box sx={{ p: 2, bgcolor: '#fff5f5', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <ErrorIcon color="error" /> <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>DATOS DEL TRÁMITE</Typography>
+            </Box>
+            <Box sx={{ p: 2 }}>
+              {renderDynamicTable(
+                Object.values(dataGroupsActa2.tramite.itemsByService).flat(),
+                true
+              )}
+            </Box>
+          </Paper>
+        )}
+
+        {!hasGenerales && !hasTramite && (
+          <Box sx={{ py: 8, textAlign: 'center', bgcolor: '#f8fafc', borderRadius: 4, border: '2px dashed #e2e8f0' }}>
+             <AssignmentIcon sx={{ fontSize: 48, color: '#cbd5e1', mb: 2 }} />
+             <Typography variant="body1" sx={{ color: '#64748b', fontWeight: 700 }}>No hay observaciones cargadas en el Acta 2 aún.</Typography>
+          </Box>
+        )}
+      </Box>
+    );
+  };
+
+  const renderDynamicTable = (items, showService = false) => (
     <TableContainer>
       <Table size="small">
         <TableHead>
           <TableRow>
+            {showService && <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>SERVICIO</TableCell>}
             <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ÍTEM</TableCell>
             <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>VALOR</TableCell>
             <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>OBSERVACIÓN</TableCell>
@@ -255,12 +275,21 @@ const RectificacionTramite = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item) => (
-            <TableRow key={item.id}>
+          {items.map((item, idx) => (
+            <TableRow key={item.id || idx}>
+              {showService && (
+                <TableCell sx={{ fontWeight: 850, fontSize: '0.65rem', color: '#0ea5e9' }}>
+                  {item.serviceName}
+                </TableCell>
+              )}
               <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>{item.label}</TableCell>
-              <TableCell align="center"><Chip label={item.valorObservado} size="small" color="warning" sx={{ fontWeight: 900 }} /></TableCell>
-              <TableCell sx={{ fontSize: '0.75rem' }}>{item.obs || "Sin detalle adicional"}</TableCell>
-              <TableCell align="center"><Chip label="PENDIENTE" size="small" variant="outlined" sx={{ fontWeight: 900, fontSize: '0.6rem' }} /></TableCell>
+              <TableCell align="center">
+                <Chip label={item.valorObservado} size="small" color="warning" sx={{ fontWeight: 900, fontSize: '0.65rem' }} />
+              </TableCell>
+              <TableCell sx={{ fontSize: '0.75rem', color: '#475569' }}>{item.obs || "Sin detalle adicional"}</TableCell>
+              <TableCell align="center">
+                <Chip label="PENDIENTE" size="small" variant="outlined" sx={{ fontWeight: 900, fontSize: '0.6rem' }} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
