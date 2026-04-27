@@ -1,0 +1,39 @@
+{
+  "servicios": [
+    {
+      "id": "gen_srv",
+      "name": "DATOS GENERALES",
+      "sections": [
+        {
+          "id": "gen_sec_1",
+          "name": "ARQUITECTURA",
+          "fields": [
+            { "id": "f_1", "label": "FACHADA", "type": "boolean" },
+            { "id": "f_2", "label": "ACCESO", "type": "boolean" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "enf_srv",
+      "name": "ENFERMERIA",
+      "sections": [
+        {
+          "id": "enf_sec_1",
+          "name": "ARQUITECTURA",
+          "fields": [
+            { "id": "f_3", "label": "OFFICE LIMPIO", "type": "boolean" },
+            { "id": "f_4", "label": "OFFICE USADO", "type": "boolean" }
+          ]
+        },
+        {
+          "id": "enf_sec_2",
+          "name": "EQUIPAMIENTO",
+          "fields": [
+            { "id": "f_5", "label": "CARRO DE PARO", "type": "number" }
+          ]
+        }
+      ]
+    }
+  ]
+}

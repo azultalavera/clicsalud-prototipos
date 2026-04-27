@@ -51,6 +51,8 @@ import RRHHStep from "./steps/RRHHStep";
 import JefeServicioStep from "./steps/JefeServicioStep";
 import ModalHabilitacion from "../ui/ModalHabilitacion";
 import PantallaInspeccion from "../inspeccion/inspector/PantallaInspeccion";
+import TramitesEnCurso from "./TramitesEnCurso";
+import RectificacionTramite from "./RectificacionTramite";
 
 // --- ESTILOS STEPPER ---
 const QontoConnector = styled(StepConnector)(() => ({
@@ -102,12 +104,6 @@ const HomeEfector = () => {
   const baseRoute = "/home-efector";
 
   // --- ESTADOS GLOBALES ---
-<<<<<<< Updated upstream
-  const [selectedServices, setSelectedServices] = useState({});
-  const [infraSelection, setInfraSelection] = useState({});
-  const [equiposCargados, setEquiposCargados] = useState([]);
-  const [rrhhCargado, setRrhhCargado] = useState([]);
-=======
   const [selectedServices, setSelectedServices] = useState(() => {
     const saved = localStorage.getItem("efector_servicios");
     if (saved && saved !== "[]") {
@@ -154,13 +150,6 @@ const HomeEfector = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [tipologia, setTipologia] = useState(() => localStorage.getItem("efector_tipo") || "CLÍNICAS, SANATORIOS Y HOSPITALES");
-  const [directorTecnico, setDirectorTecnico] = useState(() => {
-    const saved = localStorage.getItem("efector_dt");
-    return saved ? JSON.parse(saved) : { nombre: "JUAN CARLOS", apellido: "PÉREZ", dni: "20.455.123" };
-  });
-
->>>>>>> Stashed changes
   const [isServiceValid, setIsServiceValid] = useState(false);
   const [isEquipamientoValid, setIsEquipamientoValid] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -172,9 +161,7 @@ const HomeEfector = () => {
     localStorage.setItem("efector_infra", JSON.stringify(infraSelection));
     localStorage.setItem("efector_equipos", JSON.stringify(equiposCargados));
     localStorage.setItem("efector_rrhh", JSON.stringify(rrhhCargado));
-    localStorage.setItem("efector_tipo", tipologia);
-    localStorage.setItem("efector_dt", JSON.stringify(directorTecnico));
-  }, [selectedServices, infraSelection, equiposCargados, rrhhCargado, tipologia, directorTecnico]);
+  }, [selectedServices, infraSelection, equiposCargados, rrhhCargado]);
 
   // Moví 'steps' fuera o aseguro su referencia para el useMemo
   const steps = useMemo(
@@ -196,12 +183,14 @@ const HomeEfector = () => {
   const activeStep = useMemo(() => {
     const lastPart = location.pathname.split("/").filter(Boolean).pop();
     const idx = steps.findIndex((s) => s.path === lastPart);
-    return idx >= 0 ? idx : 3;
+    return idx >= 0 ? idx : -1; // -1 if not in a step
   }, [location.pathname, steps]); // Agregado 'steps' como dependencia
 
   const handleNext = () =>
     activeStep < steps.length - 1 &&
     navigate(`${baseRoute}/${steps[activeStep + 1].path}`);
+
+  const isDashboard = activeStep === -1 && !currentPath.includes("actainspeccion") && !currentPath.includes("rectificacion") && !currentPath.includes("respuesta-emplazamiento");
 
   const handleBack = () =>
     activeStep > 0 && navigate(`${baseRoute}/${steps[activeStep - 1].path}`);
@@ -210,53 +199,56 @@ const HomeEfector = () => {
 
   return (
     <Layout>
-      <Box
-        sx={{
-          bgcolor: "#fff",
-          borderBottom: "1px solid #e0e0e0",
-          mx: -4,
-          mt: -4,
-          mb: 4,
-          px: 4,
-        }}
-      >
-        <Tabs
-          value={
-            currentPath.includes("actainspeccion")
-              ? `${baseRoute}/actainspeccion`
-              : `${baseRoute}/vertramite`
-          }
-          textColor="primary"
-          indicatorColor="primary"
+      {!isDashboard && (
+        <Box
+          sx={{
+            bgcolor: "#fff",
+            borderBottom: "1px solid #e0e0e0",
+            mx: -4,
+            mt: -4,
+            mb: 4,
+            px: 4,
+          }}
         >
-          <Tab
-            label="VER TRÁMITE"
-            value={`${baseRoute}/vertramite`}
-            component={Link}
-            to={`${baseRoute}/vertramite`}
-            sx={{ fontWeight: "bold" }}
-          />
-          <Tab
-            label="INSPECCIÓN"
-            value={`${baseRoute}/actainspeccion`}
-            component={Link}
-            to={`${baseRoute}/actainspeccion`}
-            sx={{ fontWeight: "bold" }}
-          />
-        </Tabs>
-      </Box>
+          <Tabs
+            value={
+              currentPath.includes("actainspeccion") || currentPath.includes("respuesta-emplazamiento")
+                ? "inspeccion"
+                : "vertramite"
+            }
+            textColor="primary"
+            indicatorColor="primary"
+          >
+            <Tab
+              label="VER TRÁMITE"
+              value="vertramite"
+              component={Link}
+              to={`${baseRoute}/vertramite`}
+              sx={{ fontWeight: "bold" }}
+            />
+            <Tab
+              label="INSPECCIÓN"
+              value="inspeccion"
+              component={Link}
+              to={`${baseRoute}/respuesta-emplazamiento`}
+              sx={{ fontWeight: "bold" }}
+            />
+          </Tabs>
+        </Box>
+      )}
 
       <Paper
-        elevation={2}
+        elevation={isDashboard ? 0 : 2}
         sx={{
           borderRadius: "8px",
           overflow: "hidden",
           mb: 2,
           mx: "auto",
           maxWidth: "1600px",
+          backgroundColor: isDashboard ? "transparent" : "white",
         }}
       >
-        {!currentPath.includes("actainspeccion") && (
+        {!currentPath.includes("actainspeccion") && !currentPath.includes("respuesta-emplazamiento") && !isDashboard && (
           <Box
             sx={{
               backgroundColor: "#005596",
@@ -272,47 +264,50 @@ const HomeEfector = () => {
           </Box>
         )}
 
-        <Box sx={{ p: 4, backgroundColor: "white" }}>
-          {!currentPath.includes("actainspeccion") && (
-            <Box sx={{ mb: 6 }}>
-              <Stepper
-                alternativeLabel
-                activeStep={activeStep}
-                connector={<QontoConnector />}
-              >
-                {steps.map((step, index) => (
-                  <Step key={step.label}>
-                    <StepLabel
-                      StepIconComponent={(props) => (
-                        <StepIconCustom
-                          {...props}
-                          onClick={() =>
-                            navigate(`${baseRoute}/${steps[index].path}`)
-                          }
-                        />
-                      )}
+        <Box sx={{ p: isDashboard ? 0 : 4, backgroundColor: isDashboard ? "transparent" : "white" }}>
+        {!currentPath.includes("actainspeccion") && !currentPath.includes("respuesta-emplazamiento") && !isDashboard && (
+          <Box sx={{ mb: 6 }}>
+            <Stepper
+              alternativeLabel
+              activeStep={activeStep}
+              connector={<QontoConnector />}
+            >
+              {steps.map((step, index) => (
+                <Step key={step.label}>
+                  <StepLabel
+                    StepIconComponent={(props) => (
+                      <StepIconCustom
+                        {...props}
+                        onClick={() =>
+                          navigate(`${baseRoute}/${steps[index].path}`)
+                        }
+                      />
+                    )}
+                  >
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontWeight: "bold",
+                        color: "#333",
+                        display: "block",
+                        mt: 1,
+                      }}
                     >
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontWeight: "bold",
-                          color: "#333",
-                          display: "block",
-                          mt: 1,
-                        }}
-                      >
-                        {step.label}
-                      </Typography>
-                    </StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
-            </Box>
-          )}
+                      {step.label}
+                    </Typography>
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
+        )}
 
           <Box sx={{ minHeight: "450px" }}>
             <Routes>
-              <Route path="/" element={<Navigate to="vertramite" replace />} />
+              <Route path="/" element={<TramitesEnCurso />} />
+              <Route path="dashboard" element={<TramitesEnCurso />} />
+              <Route path="rectificacion" element={<Navigate to={`${baseRoute}/respuesta-emplazamiento`} replace />} />
+              <Route path="respuesta-emplazamiento" element={<RectificacionTramite />} />
               <Route
                 path="actainspeccion"
                 element={
@@ -321,8 +316,6 @@ const HomeEfector = () => {
                     infraEfector={infraSelection}
                     rrhhEfector={rrhhCargado}
                     equiposEfector={equiposCargados}
-                    tipologia={tipologia}
-                    directorTecnico={directorTecnico}
                   />
                 }
               />
@@ -365,10 +358,11 @@ const HomeEfector = () => {
                 }
               />
               <Route path="actainspeccion" element={<PantallaInspeccion />} />
+              <Route path="vertramite" element={<Navigate to="/home-efector/servicios" replace />} />
             </Routes>
           </Box>
 
-          {!currentPath.includes("actainspeccion") && (
+          {!currentPath.includes("actainspeccion") && !currentPath.includes("respuesta-emplazamiento") && !isDashboard && (
             <Box
               sx={{
                 mt: 4,

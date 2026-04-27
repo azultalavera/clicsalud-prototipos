@@ -30,6 +30,11 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Autocomplete,
 } from "@mui/material";
 import {
   Business as BusinessIcon,
@@ -39,14 +44,12 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   Add as AddIcon,
   DragIndicator as DragIndicatorIcon,
+  Bed as BedIcon,
+  People as PeopleIcon,
   ArrowBack as ArrowBackIcon,
   Save as SaveIcon,
   ListAlt as ListAltIcon,
-<<<<<<< Updated upstream
-=======
   Bolt as BoltIcon,
-  LocalHospital as LocalHospitalIcon,
->>>>>>> Stashed changes
 } from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
@@ -59,6 +62,12 @@ const TRAMITE_MAPPING = {
     "Descripción",
     "Plano de arquitectura",
     "Memoria descriptiva"
+  ],
+  "DATOS GENERALES DEL TRÁMITE": [
+    "SALAS Y CAMAS",
+    "RECURSOS HUMANOS",
+    "JEFE DE SERVICIO",
+    "EQUIPAMIENTO"
   ],
   "ESTABLECIMIENTO": [
     "Denominación",
@@ -117,6 +126,9 @@ const TRAMITE_MAPPING = {
   ]
 };
 
+const normalize = (str) =>
+  (str || "").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
 const ClinicasDashboard = () => {
   const {
     tipologiaName,
@@ -137,6 +149,7 @@ const ClinicasDashboard = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [optionDrafts, setOptionDrafts] = useState({});
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [hardcodeDialog, setHardcodeDialog] = useState({ open: false, field: null, value: "", srvIdx: -1, secIdx: -1, fIdx: -1 });
 
   const parseOptions = (options = "") =>
     String(options)
@@ -149,7 +162,7 @@ const ClinicasDashboard = () => {
     if (!nextOption) return;
 
     const newServicios = [...servicios];
-    const sourceField = secIdx !== -1 
+    const sourceField = secIdx !== -1
       ? newServicios[srvIdx].sections[secIdx].fields[fIdx]
       : newServicios[srvIdx].fields[fIdx];
 
@@ -171,13 +184,13 @@ const ClinicasDashboard = () => {
 
   const handleRemoveOption = (srvIdx, fIdx, secIdx, optionToRemove) => {
     const newServicios = [...servicios];
-    const sourceField = secIdx !== -1 
+    const sourceField = secIdx !== -1
       ? newServicios[srvIdx].sections[secIdx].fields[fIdx]
       : newServicios[srvIdx].fields[fIdx];
 
     const remainingOptions = parseOptions(sourceField.options).filter(opt => opt !== optionToRemove);
     const updatedOptions = remainingOptions.join(", ");
-    
+
     if (secIdx !== -1) {
       newServicios[srvIdx].sections[secIdx].fields[fIdx].options = updatedOptions;
     } else {
@@ -186,85 +199,85 @@ const ClinicasDashboard = () => {
     setServicios(newServicios);
   };
 
-  const handleLoadMinimums = (isAuto = false) => {
-    const currentSrv = servicios.find(s => s.id === selectedCategoryId) || 
-                       servicios.flatMap(s => s.sections || []).find(s => s.id === selectedCategoryId);
-    if (!currentSrv) return;
+  const handleLoadMinimums = () => {
+    const isAggregate = selectedCategoryId?.startsWith("agg-");
+    const newServicios = [...servicios];
 
-    let sourceList = [];
-    let fieldType = "";
-    let labelField = "";
+    if (isAggregate) {
+      const aggType = selectedCategoryId.replace("agg-", "");
+      
+      if (aggType === "infra") {
+        // SALAS -> QUIROFANO, SALA DE PARTO
+        ["QUIRÓFANO", "SALA DE PARTO"].forEach(srvName => {
+          const srv = newServicios.find(s => s.name.toUpperCase() === srvName);
+          if (srv) {
+            const sec = srv.sections.find(s => normalize(s.name).includes("SALA"));
+            if (sec && !sec.fields.some(f => normalize(f.label) === "salas")) {
+              sec.fields.push({ id: `fld-${Date.now()}-${Math.random()}`, label: "SALAS", type: "number", origin: "ADMIN" });
+            }
+          }
+        });
 
-    if (activeTab === 1) { // Equipamiento
-      sourceList = equipamientos;
-      fieldType = "equipamiento";
-      labelField = "equipamiento";
-    } else if (activeTab === 2) { // RRHH
-      sourceList = rrhhList;
-      fieldType = "rrhh";
-      labelField = (item) => `${item.origen} - ${item.especialidad}`;
-    } else if (activeTab === 3) { // Jefe de Servicio
-      sourceList = jefeServicioList;
-      fieldType = "jefe_servicio";
-      labelField = (item) => `${item.origen} - ${item.especialidad}`;
-    }
-
-    if (sourceList.length === 0) return;
-
-    const srvName = currentSrv.name.toUpperCase();
-    const filtered = sourceList.filter(item => {
-      const itemOrigen = item.origen?.toUpperCase();
-      return itemOrigen === srvName || srvName.includes(itemOrigen) || itemOrigen.includes(srvName);
-    });
-
-    if (filtered.length === 0) {
-      if (!isAuto) {
-        setSnackbar({ open: true, message: `No se encontraron mínimos configurados para ${currentSrv.name}`, severity: "warning" });
+        // CAMAS -> ALL
+        newServicios.forEach((s, sIdx) => {
+          const sec = s.sections.find(sec => normalize(sec.name).includes("CAMA"));
+          if (sec && !sec.fields.some(f => normalize(f.label) === "camas")) {
+            sec.fields.push({ id: `fld-${Date.now()}-${Math.random()}`, label: "CAMAS", type: "number", origin: "ADMIN" });
+          }
+        });
       }
+
+      if (aggType === "equip") {
+        // EQUIPAMIENTO MÍNIMO -> ALL
+        newServicios.forEach((s, sIdx) => {
+          const sec = s.sections.find(sec => normalize(sec.name).includes("EQUIP"));
+          if (sec && !sec.fields.some(f => normalize(f.label).includes("equipamiento"))) {
+            sec.fields.push({ id: `fld-${Date.now()}-${Math.random()}`, label: "EQUIPAMIENTO MÍNIMO", type: "number", origin: "ADMIN" });
+          }
+        });
+      }
+
+      setServicios(newServicios);
+      setSnackbar({ open: true, message: "Mínimos globales cargados correctamente", severity: "success" });
       return;
     }
 
-    const newServicios = [...servicios];
-    
-    const genSrvIdx = newServicios.findIndex(s => s.sections?.some(sec => sec.id === selectedCategoryId));
-    const isGeneral = genSrvIdx !== -1;
-    const targetSrvIdx = isGeneral ? genSrvIdx : newServicios.findIndex(s => s.id === selectedCategoryId);
-    
-    const targetSrv = newServicios[targetSrvIdx];
-    if (!targetSrv) return;
-    
-    const genSecIdx = isGeneral ? targetSrv.sections.findIndex(sec => sec.id === selectedCategoryId) : -1;
+    const currentSrv = servicios.find(s => s.id === selectedCategoryId) ||
+      servicios.flatMap(s => s.sections || []).find(s => s.id === selectedCategoryId);
+    if (!currentSrv) return;
 
-    let addedCount = 0;
-    filtered.forEach(item => {
+    let sourceList = [];
+    let fieldType = "text";
+    let labelField = "";
+
+    if (activeTab === 1) { // Infra
+      sourceList = [...TRAMITE_MAPPING.SALAS, ...TRAMITE_MAPPING.CAMAS].map(name => ({ name }));
+      fieldType = "number";
+      labelField = "name";
+    } else if (activeTab === 2) {
+      sourceList = equipamientos;
+      fieldType = "number";
+      labelField = "equipamiento";
+    }
+
+    const filtered = sourceList.filter(item => {
       const label = typeof labelField === "function" ? labelField(item) : item[labelField];
-      
-      let existingFields = isGeneral ? (targetSrv.sections[genSecIdx]?.fields || []) : (targetSrv.fields || []);
-      if (existingFields.some(f => f.label === label)) return;
-
-      addedCount++;
-      const newField = {
-        id: `fld-${Date.now()}-${Math.random()}`,
-        label: label,
-        type: fieldType,
-        origin: "ADMIN",
-        options: ""
-      };
-
-      if (isGeneral) {
-        if (!targetSrv.sections[genSecIdx].fields) targetSrv.sections[genSecIdx].fields = [];
-        targetSrv.sections[genSecIdx].fields.push(newField);
-      } else {
-        if (!targetSrv.fields) targetSrv.fields = [];
-        targetSrv.fields.push(newField);
-      }
+      return !currentSrv.sections?.some(sec => sec.fields.some(f => f.label === label));
     });
 
-    if (addedCount > 0) {
+    if (filtered.length > 0) {
+      const targetSrvIdx = newServicios.findIndex(s => s.id === selectedCategoryId || s.sections?.some(sec => sec.id === selectedCategoryId));
+      const targetSrv = newServicios[targetSrvIdx];
+      const targetSecIdx = targetSrv.sections?.findIndex(sec => sec.id === selectedCategoryId) ?? -1;
+
+      filtered.forEach(item => {
+        const label = typeof labelField === "function" ? labelField(item) : item[labelField];
+        const newF = { id: `fld-${Date.now()}-${Math.random()}`, label, type: fieldType, origin: "ADMIN" };
+        if (targetSecIdx !== -1) targetSrv.sections[targetSecIdx].fields.push(newF);
+        else targetSrv.fields.push(newF);
+      });
       setServicios(newServicios);
-      if (!isAuto) {
-        setSnackbar({ open: true, message: `Se cargaron ${addedCount} requisitos mínimos para ${currentSrv.name}`, severity: "success" });
-      }
+      setSnackbar({ open: true, message: `Se cargaron ${filtered.length} requisitos`, severity: "success" });
     }
   };
 
@@ -369,23 +382,53 @@ const ClinicasDashboard = () => {
         </ToggleButtonGroup>
 
         {inspectionMode === "TRAMITE" && (
-          <TextField
-            select
-            size="small"
-            label="Seleccionar Trámite para Inspeccionar"
-            value={selectedTramiteId}
-            onChange={(e) => setSelectedTramiteId(e.target.value)}
-            sx={{ minWidth: 400, "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
-          >
-            {tramites.map((t) => (
-              <MenuItem key={t.id} value={t.id}>
-                <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>{t.razonSocial}</Typography>
-                  <Typography variant="caption" color="textSecondary">{t.expediente}</Typography>
-                </Box>
-              </MenuItem>
-            ))}
-          </TextField>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <TextField
+              select
+              size="small"
+              label="Seleccionar Trámite para Inspeccionar"
+              value={selectedTramiteId}
+              onChange={(e) => setSelectedTramiteId(e.target.value)}
+              sx={{ minWidth: 300, "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+            >
+              {tramites.map((t) => (
+                <MenuItem key={t.id} value={t.id}>
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>{t.razonSocial}</Typography>
+                    <Typography variant="caption" color="textSecondary">{t.expediente}</Typography>
+                  </Box>
+                </MenuItem>
+              ))}
+            </TextField>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                const mockServicios = ["INTERNACIÓN GENERAL", "CENTRO QUIRÚRGICO", "UNIDAD DE TERAPIA INTENSIVA ADULTOS", "NEONATOLOGÍA"];
+                const mockInfra = { "QUIRÓFANOS": 2, "SALA DE PARTOS": 1, "INTERNACIÓN GENERAL": 20, "NEONATOLOGÍA": 6 };
+                const mockRrhh = [
+                  { origen: "CENTRO QUIRÚRGICO", especialidad: "Enfermero/a", cantidad: 4 },
+                  { origen: "UNIDAD DE TERAPIA INTENSIVA ADULTOS", especialidad: "Médico/a Especialista", cantidad: 2 }
+                ];
+                const mockEquipos = [
+                  { origen: "CENTRO QUIRÚRGICO", equipamiento: "Mesa de Cirugía", cantidad: 2 },
+                  { origen: "CENTRO QUIRÚRGICO", equipamiento: "Monitor Multiparamétrico", cantidad: 4 }
+                ];
+
+                localStorage.setItem("efector_servicios", JSON.stringify(mockServicios));
+                localStorage.setItem("efector_infra", JSON.stringify(mockInfra));
+                localStorage.setItem("efector_rrhh", JSON.stringify(mockRrhh));
+                localStorage.setItem("efector_equipos", JSON.stringify(mockEquipos));
+                localStorage.setItem("efector_tipo", "CLÍNICAS, SANATORIOS Y HOSPITALES");
+                localStorage.setItem("efector_dt", JSON.stringify({ nombre: "MARIA", apellido: "GOMEZ", dni: "25.123.456" }));
+
+                setSnackbar({ open: true, message: "Datos de Trámite simulados para el Inspector.", severity: "success" });
+              }}
+              sx={{ fontWeight: 800, borderRadius: 3, textTransform: 'none' }}
+            >
+              SIMULAR DATOS EN INSPECTOR
+            </Button>
+          </Stack>
         )}
       </Box>
 
@@ -439,15 +482,11 @@ const ClinicasDashboard = () => {
             <ListSubheader sx={{ fontWeight: 800, color: "#32A430", fontSize: "0.7rem", lineHeight: "32px", mt: 2 }}>
               DATOS DEL TRÁMITE
             </ListSubheader>
-<<<<<<< Updated upstream
-=======
             {[
               { id: "agg-infra", name: "SALAS Y CAMAS", icon: <BedIcon fontSize="small" /> },
               { id: "agg-rrhh", name: "RECURSOS HUMANOS", icon: <PeopleIcon fontSize="small" /> },
               { id: "agg-js", name: "JEFE DE SERVICIO", icon: <FaceRetouchingNaturalIcon fontSize="small" /> },
               { id: "agg-equip", name: "EQUIPAMIENTO", icon: <MedicalServicesIcon fontSize="small" /> },
-              { id: "agg-servicios", name: "SERVICIOS", icon: <LocalHospitalIcon fontSize="small" /> },
-              { id: "agg-arquitectura", name: "ARQUITECTURA", icon: <BusinessIcon fontSize="small" /> },
             ].map((cat) => (
               <ListItemButton
                 key={cat.id}
@@ -457,14 +496,11 @@ const ClinicasDashboard = () => {
                   mx: 1,
                   borderRadius: 2,
                   mb: 0.5,
-                  "&.Mui-selected": { 
-                    backgroundColor: cat.id === "agg-servicios" ? "rgba(14, 165, 233, 0.08)" : "rgba(50, 164, 48, 0.08)", 
-                    color: cat.id === "agg-servicios" ? "#0ea5e9" : "#32A430" 
-                  },
+                  "&.Mui-selected": { backgroundColor: "rgba(50, 164, 48, 0.08)", color: "#32A430" },
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>
-                  {React.cloneElement(cat.icon, { color: selectedCategoryId === cat.id ? (cat.id === "agg-servicios" ? "primary" : "success") : "inherit" })}
+                  {React.cloneElement(cat.icon, { color: selectedCategoryId === cat.id ? "success" : "inherit" })}
                 </ListItemIcon>
                 <ListItemText
                   primary={cat.name}
@@ -473,7 +509,6 @@ const ClinicasDashboard = () => {
               </ListItemButton>
             ))}
 
->>>>>>> Stashed changes
             {tramiteServices.map((srv) => (
               <ListItemButton
                 key={srv.id}
@@ -495,33 +530,8 @@ const ClinicasDashboard = () => {
                 />
               </ListItemButton>
             ))}
-
-            <ListSubheader sx={{ fontWeight: 800, color: "#64748b", fontSize: "0.7rem", lineHeight: "32px", mt: 2 }}>
-              SERVICIOS TÉCNICOS
-            </ListSubheader>
-            {otherServices.map((srv) => (
-              <ListItemButton
-                key={srv.id}
-                selected={selectedCategoryId === srv.id}
-                onClick={() => setSelectedCategoryId(srv.id)}
-                sx={{
-                  mx: 1,
-                  borderRadius: 2,
-                  mb: 0.5,
-                  "&.Mui-selected": { backgroundColor: "rgba(100, 116, 139, 0.08)", color: "#1e293b" },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 40 }}>
-                  <MedicalServicesIcon fontSize="small" color={selectedCategoryId === srv.id ? "primary" : "inherit"} />
-                </ListItemIcon>
-                <ListItemText
-                  primary={srv.name}
-                  primaryTypographyProps={{ fontSize: "0.85rem", fontWeight: selectedCategoryId === srv.id ? 800 : 500 }}
-                />
-              </ListItemButton>
-            ))}
           </List>
-          
+
           <Box sx={{ p: 2, borderTop: "1px solid #e2e8f0", bgcolor: "#f8fafc" }}>
             <Button
               fullWidth
@@ -538,107 +548,69 @@ const ClinicasDashboard = () => {
         {/* MAIN CONTENT AREA */}
         <Box sx={{ flexGrow: 1 }}>
           <Box sx={{ mb: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-             <Box>
-                <Typography variant="h5" sx={{ fontWeight: 900, color: "#1e293b" }}>
-                  {(() => {
-                    const sec = generalDataSrv?.sections?.find(s => s.id === selectedCategoryId);
-                    if (sec) return sec.name;
-                    const srv = servicios.find(s => s.id === selectedCategoryId);
-                    return srv?.name || "Seleccione una categoría";
-                  })()}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {inspectionMode === "ADMIN" ? "Configuración de parámetros maestros" : "Auditando datos declarados"}
-                </Typography>
-             </Box>
+            <Box>
+              <Typography variant="h5" sx={{ fontWeight: 900, color: "#1e293b" }}>
+                {(() => {
+                  if (selectedCategoryId === "agg-infra") return "SALAS Y CAMAS (GLOBAL)";
+                  if (selectedCategoryId === "agg-rrhh") return "RECURSOS HUMANOS (GLOBAL)";
+                  if (selectedCategoryId === "agg-js") return "JEFE DE SERVICIO (GLOBAL)";
+                  if (selectedCategoryId === "agg-equip") return "EQUIPAMIENTO (GLOBAL)";
+                  
+                  const sec = generalDataSrv?.sections?.find(s => s.id === selectedCategoryId);
+                  if (sec) return sec.name;
+                  const srv = servicios.find(s => s.id === selectedCategoryId);
+                  return srv?.name || "Seleccione una categoría";
+                })()}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Configura en qué servicios se aplica cada requisito de forma masiva
+              </Typography>
+            </Box>
 
-             <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
-               <Tabs 
-                 value={activeTab} 
-                 onChange={(e, val) => setActiveTab(val)}
-                 sx={{ 
-                   "& .MuiTab-root": { fontWeight: 800, fontSize: "0.75rem", minHeight: 48 },
-                   "& .Mui-selected": { color: "#0B85C4 !important" },
-                   "& .MuiTabs-indicator": { backgroundColor: "#0B85C4" }
-                 }}
-               >
-                 <Tab label="PARÁMETROS" />
-                 <Tab label="EQUIPAMIENTO" />
-                 <Tab label="RRHH" />
-                 <Tab label="JEFE DE SERVICIO" />
-               </Tabs>
-             </Box>
-
-             {inspectionMode === "TRAMITE" && selectedTramiteId && (
-               <Chip 
-                 label={`Expediente: ${tramites.find(t => t.id === selectedTramiteId)?.expediente}`}
-                 color="primary"
-                 variant="outlined"
-                 sx={{ fontWeight: 700 }}
-               />
-             )}
+            {inspectionMode === "TRAMITE" && selectedTramiteId && (
+              <Chip
+                label={`Expediente: ${tramites.find(t => t.id === selectedTramiteId)?.expediente}`}
+                color="primary"
+                variant="outlined"
+                sx={{ fontWeight: 700 }}
+              />
+            )}
           </Box>
 
           <Paper elevation={0} sx={{ p: 0, borderRadius: 4, border: "1px solid #e2e8f0", overflow: "hidden" }}>
-             <Table size="small">
-                <TableHead sx={{ bgcolor: "#f8fafc", borderBottom: "2px solid #e2e8f0" }}>
-                  <TableRow>
-                    <TableCell sx={{ width: 40 }}></TableCell>
-                    <TableCell sx={{ width: "150px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>ORIGEN</TableCell>
-                    <TableCell sx={{ color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>ETIQUETA / REF. TRÁMITE</TableCell>
-                    <TableCell sx={{ width: "220px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>TIPO</TableCell>
-                    <TableCell align="right" sx={{ width: 60 }}></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {(() => {
-                    let fields = [];
-                    let targetSrvIdx = -1;
-                    let targetSecIdx = -1;
+            <Table size="small">
+              <TableHead sx={{ bgcolor: "#f8fafc", borderBottom: "2px solid #e2e8f0" }}>
+                <TableRow>
+                  <TableCell sx={{ width: 40 }}></TableCell>
+                  <TableCell sx={{ width: "120px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>DATO</TableCell>
+                  <TableCell sx={{ color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>REQUISITO / ETIQUETA</TableCell>
+                  <TableCell sx={{ width: "300px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>ORIGEN (SERVICIOS/ÁREAS)</TableCell>
+                  <TableCell sx={{ width: "150px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>TIPO</TableCell>
+                  <TableCell align="right" sx={{ width: 60 }}></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {(() => {
+                  let fields = [];
+                  const isAggregate = selectedCategoryId?.startsWith("agg-");
+                  const type = selectedCategoryId?.replace("agg-", "");
 
-<<<<<<< Updated upstream
-=======
                   if (isAggregate) {
                     let rawFields = [];
                     (servicios || []).forEach(srv => {
                       (srv.sections || []).forEach(sec => {
                         const n = normalize(sec.name);
                         let match = false;
-                        const techSrvs = ["UNIDADES DE TERAPIA INTENSIVA", "UNIDAD CORONARIA", "UNIDAD DE TERAPIA INTENSIVA NEONATAL", "HEMODIALISIS"];
-                        const arqSrvs = ["GUARDIA", "QUIROFANO", "SALA DE PARTO", "UNIDADES DE TERAPIA INTENSIVA", "UNIDAD CORONARIA", "UNIDAD DE TERAPIA INTENSIVA PEDIATRICA", "UNIDAD DE TERAPIA INTENSIVA NEONATAL", "HEMODINAMIA", "HOSPITAL DE DIA"];
+                        if (type === "infra") match = n.includes("SALA") || n.includes("CAMA");
+                        if (type === "rrhh") match = (n.includes("RRHH") || n.includes("RECURSOS")) && !n.includes("JEFE");
+                        if (type === "js") match = n.includes("JEFE");
+                        if (type === "equip") match = n.includes("EQUIP") || n.includes("INSTRUMENTAL");
                         
-                        let secMatch = false;
-                        if (type === "infra") secMatch = n.includes("SALA") || n.includes("CAMA");
-                        if (type === "rrhh") secMatch = (n.includes("RRHH") || n.includes("RECURSOS")) && !n.includes("JEFE");
-                        if (type === "js") secMatch = n.includes("JEFE");
-                        if (type === "equip") secMatch = n.includes("EQUIP") || n.includes("INSTRUMENTAL");
-                        
-                        // Si es Arquitectura, solo mostramos si el servicio está en la lista permitida
-                        const isArqSrv = arqSrvs.some(ts => normalize(srv.name).includes(normalize(ts)));
-                        if (type === "arquitectura") secMatch = isArqSrv && n.includes("ARQUITECTURA");
-                        
-                        if (type === "servicios") {
-                          secMatch = techSrvs.some(ts => normalize(srv.name).includes(normalize(ts))) &&
-                                  !n.includes("RRHH") && !n.includes("RECURSOS") && !n.includes("JEFE") && 
-                                  !n.includes("EQUIP") && !n.includes("INSTRUMENTAL") && 
-                                  !n.includes("SALA") && !n.includes("CAMA");
+                        if (match) {
+                          (sec.fields || []).forEach(f => {
+                            rawFields.push({ ...f, _srvId: srv.id, _srvName: srv.name, _secName: sec.name });
+                          });
                         }
-                        
-                        (sec.fields || []).forEach(f => {
-                          let fieldMatch = secMatch;
-                          const fLbl = normalize(f.label || f.name || "");
-                          const isArqField = fLbl.includes("N° DE CAMAS") || fLbl.includes("COINCIDE CON EDIFICACION") || fLbl.includes("PLANOS");
-
-                          if (type === "arquitectura" && isArqField && isArqSrv) fieldMatch = true;
-                          if (type === "servicios" && isArqField) fieldMatch = false;
-
-                          if (fieldMatch) {
-                            // Evitar duplicados por ID en el mismo modo agregado
-                            if (!rawFields.some(rf => rf.id === f.id)) {
-                              rawFields.push({ ...f, _srvId: srv.id, _srvName: srv.name, _secName: sec.name });
-                            }
-                          }
-                        });
                       });
                     });
 
@@ -655,70 +627,41 @@ const ClinicasDashboard = () => {
                       grouped[key].appliedServices.push(f._srvName);
                       grouped[key].idsByService[f._srvId] = f.id;
                     });
-                    
-                    // For SERVICIOS and ARQUITECTURA tabs, we don't group by label, we want to see the hierarchy
-                    fields = (type === "servicios" || type === "arquitectura") ? rawFields : Object.values(grouped);
+                    fields = Object.values(grouped);
                   } else {
->>>>>>> Stashed changes
                     const genSecIdx = generalDataSrv?.sections?.findIndex(s => s.id === selectedCategoryId) ?? -1;
                     if (genSecIdx !== -1) {
-                      fields = generalDataSrv.sections[genSecIdx].fields || [];
-                      targetSrvIdx = servicios.indexOf(generalDataSrv);
-                      targetSecIdx = genSecIdx;
+                      fields = (generalDataSrv.sections[genSecIdx].fields || []).map(f => ({
+                        ...f,
+                        _srvIdx: servicios.indexOf(generalDataSrv),
+                        _secIdx: genSecIdx,
+                        _originalIdx: generalDataSrv.sections[genSecIdx].fields.indexOf(f)
+                      }));
                     } else {
-                        const srvIdx = servicios.findIndex(s => s.id === selectedCategoryId);
-                        if (srvIdx !== -1) {
-                          fields = servicios[srvIdx].fields || [];
-                          targetSrvIdx = srvIdx;
-                        }
+                      const srvIdx = servicios.findIndex(s => s.id === selectedCategoryId);
+                      if (srvIdx !== -1) {
+                        fields = (servicios[srvIdx].fields || []).map(f => ({
+                          ...f,
+                          _srvIdx: srvIdx,
+                          _secIdx: -1,
+                          _originalIdx: servicios[srvIdx].fields.indexOf(f)
+                        }));
                       }
+                    }
+                  }
 
-                      // Tab-based filtering
-                      const filteredFields = fields.filter(f => {
-                        if (activeTab === 0) return !["equipamiento", "rrhh", "jefe_servicio"].includes(f.type);
-                        if (activeTab === 1) return f.type === "equipamiento";
-                        if (activeTab === 2) return f.type === "rrhh";
-                        if (activeTab === 3) return f.type === "jefe_servicio";
-                        return true;
-                      });
-
-<<<<<<< Updated upstream
-                      if (filteredFields.length === 0) {
-                        return (
-                          <TableRow>
-                            <TableCell colSpan={activeTab === 0 ? 5 : 4} sx={{ py: 10, textAlign: "center", color: "#94a3b8" }}>
-                               No hay campos configurados en esta pestaña.
-                            </TableCell>
-                          </TableRow>
-                        );
-                      }
-=======
-                  let lastSrv = "";
-                  let lastSec = "";
-
-                  return fields.map((row) => {
-                    const isNewSrv = row._srvName !== lastSrv;
-                    const isNewSec = row._secName !== lastSec;
-                    lastSrv = row._srvName;
-                    lastSec = row._secName;
-
+                  if (fields.length === 0) {
                     return (
-                      <React.Fragment key={row.id}>
-                        {isNewSrv && selectedCategoryId === "agg-servicios" && (
-                          <TableRow sx={{ bgcolor: "#f1f5f9" }}>
-                            <TableCell colSpan={6} sx={{ py: 1, fontWeight: 900, color: "#0B85C4", fontSize: "0.75rem", borderBottom: "1px solid #e2e8f0" }}>
-                              SERVICIO: {row._srvName}
-                            </TableCell>
-                          </TableRow>
-                        )}
-                        {isNewSec && selectedCategoryId === "agg-servicios" && (
-                          <TableRow sx={{ bgcolor: "#f8fafc" }}>
-                            <TableCell colSpan={6} sx={{ py: 0.5, px: 4, fontWeight: 800, color: "#64748b", fontSize: "0.7rem", borderBottom: "1px solid #e2e8f0" }}>
-                              SECCIÓN: {row._secName}
-                            </TableCell>
-                          </TableRow>
-                        )}
-                        <TableRow sx={{ "&:hover": { bgcolor: "#fcfcfc" } }}>
+                      <TableRow>
+                        <TableCell colSpan={6} sx={{ py: 10, textAlign: "center", color: "#94a3b8" }}>
+                           No hay requisitos configurados. Usa "Cargar Mínimos" para empezar.
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+
+                  return fields.map((row) => (
+                    <TableRow key={row.id} sx={{ "&:hover": { bgcolor: "#fcfcfc" } }}>
                       <TableCell align="center">
                         <DragIndicatorIcon sx={{ color: "#cbd5e1", opacity: 0.3 }} fontSize="small" />
                       </TableCell>
@@ -729,172 +672,22 @@ const ClinicasDashboard = () => {
                           onChange={(e, val) => {
                             if (!val) return;
                             const newServicios = JSON.parse(JSON.stringify(servicios));
->>>>>>> Stashed changes
 
-                      return filteredFields.map((field, fIdx) => {
-                        // We need the original index for state updates if we filter
-                        const originalIdx = fields.indexOf(field);
-                        return (
-                        <TableRow key={field.id} sx={{ "&:hover": { bgcolor: "#fcfcfc" } }}>
-                          <TableCell align="center">
-                            <DragIndicatorIcon sx={{ color: "#cbd5e1", opacity: 0.3 }} fontSize="small" />
-                          </TableCell>
-                          <TableCell>
-                            <ToggleButtonGroup
-                              value={field.origin || "ADMIN"}
-                              exclusive
-                              onChange={(e, val) => {
-                                if (!val) return;
-                                const newServicios = [...servicios];
-                                if (targetSecIdx !== -1) {
-                                  newServicios[targetSrvIdx].sections[targetSecIdx].fields[originalIdx].origin = val;
-                                } else {
-                                  newServicios[targetSrvIdx].fields[originalIdx].origin = val;
+                            if (row.idsByService) {
+                              newServicios.forEach(srv => {
+                                if (row.idsByService[srv.id]) {
+                                  srv.sections.forEach(sec => {
+                                    sec.fields = sec.fields.map(f => f.id === row.idsByService[srv.id] ? { ...f, origin: val } : f);
+                                  });
                                 }
-                                setServicios(newServicios);
-                              }}
-                              size="small"
-                              sx={{ "& .MuiToggleButton-root": { py: 0.2, px: 1, fontSize: "0.6rem", fontWeight: 800 } }}
-                            >
-                              <ToggleButton value="ADMIN">ADMIN</ToggleButton>
-                              <ToggleButton value="TRÁMITE">TRÁMITE</ToggleButton>
-                            </ToggleButtonGroup>
-                          </TableCell>
-                          <TableCell>
-                            {field.origin === "TRÁMITE" ? (
-                              <Select
-                                fullWidth size="small" variant="standard"
-                                value={field.tramiteField || ""}
-                                onChange={(e) => {
-                                  const val = e.target.value;
-                                  const newServicios = [...servicios];
-                                  if (targetSecIdx !== -1) {
-                                    newServicios[targetSrvIdx].sections[targetSecIdx].fields[originalIdx].tramiteField = val;
-                                    newServicios[targetSrvIdx].sections[targetSecIdx].fields[originalIdx].label = val.split(" > ")[1] || val;
-                                  } else {
-                                    newServicios[targetSrvIdx].fields[originalIdx].tramiteField = val;
-                                    newServicios[targetSrvIdx].fields[originalIdx].label = val.split(" > ")[1] || val;
-                                  }
-                                  setServicios(newServicios);
-                                }}
-                                sx={{ fontSize: "0.85rem", fontWeight: 700, color: "#0B85C4" }}
-                                displayEmpty
-                              >
-                                <MenuItem value="" disabled>Seleccionar campo...</MenuItem>
-                                {Object.keys(TRAMITE_MAPPING).map(cat => [
-                                  <MenuItem key={cat} disabled sx={{ fontWeight: 900, fontSize: "0.7rem", bgcolor: "#f1f5f9" }}>{cat}</MenuItem>,
-                                  ...TRAMITE_MAPPING[cat].map(f => <MenuItem key={f} value={`${cat} > ${f}`} sx={{ pl: 4 }}>{f}</MenuItem>)
-                                ])}
-                              </Select>
-                            ) : (
-                              <>
-                                {field.type === "equipamiento" || field.type === "rrhh" || field.type === "jefe_servicio" ? (
-                                  <Select
-                                    fullWidth size="small" variant="standard"
-                                    value={field.label || ""}
-                                    onChange={(e) => {
-                                      const val = e.target.value;
-                                      const newServicios = [...servicios];
-                                      if (targetSecIdx !== -1) {
-                                        newServicios[targetSrvIdx].sections[targetSecIdx].fields[originalIdx].label = val;
-                                      } else {
-                                        newServicios[targetSrvIdx].fields[originalIdx].label = val;
-                                      }
-                                      setServicios(newServicios);
-                                    }}
-                                    sx={{ fontSize: "0.85rem", fontWeight: 700, color: field.type === 'equipamiento' ? '#32A430' : field.type === 'rrhh' ? '#f59e0b' : '#ef4444' }}
-                                    displayEmpty
-                                  >
-                                    <MenuItem value="" disabled>Seleccionar requisito...</MenuItem>
-                                    {field.type === "equipamiento" && equipamientos.map((e) => (
-                                      <MenuItem key={e.id} value={e.equipamiento}>{e.equipamiento}</MenuItem>
-                                    ))}
-                                    {field.type === "rrhh" && rrhhList.map((r) => (
-                                      <MenuItem key={r.id} value={`${r.origen} - ${r.especialidad}`}>{r.origen} - {r.especialidad}</MenuItem>
-                                    ))}
-                                    {field.type === "jefe_servicio" && jefeServicioList.map((j) => (
-                                      <MenuItem key={j.id} value={`${j.origen} - ${j.especialidad}`}>{j.origen} - {j.especialidad}</MenuItem>
-                                    ))}
-                                  </Select>
-                                ) : (
-                                  <TextField
-                                    fullWidth size="small" variant="standard"
-                                    value={field.label}
-                                    onChange={(e) => {
-                                      const newServicios = [...servicios];
-                                      if (targetSecIdx !== -1) {
-                                        newServicios[targetSrvIdx].sections[targetSecIdx].fields[originalIdx].label = e.target.value;
-                                      } else {
-                                        newServicios[targetSrvIdx].fields[originalIdx].label = e.target.value;
-                                      }
-                                      setServicios(newServicios);
-                                    }}
-                                    InputProps={{ disableUnderline: true, sx: { fontSize: "0.85rem", fontWeight: 500 } }}
-                                  />
-                                )}
-                              </>
-                            )}
-
-                            {/* OPTIONS EDITOR */}
-                            {(field.type === "select" || field.type === "toggle") && field.origin !== "TRÁMITE" && (
-                              <Box sx={{ mt: 1.5, p: 1, bgcolor: "#f8fafc", borderRadius: 2 }}>
-                                 <TextField
-                                   fullWidth size="small" variant="standard"
-                                   placeholder="Añadir opción..."
-                                   value={optionDrafts[field.id] || ""}
-                                   onChange={(e) => setOptionDrafts(prev => ({ ...prev, [field.id]: e.target.value }))}
-                                   onKeyDown={(e) => {
-                                     if (e.key === "Enter" || e.key === ",") {
-                                       e.preventDefault();
-                                       handleAddOption(targetSrvIdx, originalIdx, targetSecIdx, field.id);
-                                     }
-                                   }}
-                                   InputProps={{ sx: { fontSize: "0.75rem" } }}
-                                 />
-                                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
-                                   {parseOptions(field.options).map((opt, oIdx) => (
-                                     <Chip
-                                       key={oIdx}
-                                       label={opt}
-                                       size="small"
-                                       onDelete={() => handleRemoveOption(targetSrvIdx, originalIdx, targetSecIdx, opt)}
-                                       sx={{ bgcolor: "#fff", border: "1px solid #e2e8f0", fontSize: "0.7rem", fontWeight: 700 }}
-                                     />
-                                   ))}
-                                 </Box>
-                              </Box>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {/* In specialized tabs, we might want to hide the type selector or disable it */}
-                            <TextField
-                              select fullWidth size="small" variant="standard"
-                              value={field.type}
-                              disabled={activeTab !== 0}
-                              onChange={(e) => {
-                                const newServicios = [...servicios];
-                                if (targetSecIdx !== -1) {
-                                  newServicios[targetSrvIdx].sections[targetSecIdx].fields[originalIdx].type = e.target.value;
-                                } else {
-                                  newServicios[targetSrvIdx].fields[originalIdx].type = e.target.value;
+                              });
+                            } else {
+                              const srv = newServicios[row._srvIdx];
+                              if (srv) {
+                                let targetFields = row._secIdx !== -1 ? srv.sections[row._secIdx].fields : srv.fields;
+                                if (targetFields && targetFields[row._originalIdx]) {
+                                  targetFields[row._originalIdx].origin = val;
                                 }
-<<<<<<< Updated upstream
-                                setServicios(newServicios);
-                              }}
-                              InputProps={{ disableUnderline: true, sx: { fontSize: "0.85rem", fontWeight: 600 } }}
-                            >
-                              {fieldTypes.map(opt => <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>)}
-                            </TextField>
-                          </TableCell>
-                          <TableCell align="right">
-                            <IconButton size="small" onClick={() => {
-                              const newServicios = [...servicios];
-                              if (targetSecIdx !== -1) {
-                                newServicios[targetSrvIdx].sections[targetSecIdx].fields.splice(originalIdx, 1);
-                              } else {
-                                newServicios[targetSrvIdx].fields.splice(originalIdx, 1);
-                              }
-=======
                               }
                             }
                             setServicios(newServicios);
@@ -1037,39 +830,28 @@ const ClinicasDashboard = () => {
                       </TableCell>
                       <TableCell align="right">
                         <Stack direction="row" spacing={0.5} justifyContent="flex-end" alignItems="center">
-                          <Tooltip title="Borrar requisito">
+                          <Tooltip title="Borrar de todos los servicios">
                             <IconButton size="small" onClick={() => {
-                              const idsToDelete = row.idsByService ? Object.values(row.idsByService) : [row.id];
                               const newServicios = (servicios || []).map(srv => {
-                                const newSrv = { ...srv };
-                                if (newSrv.fields) {
-                                  newSrv.fields = newSrv.fields.filter(f => !idsToDelete.includes(f.id));
-                                }
-                                if (newSrv.sections) {
+                                if (row.idsByService && row.idsByService[srv.id]) {
+                                  const newSrv = { ...srv, sections: [...srv.sections] };
                                   newSrv.sections = newSrv.sections.map(sec => ({
                                     ...sec,
-                                    fields: (sec.fields || []).filter(f => !idsToDelete.includes(f.id))
+                                    fields: sec.fields.filter(f => f.id !== row.idsByService[srv.id])
                                   }));
+                                  return newSrv;
                                 }
-                                return newSrv;
+                                return srv;
                               });
->>>>>>> Stashed changes
                               setServicios(newServicios);
                             }}>
                               <DeleteOutlineIcon fontSize="small" sx={{ color: "#ef4444" }} />
                             </IconButton>
-<<<<<<< Updated upstream
-                          </TableCell>
-                        </TableRow>
-                        );
-=======
                           </Tooltip>
                         </Stack>
                       </TableCell>
-                      </TableRow>
-                    </React.Fragment>
-                  );
-                  });
+                    </TableRow>
+                  ));
                 })()}
               </TableBody>
             </Table>
@@ -1109,43 +891,36 @@ const ClinicasDashboard = () => {
                         if (aggType === "rrhh") return (n.includes("RRHH") || n.includes("RECURSOS")) && !n.includes("JEFE");
                         if (aggType === "js") return n.includes("JEFE");
                         return false;
->>>>>>> Stashed changes
                       });
-                    })()}
-                  </TableBody>
-             </Table>
-             <Box sx={{ p: 2, bgcolor: "#fcfcfc", borderTop: "1px solid #e2e8f0", textAlign: "center", display: "flex", justifyContent: "center", gap: 2 }}>
-                 <Button 
-                   variant="contained"
-                   startIcon={<AddIcon />}
-                   onClick={() => {
-                     const newServicios = [...servicios];
-                     const typeMap = ["text", "equipamiento", "rrhh", "jefe_servicio"];
-                     const newField = { 
-                       id: `fld-${Date.now()}`, 
-                       label: "", 
-                       type: typeMap[activeTab], 
-                       options: "" 
-                     };
-                     const genSecIdx = generalDataSrv?.sections?.findIndex(s => s.id === selectedCategoryId) ?? -1;
-                     if (genSecIdx !== -1) {
-                       newServicios[servicios.indexOf(generalDataSrv)].sections[genSecIdx].fields.push(newField);
-                     } else {
-                       const srvIdx = servicios.findIndex(s => s.id === selectedCategoryId);
-                       if (srvIdx !== -1) newServicios[srvIdx].fields.push(newField);
-                     }
-                     setServicios(newServicios);
-                   }}
-                   sx={{ textTransform: "none", fontWeight: 800, borderRadius: 2, bgcolor: "#0B85C4", "&:hover": { bgcolor: "#096da1" } }}
-                 >
-                   {(() => {
-                     if (activeTab === 0) return "Añadir parámetro";
-                     if (activeTab === 1) return "Añadir equipamiento";
-                     if (activeTab === 2) return "Añadir RRHH";
-                     if (activeTab === 3) return "Añadir Jefe de Servicio";
-                   })()}
-                 </Button>
-              </Box>
+                      if (targetSec) break;
+                    }
+
+                    // 2. Si no hay ninguna, la creamos en el primer servicio con un nombre que matchee
+                    if (!targetSec && newServicios[0]) {
+                      const fallbackNames = { infra: "SALAS", equip: "EQUIPAMIENTO", rrhh: "RECURSOS HUMANOS", js: "JEFES DE SERVICIO" };
+                      const name = fallbackNames[aggType] || "REQUISITOS";
+                      targetSec = { id: `sec-${Date.now()}`, name, fields: [] };
+                      newServicios[0].sections.push(targetSec);
+                    }
+
+                    if (targetSec) targetSec.fields.push(newField);
+                  } else {
+                    const srv = newServicios.find(s => s.id === selectedCategoryId || s.sections?.some(sec => sec.id === selectedCategoryId));
+                    if (srv) {
+                      const sec = srv.sections?.find(sec => sec.id === selectedCategoryId);
+                      if (sec) sec.fields.push(newField);
+                      else (srv.fields || (srv.fields = [])).push(newField);
+                    }
+                  }
+                  
+                  setServicios(newServicios);
+                  setSnackbar({ open: true, message: "Requisito añadido correctamente.", severity: "success" });
+                }}
+                sx={{ textTransform: "none", fontWeight: 800, borderRadius: 2, bgcolor: "#0B85C4", "&:hover": { bgcolor: "#096da1" } }}
+              >
+                Añadir Requisito
+              </Button>
+            </Box>
           </Paper>
         </Box>
       </Box>
@@ -1173,9 +948,69 @@ const ClinicasDashboard = () => {
         </Fab>
       </Tooltip>
 
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={6000} 
+      {/* DIALOGO DE HARCODEO (SIMULACIÓN) */}
+      <Dialog
+        open={hardcodeDialog.open}
+        onClose={() => setHardcodeDialog({ ...hardcodeDialog, open: false })}
+        PaperProps={{ sx: { borderRadius: 4, width: '100%', maxWidth: 450, p: 1 } }}
+      >
+        <DialogTitle sx={{ fontWeight: 900, color: '#1e293b' }}>
+          Simular Valor (Harcodeo)
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ color: '#64748b', mb: 3 }}>
+            Ingrese el valor que desea que aparezca como <strong>Declarado (Trámite)</strong> para el campo "{hardcodeDialog.field?.label}".
+          </Typography>
+          <TextField
+            fullWidth
+            autoFocus
+            label="Valor Simulado"
+            value={hardcodeDialog.value}
+            onChange={(e) => setHardcodeDialog({ ...hardcodeDialog, value: e.target.value })}
+            variant="outlined"
+            size="large"
+            placeholder={hardcodeDialog.field?.type === 'number' ? "Ej: 10" : "Ej: SI"}
+            sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ p: 3, pt: 1 }}>
+          <Button
+            onClick={() => setHardcodeDialog({ ...hardcodeDialog, open: false })}
+            sx={{ fontWeight: 700, color: '#64748b', textTransform: 'none' }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              const { srvIdx, secIdx, fIdx, value, field } = hardcodeDialog;
+              const newServicios = [...servicios];
+              if (secIdx !== -1) {
+                newServicios[srvIdx].sections[secIdx].fields[fIdx].valorTramiteMock = value;
+              } else {
+                newServicios[srvIdx].fields[fIdx].valorTramiteMock = value;
+              }
+              setServicios(newServicios);
+              setHardcodeDialog({ ...hardcodeDialog, open: false });
+              setSnackbar({ open: true, message: `Valor "${value}" asignado a "${field.label}". No olvides GUARDAR.`, severity: "success" });
+            }}
+            sx={{
+              fontWeight: 800,
+              textTransform: 'none',
+              borderRadius: 3,
+              px: 3,
+              bgcolor: '#f59e0b',
+              "&:hover": { bgcolor: '#d97706' }
+            }}
+          >
+            Confirmar Valor
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
