@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
@@ -27,6 +28,31 @@ const theme = createTheme({
 });
 
 function App() {
+  // --- LÓGICA DE LIMPIEZA POR SESIÓN DE TERMINAL ---
+  useEffect(() => {
+    const syncTerminalSession = async () => {
+      try {
+        const response = await fetch('/session_id.txt');
+        if (!response.ok) return;
+        const currentSessionId = await response.text();
+        const storedSessionId = localStorage.getItem('terminal_session_id');
+
+        if (storedSessionId && storedSessionId !== currentSessionId) {
+          console.log('[Session] Terminal session changed. Clearing localStorage...');
+          localStorage.clear();
+          // Opcional: Recargar la página para asegurar que todo el estado de React se limpie
+          window.location.reload();
+        }
+        
+        localStorage.setItem('terminal_session_id', currentSessionId);
+      } catch (err) {
+        console.error('[Session] Error syncing terminal session:', err);
+      }
+    };
+
+    syncTerminalSession();
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline /> 

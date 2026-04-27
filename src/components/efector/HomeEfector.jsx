@@ -102,10 +102,65 @@ const HomeEfector = () => {
   const baseRoute = "/home-efector";
 
   // --- ESTADOS GLOBALES ---
+<<<<<<< Updated upstream
   const [selectedServices, setSelectedServices] = useState({});
   const [infraSelection, setInfraSelection] = useState({});
   const [equiposCargados, setEquiposCargados] = useState([]);
   const [rrhhCargado, setRrhhCargado] = useState([]);
+=======
+  const [selectedServices, setSelectedServices] = useState(() => {
+    const saved = localStorage.getItem("efector_servicios");
+    if (saved && saved !== "[]") {
+      try {
+        const arr = JSON.parse(saved);
+        if (arr.length > 0) {
+          const obj = {};
+          arr.forEach(k => { obj[k] = { thirdParty: false }; });
+          return obj;
+        }
+      } catch (e) {}
+    }
+    // Fallback: Recuperar configuraciones del acta/trámite (master_config)
+    try {
+      const actaStr = localStorage.getItem("acta_inspeccion_actual");
+      const configStr = localStorage.getItem("master_config");
+      const config = actaStr ? JSON.parse(actaStr).config : (configStr ? JSON.parse(configStr) : null);
+      if (config && config.servicios) {
+        const obj = {};
+        config.servicios.forEach(s => {
+          if (s.name && !s.name.toUpperCase().includes("DATOS GENERALES")) {
+            obj[s.name] = { thirdParty: false };
+          }
+        });
+        if (Object.keys(obj).length > 0) return obj;
+      }
+    } catch(e) {}
+    
+    return {};
+  });
+
+  const [infraSelection, setInfraSelection] = useState(() => {
+    const saved = localStorage.getItem("efector_infra");
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  const [equiposCargados, setEquiposCargados] = useState(() => {
+    const saved = localStorage.getItem("efector_equipos");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [rrhhCargado, setRrhhCargado] = useState(() => {
+    const saved = localStorage.getItem("efector_rrhh");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [tipologia, setTipologia] = useState(() => localStorage.getItem("efector_tipo") || "CLÍNICAS, SANATORIOS Y HOSPITALES");
+  const [directorTecnico, setDirectorTecnico] = useState(() => {
+    const saved = localStorage.getItem("efector_dt");
+    return saved ? JSON.parse(saved) : { nombre: "JUAN CARLOS", apellido: "PÉREZ", dni: "20.455.123" };
+  });
+
+>>>>>>> Stashed changes
   const [isServiceValid, setIsServiceValid] = useState(false);
   const [isEquipamientoValid, setIsEquipamientoValid] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -117,7 +172,9 @@ const HomeEfector = () => {
     localStorage.setItem("efector_infra", JSON.stringify(infraSelection));
     localStorage.setItem("efector_equipos", JSON.stringify(equiposCargados));
     localStorage.setItem("efector_rrhh", JSON.stringify(rrhhCargado));
-  }, [selectedServices, infraSelection, equiposCargados, rrhhCargado]);
+    localStorage.setItem("efector_tipo", tipologia);
+    localStorage.setItem("efector_dt", JSON.stringify(directorTecnico));
+  }, [selectedServices, infraSelection, equiposCargados, rrhhCargado, tipologia, directorTecnico]);
 
   // Moví 'steps' fuera o aseguro su referencia para el useMemo
   const steps = useMemo(
@@ -264,6 +321,8 @@ const HomeEfector = () => {
                     infraEfector={infraSelection}
                     rrhhEfector={rrhhCargado}
                     equiposEfector={equiposCargados}
+                    tipologia={tipologia}
+                    directorTecnico={directorTecnico}
                   />
                 }
               />
