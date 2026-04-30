@@ -57,72 +57,18 @@ import { ConfigContext, slugify, fieldTypes } from "./ConfiguradorClinicas";
 
 const TRAMITE_MAPPING = {
   "ARQUITECTURA": [
-    "Nombre del Establecimiento",
-    "N° de Expediente",
-    "Descripción",
-    "Plano de arquitectura",
-    "Memoria descriptiva"
+    "NOMBRE DEL ESTABLECIMIENTO",
+    "PROFESIONAL DE AREA CONSTRUCTUIVA DATOS"
   ],
-  "DATOS GENERALES DEL TRÁMITE": [
-    "SALAS Y CAMAS",
-    "RECURSOS HUMANOS",
-    "JEFE DE SERVICIO",
-    "EQUIPAMIENTO"
-  ],
-  "ESTABLECIMIENTO": [
-    "Denominación",
-    "Tipo dependencia",
-    "Propiedad",
-    "CUIT",
-    "Localidad",
-    "Dirección",
-    "Contacto (Email)",
-    "Contacto (Teléfono)"
-  ],
-  "SALAS": [
-    "QUIRÓFANOS",
-    "QUIRÓFANOS PARA HEMODINAMIA",
-    "SALA DE ENDOSCOPÍA",
-    "SALA DE PARTOS",
-    "SALA DE PROCEDIMIENTOS"
-  ],
-  "CAMAS": [
-    "HEMODIÁLISIS",
-    "INTERNACIÓN GENERAL",
-    "INTERNACIÓN PROLONGADA",
-    "MATERNIDAD",
-    "NEONATOLOGÍA",
-    "PEDIATRÍA",
-    "SHOCK ROOM",
-    "TERAPIA INTENSIVA ADULTOS",
-    "TERAPIA INTENSIVA PEDIÁTRICA",
-    "UNIDAD CORONARIA",
-    "UNIDAD CUIDADOS INTERMEDIOS",
-    "USO TRANSITORIO (Guardia, Onco, CA Quirurg)"
-  ],
-  "DOCUMENTOS ADJUNTOS": [
-    "Vto. Plan de Evacuación",
-    "Vto. Bomberos",
-    "Vto. Extinguidores",
-    "Habilitación Laboratorio",
-    "Habilitación Municipal"
-  ],
-  "RECURSOS HUMANOS": [
-    "TIPO PLANTEL",
-    "ÁREA DE DESEMPEÑO",
-    "ROL DE DESEMPEÑO",
-    "CANTIDAD"
-  ],
-  "JEFES DE SERVICIO": [
-    "SERVICIO",
-    "TIPO DE PLANTEL",
-    "CUIL",
+  "DIRECTOR TECNICO": [
+    "NOMBRE",
     "APELLIDO",
-    "NOMBRES",
-    "MATRÍCULA",
-    "TÍTULO",
-    "ESPECIALIDAD",
-    "ESTADO"
+    "DNI"
+  ],
+  "DATOS GENERALES > DATOS": [
+    "FECHA VENCIMIENTO PLAN EVACUACION",
+    "FECHA VENCIMIENTO BOMBEROS",
+    "FECHA VENCIMIENTO EXTINGUIDORES"
   ]
 };
 
@@ -581,12 +527,10 @@ const ClinicasDashboard = () => {
             <Table size="small">
               <TableHead sx={{ bgcolor: "#f8fafc", borderBottom: "2px solid #e2e8f0" }}>
                 <TableRow>
-                  <TableCell sx={{ width: 40 }}></TableCell>
-                  <TableCell sx={{ width: "120px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>DATO</TableCell>
-                  <TableCell sx={{ color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>REQUISITO / ETIQUETA</TableCell>
-                  <TableCell sx={{ width: "300px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>ORIGEN (SERVICIOS/ÁREAS)</TableCell>
-                  <TableCell sx={{ width: "150px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem" }}>TIPO</TableCell>
-                  <TableCell align="right" sx={{ width: 60 }}></TableCell>
+                  <TableCell sx={{ width: "160px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>DATO</TableCell>
+                  <TableCell sx={{ color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>REQUISITO</TableCell>
+                  <TableCell sx={{ width: "200px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>TIPO DE DATO</TableCell>
+                  <TableCell align="center" sx={{ width: 80, color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>ACCIONES</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -661,11 +605,9 @@ const ClinicasDashboard = () => {
                   }
 
                   return fields.map((row) => (
-                    <TableRow key={row.id} sx={{ "&:hover": { bgcolor: "#fcfcfc" } }}>
-                      <TableCell align="center">
-                        <DragIndicatorIcon sx={{ color: "#cbd5e1", opacity: 0.3 }} fontSize="small" />
-                      </TableCell>
-                      <TableCell>
+                    <TableRow key={row.id} sx={{ "&:hover": { bgcolor: "#fcfcfc" }, "& td": { borderBottom: "1px solid #f1f5f9" } }}>
+                      {/* DATO: toggle ADMIN / TRÁMITE */}
+                      <TableCell sx={{ width: 170, py: 1 }}>
                         <ToggleButtonGroup
                           value={row.origin || "ADMIN"}
                           exclusive
@@ -677,7 +619,7 @@ const ClinicasDashboard = () => {
                               newServicios.forEach(srv => {
                                 if (row.idsByService[srv.id]) {
                                   srv.sections.forEach(sec => {
-                                    sec.fields = sec.fields.map(f => f.id === row.idsByService[srv.id] ? { ...f, origin: val } : f);
+                                    sec.fields = sec.fields.map(f => f.id === row.idsByService[srv.id] ? { ...f, origin: val, ...(val === "ADMIN" ? { tramiteField: "" } : {}) } : f);
                                   });
                                 }
                               });
@@ -687,119 +629,129 @@ const ClinicasDashboard = () => {
                                 let targetFields = row._secIdx !== -1 ? srv.sections[row._secIdx].fields : srv.fields;
                                 if (targetFields && targetFields[row._originalIdx]) {
                                   targetFields[row._originalIdx].origin = val;
+                                  if (val === "ADMIN") targetFields[row._originalIdx].tramiteField = "";
                                 }
                               }
                             }
                             setServicios(newServicios);
                           }}
                           size="small"
-                          sx={{ "& .MuiToggleButton-root": { py: 0.2, px: 1, fontSize: "0.6rem", fontWeight: 800 } }}
+                          sx={{
+                            "& .MuiToggleButton-root": {
+                              py: 0.3, px: 1.5,
+                              fontSize: "0.68rem",
+                              fontWeight: 800,
+                              border: "1px solid #e2e8f0",
+                              "&.Mui-selected": {
+                                bgcolor: "#0B85C4",
+                                color: "white",
+                                "&:hover": { bgcolor: "#096da1" }
+                              }
+                            }
+                          }}
                         >
                           <ToggleButton value="ADMIN">ADMIN</ToggleButton>
                           <ToggleButton value="TRÁMITE">TRÁMITE</ToggleButton>
                         </ToggleButtonGroup>
                       </TableCell>
-                      <TableCell>
-                        <TextField
-                          fullWidth size="small" variant="standard"
-                          value={row.label}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            const newServicios = JSON.parse(JSON.stringify(servicios));
 
-                            if (row.idsByService) {
-                              // Caso Agregado: Actualizar en todos los servicios que contienen este requisito
-                              newServicios.forEach(srv => {
-                                if (row.idsByService[srv.id]) {
-                                  srv.sections.forEach(sec => {
-                                    sec.fields = sec.fields.map(f => f.id === row.idsByService[srv.id] ? { ...f, label: val } : f);
-                                  });
-                                }
-                              });
-                            } else {
-                              // Caso Individual: Usar índices directos
-                              const srv = newServicios[row._srvIdx];
-                              if (srv) {
-                                let targetFields = row._secIdx !== -1 ? srv.sections[row._secIdx].fields : srv.fields;
-                                if (targetFields && targetFields[row._originalIdx]) {
-                                  targetFields[row._originalIdx].label = val;
-                                }
-                              }
-                            }
-                            setServicios(newServicios);
-                          }}
-                          InputProps={{ disableUnderline: true, sx: { fontSize: "0.85rem", fontWeight: 600, color: row.origin === 'TRÁMITE' ? '#0B85C4' : 'inherit' } }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Autocomplete
-                          multiple
-                          size="small"
-                          options={[
-                            ...servicios.map(s => s.name),
-                            ...TRAMITE_MAPPING.SALAS,
-                            ...TRAMITE_MAPPING.CAMAS
-                          ]}
-                          value={row.appliedServices || []}
-                          onChange={(e, newValues) => {
-                            const current = row.appliedServices || [];
-                            const removed = current.filter(x => !newValues.includes(x));
-                            const added = newValues.filter(x => !current.includes(x));
+                      {/* REQUISITO: TextField si ADMIN, Select/combo si TRÁMITE */}
+                      <TableCell sx={{ py: 1 }}>
+                        {(row.origin || "ADMIN") === "TRÁMITE" ? (
+                          <Select
+                            fullWidth
+                            size="small"
+                            variant="standard"
+                            value={row.tramiteField || ""}
+                            displayEmpty
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              const fieldName = val.split(" > ").pop();
+                              const newServicios = JSON.parse(JSON.stringify(servicios));
 
-                            let newServicios = [...servicios];
-
-                            removed.forEach(srvName => {
-                              const srvIdx = newServicios.findIndex(s => s.name === srvName);
-                              if (srvIdx !== -1 && row.idsByService) {
-                                newServicios[srvIdx] = {
-                                  ...newServicios[srvIdx],
-                                  sections: newServicios[srvIdx].sections.map(sec => ({
-                                    ...sec,
-                                    fields: sec.fields.filter(f => f.id !== row.idsByService[newServicios[srvIdx].id])
-                                  }))
-                                };
-                              }
-                            });
-
-                            added.forEach(srvName => {
-                              const srvIdx = newServicios.findIndex(s => s.name === srvName);
-                              if (srvIdx !== -1) {
-                                const targetSecName = row._secName || "REQUISITOS";
-                                let secIdx = newServicios[srvIdx].sections.findIndex(s => s.name === targetSecName);
-                                if (secIdx === -1) secIdx = 0;
-
-                                newServicios[srvIdx].sections[secIdx].fields.push({
-                                  ...row,
-                                  id: `fld-${Date.now()}-${Math.random()}`
+                              if (row.idsByService) {
+                                newServicios.forEach(srv => {
+                                  if (row.idsByService[srv.id]) {
+                                    srv.sections.forEach(sec => {
+                                      sec.fields = sec.fields.map(f =>
+                                        f.id === row.idsByService[srv.id]
+                                          ? { ...f, tramiteField: val, label: fieldName, ...(fieldName.toUpperCase().includes("FECHA") ? { type: "date" } : {}) }
+                                          : f
+                                      );
+                                    });
+                                  }
                                 });
+                              } else {
+                                const srv = newServicios[row._srvIdx];
+                                if (srv) {
+                                  let targetFields = row._secIdx !== -1 ? srv.sections[row._secIdx].fields : srv.fields;
+                                  if (targetFields && targetFields[row._originalIdx]) {
+                                    targetFields[row._originalIdx].tramiteField = val;
+                                    targetFields[row._originalIdx].label = fieldName;
+                                    if (fieldName.toUpperCase().includes("FECHA")) {
+                                      targetFields[row._originalIdx].type = "date";
+                                    }
+                                  }
+                                }
                               }
-                            });
+                              setServicios(newServicios);
+                            }}
+                            sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0B85C4" }}
+                          >
+                            <MenuItem value="" disabled>Seleccionar atributo del trámite...</MenuItem>
+                            {Object.keys(TRAMITE_MAPPING).map(category => [
+                              <MenuItem
+                                key={`cat-${category}`}
+                                disabled
+                                sx={{ backgroundColor: "#f8fafc", fontWeight: 800, color: "#64748b", fontSize: "0.7rem", letterSpacing: "0.05em" }}
+                              >
+                                {category}
+                              </MenuItem>,
+                              ...TRAMITE_MAPPING[category].map(attr => (
+                                <MenuItem key={attr} value={`${category} > ${attr}`} sx={{ pl: 3, fontSize: "0.85rem" }}>
+                                  {attr}
+                                </MenuItem>
+                              ))
+                            ])}
+                          </Select>
+                        ) : (
+                          <TextField
+                            fullWidth size="small" variant="standard"
+                            value={row.label || ""}
+                            placeholder="Escribir requisito..."
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              const newServicios = JSON.parse(JSON.stringify(servicios));
 
-                            setServicios(newServicios);
-                          }}
-                          renderInput={(params) => (
-                            <TextField {...params} variant="standard" placeholder="Seleccionar servicios/áreas..." />
-                          )}
-                          renderTags={(value, getTagProps) =>
-                            value.map((option, index) => {
-                              const { key, ...tagProps } = getTagProps({ index });
-                              return (
-                                <Chip 
-                                  key={key}
-                                  label={option} 
-                                  {...tagProps}
-                                  size="small" 
-                                  sx={{ fontSize: '0.65rem', height: 20, fontWeight: 700 }}
-                                />
-                              );
-                            })
-                          }
-                        />
+                              if (row.idsByService) {
+                                newServicios.forEach(srv => {
+                                  if (row.idsByService[srv.id]) {
+                                    srv.sections.forEach(sec => {
+                                      sec.fields = sec.fields.map(f => f.id === row.idsByService[srv.id] ? { ...f, label: val } : f);
+                                    });
+                                  }
+                                });
+                              } else {
+                                const srv = newServicios[row._srvIdx];
+                                if (srv) {
+                                  let targetFields = row._secIdx !== -1 ? srv.sections[row._secIdx].fields : srv.fields;
+                                  if (targetFields && targetFields[row._originalIdx]) {
+                                    targetFields[row._originalIdx].label = val;
+                                  }
+                                }
+                              }
+                              setServicios(newServicios);
+                            }}
+                            InputProps={{ disableUnderline: true, sx: { fontSize: "0.85rem", fontWeight: 600 } }}
+                          />
+                        )}
                       </TableCell>
-                      <TableCell>
+
+                      {/* TIPO DE DATO */}
+                      <TableCell sx={{ width: 200, py: 1 }}>
                         <TextField
                           select fullWidth size="small" variant="standard"
-                          value={row.type}
+                          value={row.type || "text"}
                           onChange={(e) => {
                             const val = e.target.value;
                             const newServicios = JSON.parse(JSON.stringify(servicios));
@@ -828,27 +780,40 @@ const ClinicasDashboard = () => {
                           {fieldTypes.map(opt => <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>)}
                         </TextField>
                       </TableCell>
-                      <TableCell align="right">
-                        <Stack direction="row" spacing={0.5} justifyContent="flex-end" alignItems="center">
-                          <Tooltip title="Borrar de todos los servicios">
-                            <IconButton size="small" onClick={() => {
-                              const newServicios = (servicios || []).map(srv => {
-                                if (row.idsByService && row.idsByService[srv.id]) {
-                                  const newSrv = { ...srv, sections: [...srv.sections] };
-                                  newSrv.sections = newSrv.sections.map(sec => ({
-                                    ...sec,
-                                    fields: sec.fields.filter(f => f.id !== row.idsByService[srv.id])
-                                  }));
-                                  return newSrv;
-                                }
-                                return srv;
-                              });
-                              setServicios(newServicios);
-                            }}>
-                              <DeleteOutlineIcon fontSize="small" sx={{ color: "#ef4444" }} />
-                            </IconButton>
-                          </Tooltip>
-                        </Stack>
+
+                      {/* ACCIONES */}
+                      <TableCell align="center" sx={{ width: 80, py: 1 }}>
+                        <IconButton size="small" onClick={() => {
+                          const newServicios = (servicios || []).map(srv => {
+                            if (row.idsByService && row.idsByService[srv.id]) {
+                              return {
+                                ...srv,
+                                sections: srv.sections.map(sec => ({
+                                  ...sec,
+                                  fields: sec.fields.filter(f => f.id !== row.idsByService[srv.id])
+                                }))
+                              };
+                            }
+                            if (!row.idsByService && row._srvIdx === servicios.indexOf(srv)) {
+                              if (row._secIdx !== -1) {
+                                return {
+                                  ...srv,
+                                  sections: srv.sections.map((sec, si) =>
+                                    si === row._secIdx
+                                      ? { ...sec, fields: sec.fields.filter((_, fi) => fi !== row._originalIdx) }
+                                      : sec
+                                  )
+                                };
+                              } else {
+                                return { ...srv, fields: (srv.fields || []).filter((_, fi) => fi !== row._originalIdx) };
+                              }
+                            }
+                            return srv;
+                          });
+                          setServicios(newServicios);
+                        }} sx={{ color: "#94a3b8", "&:hover": { color: "#ef4444" } }}>
+                          <DeleteOutlineIcon fontSize="small" />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ));

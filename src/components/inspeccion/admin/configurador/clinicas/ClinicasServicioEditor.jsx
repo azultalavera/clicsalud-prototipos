@@ -4,7 +4,6 @@ import {
   Typography,
   TextField,
   Paper,
-  Divider,
   Button,
   IconButton,
   Chip,
@@ -22,189 +21,265 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 
-const TRAMITE_MAPPING = {
-  "ARQUITECTURA": [
-    "Nombre del Establecimiento",
-    "N° de Expediente",
-    "Descripción",
-    "Plano de arquitectura",
-    "Memoria descriptiva"
-  ],
-  "ESTABLECIMIENTO": [
-    "Denominación",
-    "Tipo dependencia",
-    "Propiedad",
-    "CUIT",
-    "Localidad",
-    "Dirección",
-    "Contacto (Email)",
-    "Contacto (Teléfono)"
-  ],
-  "SALAS": [
-    "QUIRÓFANOS",
-    "QUIRÓFANOS PARA HEMODINAMIA",
-    "SALA DE ENDOSCOPÍA",
-    "SALA DE PARTOS",
-    "SALA DE PROCEDIMIENTOS"
-  ],
-  "CAMAS": [
-    "HEMODIÁLISIS",
-    "INTERNACIÓN GENERAL",
-    "INTERNACIÓN PROLONGADA",
-    "MATERNIDAD",
-    "NEONATOLOGÍA",
-    "PEDIATRÍA",
-    "SHOCK ROOM",
-    "TERAPIA INTENSIVA ADULTOS",
-    "TERAPIA INTENSIVA PEDIÁTRICA",
-    "UNIDAD CORONARIA",
-    "UNIDAD CUIDADOS INTERMEDIOS",
-    "USO TRANSITORIO (Guardia, Onco, CA Quirurg)"
-  ],
-  "DOCUMENTOS ADJUNTOS": [
-    "Vto. Plan de Evacuación",
-    "Vto. Bomberos",
-    "Vto. Extinguidores",
-    "Habilitación Laboratorio",
-    "Habilitación Municipal"
-  ]
-};
 import {
   MedicalServices as MedicalServicesIcon,
   ArrowBack as ArrowBackIcon,
   Save as SaveIcon,
   DeleteOutline as DeleteOutlineIcon,
   Add as AddIcon,
-  DragIndicator as DragIndicatorIcon
 } from "@mui/icons-material";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { ConfigContext, slugify, fieldTypes } from "./ConfiguradorClinicas";
 
-const ClinicasServicioEditor = () => {
-  const { tipologiaName, servicios, setServicios, handleSaveConfig } =
-    useContext(ConfigContext);
+// ─── Atributos del Trámite ───────────────────────────────────────────────────
+const TRAMITE_MAPPING = {
+  "ARQUITECTURA": [
+    "NOMBRE DEL ESTABLECIMIENTO",
+    "PROFESIONAL DE AREA CONSTRUCTUIVA DATOS",
+  ],
+  "DIRECTOR TECNICO": [
+    "NOMBRE",
+    "APELLIDO",
+    "DNI",
+  ],
+  "DATOS GENERALES > DATOS": [
+    "FECHA VENCIMIENTO PLAN EVACUACION",
+    "FECHA VENCIMIENTO BOMBEROS",
+    "FECHA VENCIMIENTO EXTINGUIDORES",
+  ],
+};
 
+// ─── Estilos compartidos de cabecera ─────────────────────────────────────────
+const thSx = {
+  color: "#94a3b8",
+  fontWeight: 700,
+  fontSize: "0.72rem",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  py: 1.5,
+};
+
+// ─── Componente de fila de campo ─────────────────────────────────────────────
+const FieldRow = ({ field, fIdx, onChangeOrigin, onChangeTramite, onChangeLabel, onChangeType, onDelete }) => {
+  const isAdmin = field.origin !== "TRÁMITE";
+
+  return (
+    <TableRow sx={{ "&:hover": { backgroundColor: "#fcfcfc" }, "& td": { borderBottom: "1px solid #f1f5f9" } }}>
+      {/* DATO (toggle ADMIN / TRÁMITE) */}
+      <TableCell sx={{ width: 190, py: 1 }}>
+        <ToggleButtonGroup
+          size="small"
+          value={isAdmin ? "ADMIN" : "TRÁMITE"}
+          exclusive
+          onChange={(_, val) => val && onChangeOrigin(val)}
+          sx={{
+            height: 30,
+            "& .MuiToggleButton-root": {
+              px: 1.5,
+              fontSize: "0.68rem",
+              fontWeight: 700,
+              border: "1px solid #e2e8f0",
+              "&.Mui-selected": {
+                bgcolor: "#0B85C4",
+                color: "white",
+                "&:hover": { bgcolor: "#096da1" },
+              },
+            },
+          }}
+        >
+          <ToggleButton value="ADMIN">ADMIN</ToggleButton>
+          <ToggleButton value="TRÁMITE">TRÁMITE</ToggleButton>
+        </ToggleButtonGroup>
+      </TableCell>
+
+      {/* REQUISITO: input si ADMIN, combo si TRÁMITE */}
+      <TableCell sx={{ py: 1 }}>
+        {isAdmin ? (
+          <TextField
+            fullWidth
+            size="small"
+            variant="standard"
+            placeholder="Escribir requisito..."
+            value={field.label || ""}
+            onChange={(e) => onChangeLabel(e.target.value)}
+            InputProps={{ sx: { fontSize: "0.85rem" } }}
+          />
+        ) : (
+          <Select
+            fullWidth
+            size="small"
+            variant="standard"
+            value={field.tramiteField || ""}
+            displayEmpty
+            onChange={(e) => onChangeTramite(e.target.value)}
+            sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0B85C4" }}
+          >
+            <MenuItem value="" disabled>
+              Seleccionar atributo del trámite...
+            </MenuItem>
+            {Object.keys(TRAMITE_MAPPING).map((category) => [
+              <MenuItem
+                key={`cat-${category}`}
+                disabled
+                sx={{
+                  backgroundColor: "#f8fafc",
+                  fontWeight: 800,
+                  color: "#64748b",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                {category}
+              </MenuItem>,
+              ...TRAMITE_MAPPING[category].map((attr) => (
+                <MenuItem
+                  key={attr}
+                  value={`${category} > ${attr}`}
+                  sx={{ pl: 3, fontSize: "0.85rem" }}
+                >
+                  {attr}
+                </MenuItem>
+              )),
+            ])}
+          </Select>
+        )}
+      </TableCell>
+
+      {/* TIPO DE DATO (combo siempre) */}
+      <TableCell sx={{ width: 200, py: 1 }}>
+        <Select
+          fullWidth
+          size="small"
+          variant="standard"
+          value={field.type || "text"}
+          onChange={(e) => onChangeType(e.target.value)}
+          sx={{ fontSize: "0.85rem" }}
+        >
+          {fieldTypes.map((opt) => (
+            <MenuItem key={opt.value} value={opt.value} sx={{ fontSize: "0.85rem" }}>
+              {opt.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </TableCell>
+
+      {/* ACCIONES */}
+      <TableCell sx={{ width: 70, py: 1, textAlign: "center" }}>
+        <IconButton size="small" onClick={onDelete} sx={{ color: "#94a3b8", "&:hover": { color: "#ef4444" } }}>
+          <DeleteOutlineIcon fontSize="small" />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+// ─── Cabecera de tabla ────────────────────────────────────────────────────────
+const TableHeader = () => (
+  <TableHead>
+    <TableRow sx={{ backgroundColor: "#f8fafc" }}>
+      <TableCell sx={thSx}>DATO</TableCell>
+      <TableCell sx={thSx}>REQUISITO</TableCell>
+      <TableCell sx={thSx}>TIPO DE DATO</TableCell>
+      <TableCell sx={{ ...thSx, textAlign: "center" }}>ACCIONES</TableCell>
+    </TableRow>
+  </TableHead>
+);
+
+// ─── Componente principal ─────────────────────────────────────────────────────
+const ClinicasServicioEditor = () => {
+  const { tipologiaName, servicios, setServicios, handleSaveConfig } = useContext(ConfigContext);
   const { servicioSlug } = useParams();
   const navigate = useNavigate();
-  const [equipamientos, setEquipamientos] = useState([]);
-  const [rrhhList, setRrhhList] = useState([]);
-  const [jefeServicioList, setJefeServicioList] = useState([]);
 
-  React.useEffect(() => {
-    fetch("http://localhost:3001/equipamientos")
-      .then((res) => res.json())
-      .then((data) => setEquipamientos(data))
-      .catch((err) => console.error("Error fetching equipamientos:", err));
-
-    fetch("http://localhost:3001/recursos-humanos")
-      .then((res) => res.json())
-      .then((data) => setRrhhList(data))
-      .catch((err) => console.error("Error fetching rrhh:", err));
-
-    fetch("http://localhost:3001/jefe-servicio")
-      .then((res) => res.json())
-      .then((data) => setJefeServicioList(data))
-      .catch((err) => console.error("Error fetching jefe-servicio:", err));
-  }, []);
-
-  const parseOptions = (options = "") =>
-    String(options)
-      .split(/\r?\n|,/)
-      .map((option) => option.trim())
-      .filter(Boolean);
-
-  const formatOptionsForEditor = (options = "") =>
-    parseOptions(options).join("\n");
-
-  const normalizeOptionsInput = (input = "") => parseOptions(input).join(", ");
-
-  // Find the service in the context state by looking at the slug
   const srvIdx = servicios.findIndex((s) => slugify(s.name) === servicioSlug);
   const srv = servicios[srvIdx];
 
-  const [optionDrafts, setOptionDrafts] = useState({});
-
-  const handleUpdateServiceName = (newName) => {
-    const newServicios = [...servicios];
-    newServicios[srvIdx].name = newName;
-    setServicios(newServicios);
+  // ── helpers ──────────────────────────────────────────────────────────────
+  const updateField = (sidx, fIdx, updates) => {
+    const next = servicios.map((s, si) => {
+      if (si !== srvIdx) return s;
+      const clone = { ...s };
+      if (sidx !== null) {
+        clone.sections = s.sections.map((sec, si2) => {
+          if (si2 !== sidx) return sec;
+          return {
+            ...sec,
+            fields: sec.fields.map((f, fi) =>
+              fi === fIdx ? { ...f, ...updates } : f
+            ),
+          };
+        });
+      } else {
+        clone.fields = s.fields.map((f, fi) =>
+          fi === fIdx ? { ...f, ...updates } : f
+        );
+      }
+      return clone;
+    });
+    setServicios(next);
   };
 
-  const handleAddOption = (fieldIdx, sectionIdx, fieldId) => {
-    const nextOption = (optionDrafts[fieldId] || "").trim();
-    if (!nextOption) return;
-
-    const newServicios = [...servicios];
-    const sourceField =
-      sectionIdx !== null
-        ? newServicios[srvIdx].sections[sectionIdx].fields[fieldIdx]
-        : newServicios[srvIdx].fields[fieldIdx];
-
-    const currentOptions = parseOptions(sourceField.options);
-
-    if (
-      currentOptions.some(
-        (option) => option.toLowerCase() === nextOption.toLowerCase(),
-      )
-    ) {
-      setOptionDrafts((prev) => ({ ...prev, [fieldId]: "" }));
-      return;
-    }
-
-    sourceField.options = [...currentOptions, nextOption].join(", ");
-    setServicios(newServicios);
-    setOptionDrafts((prev) => ({ ...prev, [fieldId]: "" }));
+  const deleteField = (sidx, fIdx) => {
+    const next = servicios.map((s, si) => {
+      if (si !== srvIdx) return s;
+      const clone = { ...s };
+      if (sidx !== null) {
+        clone.sections = s.sections.map((sec, si2) => {
+          if (si2 !== sidx) return sec;
+          return { ...sec, fields: sec.fields.filter((_, fi) => fi !== fIdx) };
+        });
+      } else {
+        clone.fields = s.fields.filter((_, fi) => fi !== fIdx);
+      }
+      return clone;
+    });
+    setServicios(next);
   };
 
-  const handleRemoveOption = (fieldIdx, sectionIdx, optionToRemove) => {
-    const newServicios = [...servicios];
-    const sourceField =
-      sectionIdx !== null
-        ? newServicios[srvIdx].sections[sectionIdx].fields[fieldIdx]
-        : newServicios[srvIdx].fields[fieldIdx];
-
-    sourceField.options = parseOptions(sourceField.options)
-      .filter((option) => option !== optionToRemove)
-      .join(", ");
-    setServicios(newServicios);
+  const addField = (sidx) => {
+    const blank = { id: `f-${Date.now()}`, label: "", type: "text", origin: "ADMIN", options: "" };
+    const next = servicios.map((s, si) => {
+      if (si !== srvIdx) return s;
+      const clone = { ...s };
+      if (sidx !== null) {
+        clone.sections = s.sections.map((sec, si2) =>
+          si2 === sidx ? { ...sec, fields: [...sec.fields, blank] } : sec
+        );
+      } else {
+        clone.fields = [...(s.fields || []), blank];
+      }
+      return clone;
+    });
+    setServicios(next);
   };
 
-  const handleAddField = () => {
-    const newField = {
-      id: `new-${Date.now()}`,
-      label: "",
-      type: "text",
-      options: "",
+  const handleOriginChange = (sidx, fIdx, val) => {
+    const updates = { origin: val };
+    if (val === "ADMIN") updates.tramiteField = "";
+    updateField(sidx, fIdx, updates);
+  };
+
+  const handleTramiteChange = (sidx, fIdx, rawVal) => {
+    const label = rawVal.split(" > ").pop();
+    const updates = {
+      tramiteField: rawVal,
+      label,
+      type: label.toUpperCase().includes("FECHA") ? "date" : undefined,
     };
-    const newServicios = [...servicios];
-    newServicios[srvIdx].fields.push(newField);
-    setServicios(newServicios);
-  };
-
-  const handleUpdateField = (fieldIdx, key, value) => {
-    const newServicios = [...servicios];
-    newServicios[srvIdx].fields[fieldIdx][key] = value;
-    setServicios(newServicios);
-  };
-
-  const handleDeleteField = (fieldIdx) => {
-    const newServicios = [...servicios];
-    newServicios[srvIdx].fields.splice(fieldIdx, 1);
-    setServicios(newServicios);
+    if (!updates.type) delete updates.type;
+    updateField(sidx, fIdx, updates);
   };
 
   if (!srv) return <Box sx={{ p: 5 }}>Servicio no encontrado.</Box>;
 
+  const hasSections = srv.sections && srv.sections.length > 0;
+
   return (
-    <Box sx={{ width: "70%", mx: "auto", p: { xs: 2, md: 4, lg: 6 }, fontFamily: "Roboto, sans-serif" }}>
-      {/* Sub-Header / Breadcrumb */}
+    <Box sx={{ width: "75%", mx: "auto", p: { xs: 2, md: 4, lg: 6 }, fontFamily: "Roboto, sans-serif" }}>
+      {/* Breadcrumb */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
-        <IconButton
-          onClick={() => navigate("..")}
-          size="small"
-          sx={{ backgroundColor: "#f1f5f9" }}
-        >
+        <IconButton onClick={() => navigate("..")} size="small" sx={{ backgroundColor: "#f1f5f9" }}>
           <ArrowBackIcon fontSize="small" />
         </IconButton>
         <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 600 }}>
@@ -212,427 +287,145 @@ const ClinicasServicioEditor = () => {
         </Typography>
       </Box>
 
-      {/* Editor Content */}
       <Box sx={{ mb: 4 }}>
-        <Paper
-          elevation={0}
-          sx={{
-            border: "1px solid #e2e8f0",
-            borderRadius: 4,
-            overflow: "hidden",
-            backgroundColor: "#fff",
-          }}
-        >
-          {/* Header del Servicio */}
-          <Box
-            sx={{
-              backgroundColor: "#ffffff",
-              borderBottom: "2px solid rgba(11, 133, 196, 0.2)",
-              p: 3,
-              display: "flex",
-              alignItems: "center",
-              gap: 3,
-            }}
-          >
-            <Box sx={{ p: 1.5, backgroundColor: "rgba(11, 133, 196, 0.05)", borderRadius: 2 }}>
+        <Paper elevation={0} sx={{ border: "1px solid #e2e8f0", borderRadius: 4, overflow: "hidden", backgroundColor: "#fff" }}>
+          {/* Header */}
+          <Box sx={{ backgroundColor: "#ffffff", borderBottom: "2px solid rgba(11,133,196,0.2)", p: 3, display: "flex", alignItems: "center", gap: 3 }}>
+            <Box sx={{ p: 1.5, backgroundColor: "rgba(11,133,196,0.05)", borderRadius: 2 }}>
               <MedicalServicesIcon sx={{ color: "#0B85C4", fontSize: 32 }} />
             </Box>
             <Box sx={{ flexGrow: 1 }}>
-              <Typography
-                variant="overline"
-                sx={{ fontWeight: 800, color: "#000000", fontFamily: "Roboto, sans-serif" }}
-              >
+              <Typography variant="overline" sx={{ fontWeight: 800, color: "#000" }}>
                 MATRIZ DE INSPECCIÓN
               </Typography>
               <TextField
                 fullWidth
                 variant="standard"
                 value={srv.name}
-                onChange={(e) => handleUpdateServiceName(e.target.value)}
+                onChange={(e) => {
+                  const next = [...servicios];
+                  next[srvIdx] = { ...next[srvIdx], name: e.target.value };
+                  setServicios(next);
+                }}
                 InputProps={{
                   disableUnderline: true,
-                  sx: { fontSize: "1.5rem", fontWeight: 800, color: "#0B85C4", fontFamily: "Roboto, sans-serif" },
+                  sx: { fontSize: "1.5rem", fontWeight: 800, color: "#0B85C4" },
                 }}
               />
             </Box>
             <Chip
-              label={`${(srv.fields?.length || 0) + (srv.sections?.reduce((acc, s) => acc + (s.fields?.length || 0), 0) || 0)} datos`}
-              sx={{ backgroundColor: "rgba(11, 133, 196, 0.1)", color: "#0B85C4", fontWeight: 700, fontFamily: "Roboto, sans-serif" }}
+              label={`${(srv.fields?.length || 0) + (srv.sections?.reduce((a, s) => a + (s.fields?.length || 0), 0) || 0)} datos`}
+              sx={{ backgroundColor: "rgba(11,133,196,0.1)", color: "#0B85C4", fontWeight: 700 }}
             />
           </Box>
 
-          {/* Contenedor de Tablas (por secciones o directas) */}
-          <Box sx={{ p: 0 }}>
-            {srv.sections && srv.sections.length > 0 ? (
+          {/* Tablas */}
+          <Box>
+            {hasSections ? (
               srv.sections.map((section, sidx) => (
-                <Box key={section.id} sx={{ mb: 4 }}>
-                  <Box sx={{ px: 4, py: 2, backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#475569", textTransform: "uppercase" }}>
+                <Box key={section.id} sx={{ mb: 0, borderBottom: "1px solid #e2e8f0" }}>
+                  {/* Cabecera de sección */}
+                  <Box sx={{ px: 4, py: 1.5, backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#475569", textTransform: "uppercase", fontSize: "0.75rem" }}>
                       Sección: {section.name}
                     </Typography>
-                    <IconButton size="small" onClick={() => {
-                      const newServicios = [...servicios];
-                      newServicios[srvIdx].sections.splice(sidx, 1);
-                      setServicios(newServicios);
-                    }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        const next = servicios.map((s, si) => {
+                          if (si !== srvIdx) return s;
+                          return { ...s, sections: s.sections.filter((_, i) => i !== sidx) };
+                        });
+                        setServicios(next);
+                      }}
+                    >
                       <DeleteOutlineIcon fontSize="small" />
                     </IconButton>
                   </Box>
+
                   <TableContainer>
                     <Table size="small">
-                      <TableHead sx={{ borderBottom: "1px solid #f1f5f9" }}>
-                        <TableRow>
-                          <TableCell sx={{ width: 40 }}></TableCell>
-                          <TableCell sx={{ width: "180px", color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>ORIGEN</TableCell>
-                          <TableCell sx={{ color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>PARÁMETRO / REF. TRÁMITE</TableCell>
-                          <TableCell sx={{ width: "220px", color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>TIPO DE DATO</TableCell>
-                          <TableCell align="right" sx={{ width: 60 }}></TableCell>
-                        </TableRow>
-                      </TableHead>
+                      <TableHeader />
                       <TableBody>
                         {section.fields.map((field, fIdx) => (
-                          <TableRow key={field.id} sx={{ "&:hover": { backgroundColor: "#fcfcfc" } }}>
-                            <TableCell align="center"><DragIndicatorIcon sx={{ color: "#cbd5e1", opacity: 0.2 }} fontSize="small" /></TableCell>
-                            <TableCell>
-                              <ToggleButtonGroup
-                                size="small"
-                                value={field.origin === "TRÁMITE" ? "TRÁMITE" : "ADMIN"}
-                                exclusive
-                                onChange={(e, val) => {
-                                  if (!val) return;
-                                  const newServicios = [...servicios];
-                                  const target = newServicios[srvIdx].sections[sidx].fields[fIdx];
-                                  target.origin = val;
-                                  if (val === "ADMIN") delete target.tramiteField;
-                                  setServicios(newServicios);
-                                }}
-                                sx={{
-                                  height: 32,
-                                  "& .MuiToggleButton-root": {
-                                    px: 2,
-                                    fontSize: "0.7rem",
-                                    fontWeight: 700,
-                                    border: "1px solid #e2e8f0",
-                                    "&.Mui-selected": {
-                                      bgcolor: "#0B85C4",
-                                      color: "white",
-                                      "&:hover": { bgcolor: "#096da1" }
-                                    }
-                                  }
-                                }}
-                              >
-                                <ToggleButton value="ADMIN">ADMIN</ToggleButton>
-                                <ToggleButton value="TRÁMITE">TRÁMITE</ToggleButton>
-                              </ToggleButtonGroup>
-                            </TableCell>
-                            <TableCell>
-                              {field.origin === "TRÁMITE" ? (
-                                <Select
-                                  fullWidth
-                                  size="small"
-                                  value={field.tramiteField || ""}
-                                  variant="standard"
-                                  sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#0B85C4' }}
-                                  onChange={(e) => {
-                                    const newServicios = [...servicios];
-                                    const val = e.target.value;
-                                    newServicios[srvIdx].sections[sidx].fields[fIdx].tramiteField = val;
-                                    newServicios[srvIdx].sections[sidx].fields[fIdx].label = val.split(" > ")[1] || val;
-                                    setServicios(newServicios);
-                                  }}
-                                  displayEmpty
-                                >
-                                  <MenuItem value="" disabled>Seleccionar campo del trámite...</MenuItem>
-                                  {Object.keys(TRAMITE_MAPPING).map(category => [
-                                    <MenuItem key={category} disabled sx={{ backgroundColor: '#f8fafc', fontWeight: 800, color: '#64748b', fontSize: '0.7rem' }}>
-                                      {category}
-                                    </MenuItem>,
-                                    ...TRAMITE_MAPPING[category].map(f => (
-                                      <MenuItem key={f} value={`${category} > ${f}`} sx={{ pl: 3, fontSize: '0.85rem' }}>
-                                        {f}
-                                      </MenuItem>
-                                    ))
-                                  ])}
-                                </Select>
-                              ) : (
-                                <>
-                                  {field.type === "equipamiento" || field.type === "rrhh" || field.type === "jefe_servicio" ? (
-                                    <Select
-                                      fullWidth size="small" variant="standard"
-                                      value={field.label || ""}
-                                      onChange={(e) => {
-                                        const val = e.target.value;
-                                        const newServicios = [...servicios];
-                                        newServicios[srvIdx].sections[sidx].fields[fIdx].label = val;
-                                        setServicios(newServicios);
-                                      }}
-                                      sx={{ fontSize: "0.85rem", fontWeight: 700, color: field.type === 'equipamiento' ? '#32A430' : field.type === 'rrhh' ? '#f59e0b' : '#ef4444' }}
-                                      displayEmpty
-                                    >
-                                      <MenuItem value="" disabled>Seleccionar requisito...</MenuItem>
-                                      {field.type === "equipamiento" && equipamientos.map((e) => (
-                                        <MenuItem key={e.id} value={e.equipamiento}>{e.equipamiento}</MenuItem>
-                                      ))}
-                                      {field.type === "rrhh" && rrhhList.map((r) => (
-                                        <MenuItem key={r.id} value={`${r.origen} - ${r.especialidad}`}>{r.origen} - {r.especialidad}</MenuItem>
-                                      ))}
-                                      {field.type === "jefe_servicio" && jefeServicioList.map((j) => (
-                                        <MenuItem key={j.id} value={`${j.origen} - ${j.especialidad}`}>{j.origen} - {j.especialidad}</MenuItem>
-                                      ))}
-                                    </Select>
-                                  ) : (
-                                    <TextField fullWidth size="small" variant="standard" placeholder="Nombre del parámetro..." value={field.label} onChange={(e) => {
-                                      const newServicios = [...servicios];
-                                      newServicios[srvIdx].sections[sidx].fields[fIdx].label = e.target.value;
-                                      setServicios(newServicios);
-                                    }} />
-                                  )}
-                                </>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Select fullWidth size="small" value={field.type} variant="standard" sx={{ fontSize: '0.85rem' }} onChange={(e) => {
-                                const newServicios = [...servicios];
-                                newServicios[srvIdx].sections[sidx].fields[fIdx].type = e.target.value;
-                                setServicios(newServicios);
-                              }}>
-                                {fieldTypes.map(opt => <MenuItem key={opt.value} value={opt.value} sx={{ fontSize: '0.85rem' }}>{opt.label}</MenuItem>)}
-                              </Select>
-                              {(field.type === "select" || field.type === "toggle") && (
-                                <Box sx={{ mt: 1 }}>
-                                  <TextField
-                                    fullWidth
-                                    size="small"
-                                    variant="standard"
-                                    placeholder="Nueva opción + Enter"
-                                    value={optionDrafts[field.id] || ""}
-                                    onChange={(e) =>
-                                      setOptionDrafts((prev) => ({
-                                        ...prev,
-                                        [field.id]: e.target.value,
-                                      }))
-                                    }
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter" || e.key === ",") {
-                                        e.preventDefault();
-                                        handleAddOption(fIdx, sidx, field.id);
-                                      }
-                                    }}
-                                  />
-                                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
-                                    {parseOptions(field.options).map((opt, oIdx) => (
-                                      <Chip
-                                        key={oIdx}
-                                        label={opt}
-                                        size="small"
-                                        onDelete={() => handleRemoveOption(fIdx, sidx, opt)}
-                                      />
-                                    ))}
-                                  </Box>
-                                </Box>
-                              )}
-                            </TableCell>
-                            <TableCell align="right">
-                              <IconButton size="small" onClick={() => {
-                                const newServicios = [...servicios];
-                                newServicios[srvIdx].sections[sidx].fields.splice(fIdx, 1);
-                                setServicios(newServicios);
-                              }}><DeleteOutlineIcon fontSize="small" /></IconButton>
-                            </TableCell>
-                          </TableRow>
+                          <FieldRow
+                            key={field.id}
+                            field={field}
+                            fIdx={fIdx}
+                            onChangeOrigin={(val) => handleOriginChange(sidx, fIdx, val)}
+                            onChangeTramite={(val) => handleTramiteChange(sidx, fIdx, val)}
+                            onChangeLabel={(val) => updateField(sidx, fIdx, { label: val })}
+                            onChangeType={(val) => updateField(sidx, fIdx, { type: val })}
+                            onDelete={() => deleteField(sidx, fIdx)}
+                          />
                         ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <Box sx={{ p: 1, px: 4 }}>
-                    <Button size="small" startIcon={<AddIcon />} onClick={() => {
-                      const newServicios = [...servicios];
-                      newServicios[srvIdx].sections[sidx].fields.push({ id: `new-${Date.now()}`, label: "", type: "text", options: "" });
-                      setServicios(newServicios);
-                    }}>Añadir parámetro en {section.name}</Button>
+
+                  <Box sx={{ p: 1, px: 3 }}>
+                    <Button size="small" startIcon={<AddIcon />} onClick={() => addField(sidx)} sx={{ fontWeight: 600, fontSize: "0.78rem" }}>
+                      Añadir fila en {section.name}
+                    </Button>
                   </Box>
                 </Box>
               ))
             ) : (
-              <TableContainer sx={{ backgroundColor: "#fff" }}>
-                <Table size="small">
-                  <TableHead sx={{ borderBottom: "2px solid #f1f5f9" }}>
-                    <TableRow>
-                      <TableCell sx={{ width: 40 }}></TableCell>
-                      <TableCell sx={{ width: "180px", color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>ORIGEN</TableCell>
-                      <TableCell sx={{ color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>PARÁMETRO / REF. TRÁMITE</TableCell>
-                      <TableCell sx={{ width: "220px", color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase" }}>TIPO DE DATO</TableCell>
-                      <TableCell align="right" sx={{ width: 60 }}></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {(srv.fields || []).map((field, fIdx) => (
-                      <TableRow key={field.id} sx={{ "& td": { borderBottom: "1px solid #f1f5f9" }, "&:hover": { backgroundColor: "#fcfcfc" } }}>
-                        <TableCell align="center"><DragIndicatorIcon sx={{ color: "#cbd5e1", opacity: 0.2 }} fontSize="small" /></TableCell>
-                        <TableCell>
-                          <ToggleButtonGroup
-                            size="small"
-                            value={field.origin === "TRÁMITE" ? "TRÁMITE" : "ADMIN"}
-                            exclusive
-                            onChange={(e, val) => {
-                              if (!val) return;
-                              handleUpdateField(fIdx, "origin", val);
-                              if (val === "ADMIN") {
-                                const newServicios = [...servicios];
-                                delete newServicios[srvIdx].fields[fIdx].tramiteField;
-                                setServicios(newServicios);
-                              }
-                            }}
-                            sx={{
-                              height: 32,
-                              "& .MuiToggleButton-root": {
-                                px: 2,
-                                fontSize: "0.7rem",
-                                fontWeight: 700,
-                                border: "1px solid #e2e8f0",
-                                "&.Mui-selected": {
-                                  bgcolor: "#0B85C4",
-                                  color: "white",
-                                  "&:hover": { bgcolor: "#096da1" }
-                                }
-                              }
-                            }}
-                          >
-                            <ToggleButton value="ADMIN">ADMIN</ToggleButton>
-                            <ToggleButton value="TRÁMITE">TRÁMITE</ToggleButton>
-                          </ToggleButtonGroup>
-                        </TableCell>
-                        <TableCell>
-                          {field.origin === "TRÁMITE" ? (
-                            <Select
-                              fullWidth
-                              size="small"
-                              value={field.tramiteField || ""}
-                              variant="standard"
-                              sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#0B85C4' }}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                const newServicios = [...servicios];
-                                newServicios[srvIdx].fields[fIdx].tramiteField = val;
-                                newServicios[srvIdx].fields[fIdx].label = val.split(" > ")[1] || val;
-                                setServicios(newServicios);
-                              }}
-                              displayEmpty
-                            >
-                              <MenuItem value="" disabled>Seleccionar campo del trámite...</MenuItem>
-                              {Object.keys(TRAMITE_MAPPING).map(category => [
-                                <MenuItem key={category} disabled sx={{ backgroundColor: '#f8fafc', fontWeight: 800, color: '#64748b', fontSize: '0.7rem' }}>
-                                  {category}
-                                </MenuItem>,
-                                ...TRAMITE_MAPPING[category].map(f => (
-                                  <MenuItem key={f} value={`${category} > ${f}`} sx={{ pl: 3, fontSize: '0.85rem' }}>
-                                    {f}
-                                  </MenuItem>
-                                ))
-                              ])}
-                            </Select>
-                          ) : (
-                            <TextField
-                              fullWidth
-                              size="small"
-                              variant="standard"
-                              placeholder="Nombre del parámetro..."
-                              value={field.label}
-                              onChange={(e) => handleUpdateField(fIdx, "label", e.target.value)}
-                            />
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            fullWidth
-                            size="small"
-                            value={field.type}
-                            onChange={(e) => handleUpdateField(fIdx, "type", e.target.value)}
-                            sx={{ "& fieldset": { borderColor: "transparent" }, "&:hover fieldset": { borderColor: "#e2e8f0" }, fontSize: '0.85rem' }}
-                          >
-                            {fieldTypes.map((opt) => (
-                              <MenuItem key={opt.value} value={opt.value} sx={{ fontSize: '0.85rem' }}>{opt.label}</MenuItem>
-                            ))}
-                          </Select>
-                          {(field.type === "select" || field.type === "toggle") && (
-                            <Box sx={{ mt: 1 }}>
-                              <TextField
-                                fullWidth
-                                size="small"
-                                variant="standard"
-                                placeholder="Nueva opción + Enter"
-                                value={optionDrafts[field.id] || ""}
-                                onChange={(e) =>
-                                  setOptionDrafts((prev) => ({
-                                    ...prev,
-                                    [field.id]: e.target.value,
-                                  }))
-                                }
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" || e.key === ",") {
-                                    e.preventDefault();
-                                    handleAddOption(fIdx, null, field.id);
-                                  }
-                                }}
-                              />
-                              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
-                                {parseOptions(field.options).map((opt, oIdx) => (
-                                  <Chip
-                                    key={oIdx}
-                                    label={opt}
-                                    size="small"
-                                    onDelete={() => handleRemoveOption(fIdx, null, opt)}
-                                  />
-                                ))}
-                              </Box>
-                            </Box>
-                          )}
-                        </TableCell>
-                        <TableCell align="right">
-                          <IconButton size="small" onClick={() => handleDeleteField(fIdx)}><DeleteOutlineIcon fontSize="small" /></IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <Box>
+                <TableContainer>
+                  <Table size="small">
+                    <TableHeader />
+                    <TableBody>
+                      {(srv.fields || []).map((field, fIdx) => (
+                        <FieldRow
+                          key={field.id}
+                          field={field}
+                          fIdx={fIdx}
+                          onChangeOrigin={(val) => handleOriginChange(null, fIdx, val)}
+                          onChangeTramite={(val) => handleTramiteChange(null, fIdx, val)}
+                          onChangeLabel={(val) => updateField(null, fIdx, { label: val })}
+                          onChangeType={(val) => updateField(null, fIdx, { type: val })}
+                          onDelete={() => deleteField(null, fIdx)}
+                        />
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Box sx={{ p: 1, px: 3 }}>
+                  <Button size="small" startIcon={<AddIcon />} onClick={() => addField(null)} sx={{ fontWeight: 600, fontSize: "0.78rem" }}>
+                    Añadir fila
+                  </Button>
+                </Box>
+              </Box>
             )}
           </Box>
 
-          {/* Botón Añadir Sección (si corresponde) */}
+          {/* Footer acciones globales */}
           <Box sx={{ p: 2, px: 4, backgroundColor: "#fcfcfc", borderTop: "1px dashed #e2e8f0" }}>
-            <Button onClick={() => {
-              const newServicios = [...servicios];
-              if (!newServicios[srvIdx].sections) newServicios[srvIdx].sections = [];
-              newServicios[srvIdx].sections.push({ id: `sec-${Date.now()}`, name: "Nueva Sección", fields: [] });
-              setServicios(newServicios);
-            }} startIcon={<AddIcon />} sx={{ fontWeight: 700 }}>
-              Añadir nueva sección
+            <Button
+              startIcon={<AddIcon />}
+              sx={{ fontWeight: 700 }}
+              onClick={() => {
+                const next = servicios.map((s, si) => {
+                  if (si !== srvIdx) return s;
+                  const sections = [...(s.sections || []), { id: `sec-${Date.now()}`, name: "Nueva Sección", fields: [] }];
+                  return { ...s, sections };
+                });
+                setServicios(next);
+              }}
+            >
+              Añadir sección
             </Button>
-            {!srv.sections && (
-              <Button onClick={handleAddField} startIcon={<AddIcon />} sx={{ fontWeight: 700, ml: 2 }}>
-                Añadir parámetro
-              </Button>
-            )}
           </Box>
         </Paper>
       </Box>
 
-      {/* FAB SAVE */}
+      {/* FAB Guardar */}
       <Tooltip title="Guardar Cambios" placement="left">
         <Fab
           variant="extended"
-          color="primary"
           onClick={handleSaveConfig}
-          sx={{
-            position: "fixed",
-            bottom: 40,
-            right: 40,
-            backgroundColor: "#32A430",
-            "&:hover": {
-              backgroundColor: "#278525",
-            },
-          }}
+          sx={{ position: "fixed", bottom: 40, right: 40, backgroundColor: "#32A430", color: "#fff", "&:hover": { backgroundColor: "#278525" } }}
         >
           <SaveIcon sx={{ mr: 1 }} /> Guardar Cambios
         </Fab>
