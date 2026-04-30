@@ -812,6 +812,8 @@ const EquipamientosConfig = () => {
                     option.value === value.value
                   }
                   disableCloseOnSelect
+                  /* Renderizamos el valor seleccionado como un String simple separado por comas */
+                  renderTags={(tagValue) => tagValue.map((option) => option.label).join(", ")}
                   renderOption={(props, option, { selected }) => {
                     const { key, ...optionProps } = props;
                     return (
@@ -828,13 +830,15 @@ const EquipamientosConfig = () => {
                     <TextField
                       {...params}
                       variant="standard"
-                      label="Trazabilidad"
+                      label="Configuración de Trazabilidad"
+                      placeholder={getSelectedTrazabilidad().length === 0 ? "Seleccione..." : ""}
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          fontSize: "0.9rem",
+                          py: 1
+                        }
+                      }}
                     />
-                  )}
-                  renderTags={(tagValue, getTagProps) => (
-                    <Typography sx={{ fontSize: "1rem", ml: 1 }}>
-                      {tagValue.map((opt) => opt.label).join(", ")}
-                    </Typography>
                   )}
                 />
               </Box>

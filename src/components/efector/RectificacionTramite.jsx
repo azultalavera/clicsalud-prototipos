@@ -43,10 +43,7 @@ import {
   Warning as WarningIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
 import PantallaInspeccion from "../inspeccion/inspector/PantallaInspeccion";
-=======
->>>>>>> inspeccion
 
 const RectificacionTramite = () => {
   const navigate = useNavigate();
@@ -54,10 +51,7 @@ const RectificacionTramite = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(0);
   const [openConfirm, setOpenConfirm] = useState(false);
-<<<<<<< HEAD
   const [openActaPopup, setOpenActaPopup] = useState(false);
-=======
->>>>>>> inspeccion
 
   // Datos hardcodeados para ACTA 1 (Baseline)
   const acta1Data = {
@@ -157,7 +151,6 @@ const RectificacionTramite = () => {
 
   const renderActa1 = () => (
     <Box>
-<<<<<<< HEAD
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
         <Button 
           variant="contained" 
@@ -169,8 +162,6 @@ const RectificacionTramite = () => {
           Ver Acta de Inspección
         </Button>
       </Box>
-=======
->>>>>>> inspeccion
       <Alert severity="warning" sx={{ mb: 4, borderRadius: 3, borderLeft: '8px solid #f59e0b', fontWeight: 700 }}>
         HISTORIAL ACTA 1: Estos hallazgos corresponden a la inspección inicial. Debe adjuntar el emplazamiento para cada ítem.
       </Alert>
@@ -419,7 +410,6 @@ const RectificacionTramite = () => {
           </Button>
         </DialogActions>
       </Dialog>
-<<<<<<< HEAD
 
       {/* MODAL PARA VER ACTA (COPIA DE INSPECTOR) */}
       <Dialog
@@ -452,8 +442,6 @@ const RectificacionTramite = () => {
           />
         </DialogContent>
       </Dialog>
-=======
->>>>>>> inspeccion
     </Box>
   );
 };
