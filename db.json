@@ -2480,84 +2480,19 @@
               "fields": [
                 {
                   "id": "f-n56ha4",
-                  "label": "N° de Expediente",
+                  "label": "NOMBRE DEL ESTABLECIMIENTO",
                   "type": "text",
                   "options": "",
                   "origin": "TRÁMITE",
-                  "tramiteField": "ARQUITECTURA > N° de Expediente"
+                  "tramiteField": "ARQUITECTURA > NOMBRE DEL ESTABLECIMIENTO",
+                  "valorTramiteMock": "SANATORIO ALLENDE",
+                  "valorTramite": "sanatorio allende"
                 },
                 {
                   "id": "f-foro7rdj",
-                  "label": "FORMATO INSPECCIÓN",
+                  "label": "TIPO INSPECCIÓN",
                   "type": "toggle",
                   "options": "VIRTUAL, PRESENCIAL"
-                },
-                {
-                  "id": "f-raz01uce",
-                  "label": "Denominación",
-                  "type": "text",
-                  "options": "",
-                  "origin": "TRÁMITE",
-                  "tramiteField": "ESTABLECIMIENTO > Denominación",
-                  "valorTramiteMock": "Obispo oro 90"
-                },
-                {
-                  "id": "f-dirs7pux",
-                  "label": "Dirección",
-                  "type": "text",
-                  "options": "",
-                  "origin": "TRÁMITE",
-                  "tramiteField": "ESTABLECIMIENTO > Dirección",
-                  "valorTramiteMock": "Obispo oro 90"
-                },
-                {
-                  "id": "f-locojjjz",
-                  "label": "Localidad",
-                  "type": "text",
-                  "options": "",
-                  "origin": "TRÁMITE",
-                  "tramiteField": "ESTABLECIMIENTO > Localidad"
-                },
-                {
-                  "id": "f-emab2jbz",
-                  "label": "Contacto (Email)",
-                  "type": "text",
-                  "options": "",
-                  "origin": "TRÁMITE",
-                  "tramiteField": "ESTABLECIMIENTO > Contacto (Email)"
-                },
-                {
-                  "id": "f-telkvmy6",
-                  "label": "Contacto (Teléfono)",
-                  "type": "number",
-                  "options": "",
-                  "origin": "TRÁMITE",
-                  "tramiteField": "ESTABLECIMIENTO > Contacto (Teléfono)"
-                },
-                {
-                  "id": "f-rad2gboj",
-                  "label": "Radiofísica",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-tiph0tnw",
-                  "label": "Tipo de Inspección",
-                  "type": "select",
-                  "options": "HABILITACIÓN, RUTINA, DENUNCIA"
-                },
-                {
-                  "id": "f-fectnyn0",
-                  "label": "Fecha de Habilitación M/R",
-                  "type": "date",
-                  "options": ""
-                },
-                {
-                  "id": "f-res1c2cd",
-                  "label": "Resolución Nº M/R",
-                  "type": "number",
-                  "options": "",
-                  "origin": "ADMIN"
                 }
               ]
             },
@@ -2731,19 +2666,25 @@
                   "id": "f-fece1mcv",
                   "label": "FECHA VENCIMIENTO PLAN EVACUACION",
                   "type": "date",
-                  "options": ""
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "DATOS GENERALES > DATOS > FECHA VENCIMIENTO PLAN EVACUACION"
                 },
                 {
                   "id": "f-fecnf6ax",
                   "label": "FECHA VENCIMIENTO BOMBEROS",
                   "type": "date",
-                  "options": ""
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "DATOS GENERALES > DATOS > FECHA VENCIMIENTO BOMBEROS"
                 },
                 {
                   "id": "f-feczcrfa",
                   "label": "FECHA VENCIMIENTO EXTINGUIDORES",
                   "type": "date",
-                  "options": ""
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "DATOS GENERALES > DATOS > FECHA VENCIMIENTO EXTINGUIDORES"
                 }
               ]
             },
@@ -2832,14 +2773,36 @@
                 {
                   "id": "f-prof2qlm",
                   "label": "Propio/Tercerizado",
-                  "type": "select",
+                  "type": "toggle",
                   "options": "PROPIO, TERCERIZADO"
                 },
                 {
                   "id": "new-1776187387395",
                   "label": "Interno/Externo",
-                  "type": "select",
+                  "type": "toggle",
                   "options": "INTERNO, EXTERNO"
+                }
+              ]
+            },
+            {
+              "id": "sec-1777585977690",
+              "name": "SALAS",
+              "fields": [
+                {
+                  "id": "fld-1777585977690-0.15677397174213425",
+                  "label": "TOTAL DE CAMAS",
+                  "type": "number",
+                  "origin": "TRÁMITE",
+                  "options": "",
+                  "tramiteField": "DATOS DEL TRÁMITE > TOTAL DE CAMAS"
+                },
+                {
+                  "id": "fld-1777586235471-0.5168165232191337",
+                  "label": "SERVICIOS SELECCIONADOS",
+                  "type": "number",
+                  "origin": "TRÁMITE",
+                  "options": "",
+                  "tramiteField": "DATOS DEL TRÁMITE > SERVICIOS SELECCIONADOS"
                 }
               ]
             }

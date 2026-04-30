@@ -19,6 +19,11 @@ import {
   TableContainer,
   ToggleButton,
   ToggleButtonGroup,
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 import {
@@ -27,6 +32,7 @@ import {
   Save as SaveIcon,
   DeleteOutline as DeleteOutlineIcon,
   Add as AddIcon,
+  Science as ScienceIcon,
 } from "@mui/icons-material";
 
 import { useNavigate, useParams } from "react-router-dom";
@@ -61,7 +67,7 @@ const thSx = {
 };
 
 // ─── Componente de fila de campo ─────────────────────────────────────────────
-const FieldRow = ({ field, fIdx, onChangeOrigin, onChangeTramite, onChangeLabel, onChangeType, onDelete }) => {
+const FieldRow = ({ field, fIdx, onChangeOrigin, onChangeTramite, onChangeLabel, onChangeType, onChangeOptions, onOpenSim, onDelete }) => {
   const isAdmin = field.origin !== "TRÁMITE";
 
   return (
@@ -96,15 +102,38 @@ const FieldRow = ({ field, fIdx, onChangeOrigin, onChangeTramite, onChangeLabel,
       {/* REQUISITO: input si ADMIN, combo si TRÁMITE */}
       <TableCell sx={{ py: 1 }}>
         {isAdmin ? (
-          <TextField
-            fullWidth
-            size="small"
-            variant="standard"
-            placeholder="Escribir requisito..."
-            value={field.label || ""}
-            onChange={(e) => onChangeLabel(e.target.value)}
-            InputProps={{ sx: { fontSize: "0.85rem" } }}
-          />
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <TextField
+              fullWidth
+              size="small"
+              variant="standard"
+              placeholder="Escribir requisito..."
+              value={field.label || ""}
+              onChange={(e) => onChangeLabel(e.target.value)}
+              InputProps={{ sx: { fontSize: "0.85rem", fontWeight: 600 } }}
+            />
+            {(field.type === 'select' || field.type === 'toggle') && (
+              <TextField
+                fullWidth
+                size="small"
+                variant="outlined"
+                placeholder="Opciones separadas por coma (ej: Opción 1, Opción 2)"
+                value={field.options || ""}
+                onChange={(e) => onChangeOptions(e.target.value)}
+                sx={{ 
+                  mt: 0.5,
+                  "& .MuiOutlinedInput-root": {
+                    fontSize: "0.75rem",
+                    bgcolor: "#f0f9ff",
+                    borderRadius: 2,
+                    "& fieldset": { borderColor: "#bae6fd" }
+                  }
+                }}
+                helperText="Defina las opciones para este selector"
+                FormHelperTextProps={{ sx: { fontSize: '0.65rem', fontWeight: 700, color: '#0369a1' } }}
+              />
+            )}
+          </Box>
         ) : (
           <Select
             fullWidth
@@ -165,10 +194,25 @@ const FieldRow = ({ field, fIdx, onChangeOrigin, onChangeTramite, onChangeLabel,
       </TableCell>
 
       {/* ACCIONES */}
-      <TableCell sx={{ width: 70, py: 1, textAlign: "center" }}>
-        <IconButton size="small" onClick={onDelete} sx={{ color: "#94a3b8", "&:hover": { color: "#ef4444" } }}>
-          <DeleteOutlineIcon fontSize="small" />
-        </IconButton>
+      <TableCell sx={{ width: 120, py: 1, textAlign: "center" }}>
+        <Stack direction="row" spacing={1} justifyContent="center">
+          <Tooltip title="Simular valor (Hardcode)">
+            <IconButton 
+              size="small" 
+              onClick={onOpenSim} 
+              sx={{ 
+                color: "#0ea5e9", 
+                bgcolor: 'rgba(14, 165, 233, 0.05)',
+                "&:hover": { bgcolor: "rgba(14, 165, 233, 0.15)" } 
+              }}
+            >
+              <ScienceIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+          </Tooltip>
+          <IconButton size="small" onClick={onDelete} sx={{ color: "#94a3b8", "&:hover": { color: "#ef4444" } }}>
+            <DeleteOutlineIcon fontSize="small" />
+          </IconButton>
+        </Stack>
       </TableCell>
     </TableRow>
   );
@@ -181,7 +225,7 @@ const TableHeader = () => (
       <TableCell sx={thSx}>DATO</TableCell>
       <TableCell sx={thSx}>REQUISITO</TableCell>
       <TableCell sx={thSx}>TIPO DE DATO</TableCell>
-      <TableCell sx={{ ...thSx, textAlign: "center" }}>ACCIONES</TableCell>
+      <TableCell sx={{ ...thSx, textAlign: "center", width: 120 }}>ACCIONES</TableCell>
     </TableRow>
   </TableHead>
 );
@@ -193,6 +237,22 @@ const ClinicasServicioEditor = () => {
   const navigate = useNavigate();
 
   const srvIdx = servicios.findIndex((s) => slugify(s.name) === servicioSlug);
+  const [simDialog, setSimDialog] = useState({ open: false, sidx: null, fIdx: null, value: "", label: "" });
+
+  const handleOpenSim = (sidx, fIdx, field) => {
+    setSimDialog({
+      open: true,
+      sidx,
+      fIdx,
+      value: field.valorTramite || "",
+      label: field.label || "Sin nombre"
+    });
+  };
+
+  const handleSaveSim = () => {
+    updateField(simDialog.sidx, simDialog.fIdx, { valorTramite: simDialog.value });
+    setSimDialog({ ...simDialog, open: false });
+  };
   const srv = servicios[srvIdx];
 
   // ── helpers ──────────────────────────────────────────────────────────────
@@ -356,6 +416,8 @@ const ClinicasServicioEditor = () => {
                             onChangeTramite={(val) => handleTramiteChange(sidx, fIdx, val)}
                             onChangeLabel={(val) => updateField(sidx, fIdx, { label: val })}
                             onChangeType={(val) => updateField(sidx, fIdx, { type: val })}
+                            onChangeOptions={(val) => updateField(sidx, fIdx, { options: val })}
+                            onOpenSim={() => handleOpenSim(sidx, fIdx, field)}
                             onDelete={() => deleteField(sidx, fIdx)}
                           />
                         ))}
@@ -385,6 +447,8 @@ const ClinicasServicioEditor = () => {
                           onChangeTramite={(val) => handleTramiteChange(null, fIdx, val)}
                           onChangeLabel={(val) => updateField(null, fIdx, { label: val })}
                           onChangeType={(val) => updateField(null, fIdx, { type: val })}
+                          onChangeOptions={(val) => updateField(null, fIdx, { options: val })}
+                          onOpenSim={() => handleOpenSim(null, fIdx, field)}
                           onDelete={() => deleteField(null, fIdx)}
                         />
                       ))}
@@ -430,6 +494,35 @@ const ClinicasServicioEditor = () => {
           <SaveIcon sx={{ mr: 1 }} /> Guardar Cambios
         </Fab>
       </Tooltip>
+      {/* Diálogo de Simulación */}
+      <Dialog 
+        open={simDialog.open} 
+        onClose={() => setSimDialog({ ...simDialog, open: false })}
+        PaperProps={{ sx: { borderRadius: 4, p: 1 } }}
+      >
+        <DialogTitle sx={{ fontWeight: 900 }}>Simular Valor: {simDialog.label}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ mb: 2, color: '#64748b' }}>
+            Ingrese el valor que aparecerá por defecto ("hardcodeado") para este campo en la tablet.
+          </Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Ej: 15, SANATORIO ALLENDE, 20/05/2025..."
+            value={simDialog.value}
+            onChange={(e) => setSimDialog({ ...simDialog, value: e.target.value })}
+            autoFocus
+          />
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setSimDialog({ ...simDialog, open: false })} sx={{ fontWeight: 700, color: '#64748b' }}>
+            Cancelar
+          </Button>
+          <Button variant="contained" onClick={handleSaveSim} sx={{ borderRadius: 3, fontWeight: 800, bgcolor: '#0ea5e9' }}>
+            Asignar Valor
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

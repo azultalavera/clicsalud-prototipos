@@ -50,6 +50,7 @@ import {
   Save as SaveIcon,
   ListAlt as ListAltIcon,
   Bolt as BoltIcon,
+  Science as ScienceIcon,
 } from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
@@ -69,8 +70,22 @@ const TRAMITE_MAPPING = {
     "FECHA VENCIMIENTO PLAN EVACUACION",
     "FECHA VENCIMIENTO BOMBEROS",
     "FECHA VENCIMIENTO EXTINGUIDORES"
+  ],
+  "DATOS DEL TRÁMITE": [
+    "TOTAL DE CAMAS",
+    "SERVICIOS SELECCIONADOS"
   ]
 };
+
+const PASOS_TRAMITE = [
+  "DATOS GENERALES",
+  "ARQUITECTURA",
+  "INFRAESTRUCTURA",
+  "EQUIPAMIENTO",
+  "RECURSOS HUMANOS",
+  "SERVICIOS",
+  "FINALIZACIÓN"
+];
 
 const normalize = (str) =>
   (str || "").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
@@ -103,44 +118,71 @@ const ClinicasDashboard = () => {
       .map((option) => option.trim())
       .filter(Boolean);
 
-  const handleAddOption = (srvIdx, fIdx, secIdx, fieldId) => {
+  const handleAddOption = (row) => {
+    const fieldId = row.id;
     const nextOption = (optionDrafts[fieldId] || "").trim();
     if (!nextOption) return;
 
-    const newServicios = [...servicios];
-    const sourceField = secIdx !== -1
-      ? newServicios[srvIdx].sections[secIdx].fields[fIdx]
-      : newServicios[srvIdx].fields[fIdx];
+    const newServicios = JSON.parse(JSON.stringify(servicios));
 
-    const currentOptions = parseOptions(sourceField.options);
-    if (currentOptions.some(opt => opt.toLowerCase() === nextOption.toLowerCase())) {
-      setOptionDrafts(prev => ({ ...prev, [fieldId]: "" }));
-      return;
-    }
-
-    const updatedOptions = [...currentOptions, nextOption].join(", ");
-    if (secIdx !== -1) {
-      newServicios[srvIdx].sections[secIdx].fields[fIdx].options = updatedOptions;
+    if (row.idsByService) {
+      newServicios.forEach(srv => {
+        if (row.idsByService[srv.id]) {
+          srv.sections.forEach(sec => {
+            sec.fields = sec.fields.map(f => {
+              if (f.id === row.idsByService[srv.id]) {
+                const currentOptions = parseOptions(f.options);
+                if (!currentOptions.some(opt => opt.toLowerCase() === nextOption.toLowerCase())) {
+                  return { ...f, options: [...currentOptions, nextOption].join(", ") };
+                }
+              }
+              return f;
+            });
+          });
+        }
+      });
     } else {
-      newServicios[srvIdx].fields[fIdx].options = updatedOptions;
+      const srv = newServicios[row._srvIdx];
+      if (srv) {
+        let targetFields = row._secIdx !== -1 ? srv.sections[row._secIdx].fields : srv.fields;
+        if (targetFields && targetFields[row._originalIdx]) {
+          const currentOptions = parseOptions(targetFields[row._originalIdx].options);
+          if (!currentOptions.some(opt => opt.toLowerCase() === nextOption.toLowerCase())) {
+            targetFields[row._originalIdx].options = [...currentOptions, nextOption].join(", ");
+          }
+        }
+      }
     }
     setServicios(newServicios);
     setOptionDrafts(prev => ({ ...prev, [fieldId]: "" }));
   };
 
-  const handleRemoveOption = (srvIdx, fIdx, secIdx, optionToRemove) => {
-    const newServicios = [...servicios];
-    const sourceField = secIdx !== -1
-      ? newServicios[srvIdx].sections[secIdx].fields[fIdx]
-      : newServicios[srvIdx].fields[fIdx];
+  const handleRemoveOption = (row, optionToRemove) => {
+    const newServicios = JSON.parse(JSON.stringify(servicios));
 
-    const remainingOptions = parseOptions(sourceField.options).filter(opt => opt !== optionToRemove);
-    const updatedOptions = remainingOptions.join(", ");
-
-    if (secIdx !== -1) {
-      newServicios[srvIdx].sections[secIdx].fields[fIdx].options = updatedOptions;
+    if (row.idsByService) {
+      newServicios.forEach(srv => {
+        if (row.idsByService[srv.id]) {
+          srv.sections.forEach(sec => {
+            sec.fields = sec.fields.map(f => {
+              if (f.id === row.idsByService[srv.id]) {
+                const remainingOptions = parseOptions(f.options).filter(opt => opt !== optionToRemove);
+                return { ...f, options: remainingOptions.join(", ") };
+              }
+              return f;
+            });
+          });
+        }
+      });
     } else {
-      newServicios[srvIdx].fields[fIdx].options = updatedOptions;
+      const srv = newServicios[row._srvIdx];
+      if (srv) {
+        let targetFields = row._secIdx !== -1 ? srv.sections[row._secIdx].fields : srv.fields;
+        if (targetFields && targetFields[row._originalIdx]) {
+          const remainingOptions = parseOptions(targetFields[row._originalIdx].options).filter(opt => opt !== optionToRemove);
+          targetFields[row._originalIdx].options = remainingOptions.join(", ");
+        }
+      }
     }
     setServicios(newServicios);
   };
@@ -171,6 +213,34 @@ const ClinicasDashboard = () => {
             sec.fields.push({ id: `fld-${Date.now()}-${Math.random()}`, label: "CAMAS", type: "number", origin: "ADMIN" });
           }
         });
+
+        // REQUISITOS DEL TRÁMITE (TOTAL CAMAS / SERVICIOS)
+        const genSrv = newServicios.find(s => s.id === "srv-gen");
+        if (genSrv) {
+          let targetSec = genSrv.sections.find(s => normalize(s.name).includes("DATOS"));
+          if (!targetSec && genSrv.sections.length > 0) targetSec = genSrv.sections[0];
+          
+          if (targetSec) {
+            if (!targetSec.fields.some(f => f.label === "TOTAL DE CAMAS")) {
+              targetSec.fields.push({ 
+                id: `fld-totcamas-${Date.now()}`, 
+                label: "TOTAL DE CAMAS", 
+                type: "number", 
+                origin: "TRÁMITE", 
+                tramiteField: "DATOS DEL TRÁMITE > TOTAL DE CAMAS" 
+              });
+            }
+            if (!targetSec.fields.some(f => f.label === "SERVICIOS SELECCIONADOS")) {
+              targetSec.fields.push({ 
+                id: `fld-servsel-${Date.now()}`, 
+                label: "SERVICIOS SELECCIONADOS", 
+                type: "textarea", 
+                origin: "TRÁMITE", 
+                tramiteField: "DATOS DEL TRÁMITE > SERVICIOS SELECCIONADOS" 
+              });
+            }
+          }
+        }
       }
 
       if (aggType === "equip") {
@@ -178,7 +248,14 @@ const ClinicasDashboard = () => {
         newServicios.forEach((s, sIdx) => {
           const sec = s.sections.find(sec => normalize(sec.name).includes("EQUIP"));
           if (sec && !sec.fields.some(f => normalize(f.label).includes("equipamiento"))) {
-            sec.fields.push({ id: `fld-${Date.now()}-${Math.random()}`, label: "EQUIPAMIENTO MÍNIMO", type: "number", origin: "ADMIN" });
+            sec.fields.push({ 
+              id: `fld-equip-${Date.now()}-${Math.random()}`, 
+              label: "EQUIPAMIENTO MÍNIMO", 
+              type: "number", 
+              origin: "TRÁMITE",
+              pasoTramite: "EQUIPAMIENTO",
+              tramiteService: s.name
+            });
           }
         });
       }
@@ -528,9 +605,10 @@ const ClinicasDashboard = () => {
               <TableHead sx={{ bgcolor: "#f8fafc", borderBottom: "2px solid #e2e8f0" }}>
                 <TableRow>
                   <TableCell sx={{ width: "160px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>DATO</TableCell>
+                  <TableCell sx={{ width: "150px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>PASO</TableCell>
                   <TableCell sx={{ color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>REQUISITO</TableCell>
                   <TableCell sx={{ width: "200px", color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>TIPO DE DATO</TableCell>
-                  <TableCell align="center" sx={{ width: 80, color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>ACCIONES</TableCell>
+                  <TableCell align="center" sx={{ width: 110, color: "#64748b", fontWeight: 800, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>ACCIONES</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -655,6 +733,51 @@ const ClinicasDashboard = () => {
                         </ToggleButtonGroup>
                       </TableCell>
 
+                      {/* PASO DEL TRÁMITE (Solo si es TRÁMITE) */}
+                      <TableCell sx={{ width: 150, py: 1 }}>
+                        {(row.origin || "ADMIN") === "TRÁMITE" && (
+                          <Select
+                            fullWidth
+                            size="small"
+                            variant="standard"
+                            value={row.pasoTramite || ""}
+                            displayEmpty
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              const newServicios = JSON.parse(JSON.stringify(servicios));
+
+                              if (row.idsByService) {
+                                newServicios.forEach(srv => {
+                                  if (row.idsByService[srv.id]) {
+                                    srv.sections.forEach(sec => {
+                                      sec.fields = sec.fields.map(f => f.id === row.idsByService[srv.id] ? { ...f, pasoTramite: val } : f);
+                                    });
+                                  }
+                                });
+                              } else {
+                                const srv = newServicios[row._srvIdx];
+                                if (srv) {
+                                  let targetFields = row._secIdx !== -1 ? srv.sections[row._secIdx].fields : srv.fields;
+                                  if (targetFields && targetFields[row._originalIdx]) {
+                                    targetFields[row._originalIdx].pasoTramite = val;
+                                  }
+                                }
+                              }
+                              setServicios(newServicios);
+                            }}
+                            sx={{ fontSize: "0.75rem", fontWeight: 600, color: "#64748b" }}
+                            InputProps={{ disableUnderline: true }}
+                          >
+                            <MenuItem value="" disabled>Seleccionar paso...</MenuItem>
+                            {PASOS_TRAMITE.map(paso => (
+                              <MenuItem key={paso} value={paso} sx={{ fontSize: "0.75rem" }}>
+                                {paso}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      </TableCell>
+
                       {/* REQUISITO: TextField si ADMIN, Select/combo si TRÁMITE */}
                       <TableCell sx={{ py: 1 }}>
                         {(row.origin || "ADMIN") === "TRÁMITE" ? (
@@ -745,6 +868,11 @@ const ClinicasDashboard = () => {
                             InputProps={{ disableUnderline: true, sx: { fontSize: "0.85rem", fontWeight: 600 } }}
                           />
                         )}
+                        {row.tramiteService && (
+                          <Typography variant="caption" sx={{ display: 'block', color: '#0ea5e9', fontWeight: 900, mt: 0.5, fontSize: '0.65rem', textTransform: 'uppercase' }}>
+                            SERVICIO: {row.tramiteService}
+                          </Typography>
+                        )}
                       </TableCell>
 
                       {/* TIPO DE DATO */}
@@ -779,11 +907,81 @@ const ClinicasDashboard = () => {
                         >
                           {fieldTypes.map(opt => <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>)}
                         </TextField>
+
+                        {/* Gestión de opciones para toggle/select */}
+                        {(row.type === "toggle" || row.type === "select") && (
+                          <Box sx={{ mt: 1 }}>
+                            <Stack direction="row" spacing={0.5} alignItems="center">
+                              <TextField
+                                size="small"
+                                variant="outlined"
+                                placeholder="Nueva opción..."
+                                value={optionDrafts[row.id] || ""}
+                                onChange={(e) => setOptionDrafts(prev => ({ ...prev, [row.id]: e.target.value }))}
+                                onKeyPress={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleAddOption(row);
+                                  }
+                                }}
+                                sx={{ 
+                                  "& .MuiOutlinedInput-root": { borderRadius: 2, height: 30, fontSize: "0.75rem" }
+                                }}
+                              />
+                              <IconButton 
+                                size="small" 
+                                color="primary"
+                                onClick={() => handleAddOption(row)}
+                              >
+                                <AddIcon sx={{ fontSize: 16 }} />
+                              </IconButton>
+                            </Stack>
+                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
+                              {parseOptions(row.options).map((opt, idx) => (
+                                <Chip
+                                  key={idx}
+                                  label={opt}
+                                  size="small"
+                                  onDelete={() => handleRemoveOption(row, opt)}
+                                  sx={{ 
+                                    height: 20, 
+                                    fontSize: "0.65rem", 
+                                    fontWeight: 700,
+                                    bgcolor: "#f1f5f9"
+                                  }}
+                                />
+                              ))}
+                            </Box>
+                          </Box>
+                        )}
                       </TableCell>
 
                       {/* ACCIONES */}
-                      <TableCell align="center" sx={{ width: 80, py: 1 }}>
-                        <IconButton size="small" onClick={() => {
+                      <TableCell align="center" sx={{ width: 110, py: 1 }}>
+                        <Stack direction="row" spacing={0.5} justifyContent="center">
+                          <Tooltip title="Simular valor (Hardcode)">
+                            <IconButton
+                              size="small"
+                              onClick={() => {
+                                setHardcodeDialog({
+                                  open: true,
+                                  field: row,
+                                  value: row.valorTramite || "",
+                                  srvIdx: row._srvIdx ?? -1,
+                                  secIdx: row._secIdx ?? -1,
+                                  fIdx: row._originalIdx ?? -1,
+                                });
+                              }}
+                              sx={{
+                                color: "#0ea5e9",
+                                bgcolor: "rgba(14, 165, 233, 0.08)",
+                                "&:hover": { bgcolor: "rgba(14, 165, 233, 0.18)" }
+                              }}
+                            >
+                              <ScienceIcon sx={{ fontSize: 18 }} />
+                            </IconButton>
+                          </Tooltip>
+                          <IconButton size="small" onClick={() => {
                           const newServicios = (servicios || []).map(srv => {
                             if (row.idsByService && row.idsByService[srv.id]) {
                               return {
@@ -812,8 +1010,9 @@ const ClinicasDashboard = () => {
                           });
                           setServicios(newServicios);
                         }} sx={{ color: "#94a3b8", "&:hover": { color: "#ef4444" } }}>
-                          <DeleteOutlineIcon fontSize="small" />
-                        </IconButton>
+                            <DeleteOutlineIcon fontSize="small" />
+                          </IconButton>
+                        </Stack>
                       </TableCell>
                     </TableRow>
                   ));
@@ -841,7 +1040,8 @@ const ClinicasDashboard = () => {
                     id: `fld-${Date.now()}-${Math.random()}`,
                     label: "NUEVO REQUISITO",
                     type: (aggType === "infra" || aggType === "equip") ? "number" : "text",
-                    origin: "ADMIN",
+                    origin: (aggType === "equip" || aggType === "infra") ? "TRÁMITE" : "ADMIN",
+                    pasoTramite: aggType === "equip" ? "EQUIPAMIENTO" : (aggType === "infra" ? "INFRAESTRUCTURA" : ""),
                     options: ""
                   };
 
@@ -951,9 +1151,9 @@ const ClinicasDashboard = () => {
               const { srvIdx, secIdx, fIdx, value, field } = hardcodeDialog;
               const newServicios = [...servicios];
               if (secIdx !== -1) {
-                newServicios[srvIdx].sections[secIdx].fields[fIdx].valorTramiteMock = value;
+                newServicios[srvIdx].sections[secIdx].fields[fIdx].valorTramite = value;
               } else {
-                newServicios[srvIdx].fields[fIdx].valorTramiteMock = value;
+                newServicios[srvIdx].fields[fIdx].valorTramite = value;
               }
               setServicios(newServicios);
               setHardcodeDialog({ ...hardcodeDialog, open: false });

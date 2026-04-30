@@ -46,12 +46,19 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import LockIcon from "@mui/icons-material/Lock";
+import HistoryIcon from "@mui/icons-material/History";
+import ScienceIcon from "@mui/icons-material/Science";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   IconButton,
+  Menu,
 } from "@mui/material";
 
 
@@ -90,6 +97,17 @@ const PantallaInspeccion = ({
     representative: null,
     inspector: null,
   });
+
+  const [activeView, setActiveView] = useState("INSPECCION"); // "REVISION" o "INSPECCION"
+  const [historyAnchorEl, setHistoryAnchorEl] = useState(null);
+  const historyMenuOpen = Boolean(historyAnchorEl);
+
+  const handleHistoryClick = (event) => {
+    setHistoryAnchorEl(event.currentTarget);
+  };
+  const handleHistoryClose = () => {
+    setHistoryAnchorEl(null);
+  };
 
   const [obsDialog, setObsDialog] = useState({
     open: false,
@@ -662,6 +680,121 @@ const PantallaInspeccion = ({
         </Stack>
       </Paper>
 
+      {/* Selector de Acta / Revisión / Historial */}
+      <Box 
+        sx={{ 
+          bgcolor: '#ebeef2', 
+          borderRadius: 6, 
+          p: 0.8, 
+          mb: 4, 
+          display: 'flex', 
+          alignItems: 'center',
+          gap: 0.5,
+          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)'
+        }}
+      >
+        <Button
+          onClick={handleHistoryClick}
+          startIcon={<HistoryIcon sx={{ color: '#0ea5e9' }} />}
+          endIcon={historyMenuOpen ? <KeyboardArrowUpIcon sx={{ color: '#0ea5e9' }} /> : <KeyboardArrowDownIcon sx={{ color: '#0ea5e9' }} />}
+          sx={{
+            bgcolor: historyMenuOpen ? 'white' : 'transparent',
+            borderRadius: 5,
+            px: 3,
+            py: 1,
+            fontWeight: 900,
+            color: '#0ea5e9',
+            boxShadow: historyMenuOpen ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+            textTransform: 'uppercase',
+            fontSize: '0.85rem',
+            letterSpacing: '0.02em',
+            '&:hover': { bgcolor: historyMenuOpen ? '#ffffff' : 'rgba(0,0,0,0.04)' }
+          }}
+        >
+          HISTORIAL
+        </Button>
+
+        <Menu
+          anchorEl={historyAnchorEl}
+          open={historyMenuOpen}
+          onClose={handleHistoryClose}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              mt: 1.5,
+              borderRadius: 4,
+              minWidth: 180,
+              boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)',
+              border: '1px solid #f1f5f9',
+              '& .MuiMenuItem-root': {
+                fontWeight: 800,
+                color: '#64748b',
+                fontSize: '0.9rem',
+                py: 1.5,
+                px: 3,
+                mx: 1,
+                borderRadius: 2,
+                '&:hover': {
+                  bgcolor: '#f0f9ff',
+                  color: '#0ea5e9'
+                }
+              }
+            }
+          }}
+          transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        >
+          <MenuItem onClick={handleHistoryClose} sx={{ bgcolor: '#f0f9ff !important', color: '#0ea5e9 !important' }}>ACTA 1</MenuItem>
+          <MenuItem onClick={handleHistoryClose}>ACTA 2</MenuItem>
+          <MenuItem onClick={handleHistoryClose}>ACTA 3</MenuItem>
+        </Menu>
+
+        <Button
+          variant="text"
+          onClick={() => setActiveView("REVISION")}
+          sx={{
+            flex: 1,
+            borderRadius: 5,
+            fontWeight: 900,
+            py: 1,
+            color: activeView === "REVISION" ? "#0f172a" : "#64748b",
+            bgcolor: activeView === "REVISION" ? "white" : "transparent",
+            boxShadow: activeView === "REVISION" ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
+            textTransform: 'none',
+            fontSize: '0.85rem',
+            '&:hover': { bgcolor: activeView === "REVISION" ? 'white' : 'rgba(0,0,0,0.04)' }
+          }}
+        >
+          ACTA 4: REVISIÓN
+        </Button>
+        <Button
+          variant="text"
+          onClick={() => setActiveView("INSPECCION")}
+          sx={{
+            flex: 1,
+            borderRadius: 5,
+            fontWeight: 900,
+            py: 1,
+            color: activeView === "INSPECCION" ? "#0f172a" : "#64748b",
+            bgcolor: activeView === "INSPECCION" ? "white" : "transparent",
+            boxShadow: activeView === "INSPECCION" ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
+            textTransform: 'none',
+            fontSize: '0.85rem',
+            '&:hover': { bgcolor: activeView === "INSPECCION" ? 'white' : 'rgba(0,0,0,0.04)' }
+          }}
+        >
+          ACTA 5: INSPECCIÓN
+        </Button>
+      </Box>
+
+      {activeView === "REVISION" ? (
+        <RevisionActaView 
+          obsGenerales={obsDatosGenerales} 
+          obsTramite={obsDatosTramite} 
+        />
+      ) : (
+        <>
+
       {datosGeneralesSrv && (
         <Accordion
           expanded={expandedDatosGenerales}
@@ -778,6 +911,8 @@ const PantallaInspeccion = ({
                     value={inspectorData[field.id]}
                     onChange={handleFieldChange}
                     onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "GENERAL")}
+                    infraEfector={infraEfector}
+                    serviciosEfector={serviciosEfector}
                   />
                 ))}
             </Box>
@@ -1136,12 +1271,14 @@ const PantallaInspeccion = ({
                             }}
                           >
                             {section.fields?.map((field) => (
-                              <FieldItem
-                                key={field.id}
-                                field={field}
-                                value={inspectorData[field.id]}
-                                onChange={handleFieldChange}
-                              />
+                                <FieldItem
+                                  key={field.id}
+                                  field={field}
+                                  value={inspectorData[field.id]}
+                                  onChange={handleFieldChange}
+                                  infraEfector={infraEfector}
+                                  serviciosEfector={serviciosEfector}
+                                />
                             ))}
                           </Box>
                         )}
@@ -1485,6 +1622,9 @@ const PantallaInspeccion = ({
         )}
       </Stack>
 
+        </>
+      )}
+
       <SignatureModal
         open={signatureModalOpen}
         step={signatureStep}
@@ -1498,19 +1638,30 @@ const PantallaInspeccion = ({
   );
 };
 
-const FieldItem = ({ field, value, onChange, onOpenObs }) => {
+const FieldItem = ({ field, value, onChange, onOpenObs, infraEfector, serviciosEfector }) => {
   const isObj = value && typeof value === 'object' && !Array.isArray(value);
   const realValue = isObj ? value.value : value;
   const obsText = isObj ? value.obs : "";
   const isObserved = isObj ? value.observado : false;
 
+  let specialValue = undefined;
+  if (field.origin === "TRÁMITE") {
+    const upperLabel = normalize(field.label || "");
+    if (upperLabel.includes("TOTAL DE CAMAS")) {
+      specialValue = Object.values(infraEfector || {}).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
+    } else if (upperLabel.includes("SERVICIOS SELECCIONADOS")) {
+      specialValue = (serviciosEfector || []).join(", ");
+    }
+  }
+
   const renderInput = () => {
     switch (field.type) {
       case "boolean":
       case "checkbox":
+        const effectiveValue = realValue !== undefined ? realValue : ((field.valorTramite || field.valorTramiteMock) === "si" || (field.valorTramite || field.valorTramiteMock) === "true");
         return (
           <ToggleButtonGroup
-            value={realValue === undefined ? null : realValue ? "si" : "no"}
+            value={effectiveValue === undefined ? null : effectiveValue ? "si" : "no"}
             exclusive
             disabled={field.origin === "TRÁMITE"}
             onChange={(e, val) => {
@@ -1566,7 +1717,7 @@ const FieldItem = ({ field, value, onChange, onOpenObs }) => {
             variant="outlined"
             size="small"
             disabled={field.origin === "TRÁMITE"}
-            value={realValue || field.valorTramite || ""}
+            value={realValue || specialValue || (field.valorTramite || field.valorTramiteMock) || ""}
             onChange={(e) => onChange(field.id, e.target.value)}
             InputLabelProps={{ shrink: true }}
             sx={{
@@ -1582,7 +1733,7 @@ const FieldItem = ({ field, value, onChange, onOpenObs }) => {
       case "toggle":
         return (
           <ToggleButtonGroup
-            value={realValue}
+            value={realValue || (field.valorTramite || field.valorTramiteMock)}
             exclusive
             disabled={field.origin === "TRÁMITE"}
             onChange={(e, val) => {
@@ -1619,7 +1770,7 @@ const FieldItem = ({ field, value, onChange, onOpenObs }) => {
             variant="outlined"
             size="small"
             disabled={field.origin === "TRÁMITE"}
-            value={realValue || ""}
+            value={realValue || specialValue || (field.valorTramite || field.valorTramiteMock) || ""}
             onChange={(e) => onChange(field.id, e.target.value)}
             sx={{
               "& .MuiInputBase-root": {
@@ -1664,7 +1815,7 @@ const FieldItem = ({ field, value, onChange, onOpenObs }) => {
             size="small"
             placeholder="0"
             disabled={field.origin === "TRÁMITE"}
-            value={realValue || field.valorTramite || ""}
+            value={realValue || specialValue || (field.valorTramite || field.valorTramiteMock) || ""}
             onChange={(e) => onChange(field.id, e.target.value)}
             InputProps={{
               sx: {
@@ -1684,7 +1835,7 @@ const FieldItem = ({ field, value, onChange, onOpenObs }) => {
             size="small"
             placeholder="Escriba aquí..."
             disabled={field.origin === "TRÁMITE"}
-            value={realValue || field.valorTramite || ""}
+            value={realValue || specialValue || (field.valorTramite || field.valorTramiteMock) || ""}
             multiline={field.type === "textarea"}
             rows={field.type === "textarea" ? 3 : 1}
             onChange={(e) => onChange(field.id, e.target.value)}
@@ -1694,6 +1845,8 @@ const FieldItem = ({ field, value, onChange, onOpenObs }) => {
                 fontSize: "14px",
                 fontWeight: 500,
                 minHeight: 48,
+                bgcolor: field.origin === "TRÁMITE" ? "#f8fafc" : "white",
+                color: field.origin === "TRÁMITE" ? "#64748b" : "inherit",
               },
             }}
           />
@@ -1717,14 +1870,27 @@ const FieldItem = ({ field, value, onChange, onOpenObs }) => {
           <Typography
             sx={{
               fontWeight: 800,
-              color: "#334155",
+              color: field.origin === "TRÁMITE" ? "#64748b" : "#334155",
               lineHeight: 1.2,
               fontSize: "13px",
               textTransform: "uppercase",
-              mb: 1
+              mb: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5
             }}
           >
             {field.label}
+            {field.origin === "TRÁMITE" && (
+              <Tooltip title="Dato del trámite (No editable)">
+                <LockIcon sx={{ fontSize: 14, color: '#94a3b8' }} />
+              </Tooltip>
+            )}
+            {(field.valorTramite || field.valorTramiteMock) && (
+              <Tooltip title={`Valor simulado: ${field.valorTramite || field.valorTramiteMock}`}>
+                <ScienceIcon sx={{ fontSize: 14, color: '#0ea5e9' }} />
+              </Tooltip>
+            )}
           </Typography>
           {onOpenObs && (
             <IconButton
@@ -1806,7 +1972,17 @@ const VerificationTable = ({
             const obsText = currentVal.obs || "";
 
             let valorDeclarado =
-              field.valorTramite ?? field.cantidadMinima ?? field.valorDeclarado ?? 1;
+              (field.valorTramite || field.valorTramiteMock) ?? field.cantidadMinima ?? field.valorDeclarado ?? 1;
+
+            // 0. DATOS ESPECIALES DEL TRÁMITE
+            if (field.origin === "TRÁMITE") {
+              const upperLabel = normalize(field.label || "");
+              if (upperLabel.includes("TOTAL DE CAMAS")) {
+                valorDeclarado = Object.values(infraEfector || {}).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
+              } else if (upperLabel.includes("SERVICIOS SELECCIONADOS")) {
+                valorDeclarado = (serviciosEfector || []).join(", ");
+              }
+            }
 
             // 1. INFRAESTRUCTURA (Camas/Salas)
             const name = field.label || field.name;
@@ -2253,6 +2429,165 @@ const FileViewerModal = ({ file, onClose }) => {
 };
 
 export default PantallaInspeccion;
+
+const RevisionActaView = ({ obsGenerales = [], obsTramite = [] }) => {
+  const [statuses, setStatuses] = useState({});
+
+  const handleUpdateStatus = (id, status) => {
+    setStatuses(prev => ({ ...prev, [id]: status }));
+  };
+
+  const getStatusChip = (status) => {
+    switch (status) {
+      case "VALIDADO": return <Chip label="VALIDADO" size="small" color="success" sx={{ fontWeight: 900, fontSize: '0.6rem' }} />;
+      case "RECHAZADO": return <Chip label="RECHAZADO" size="small" color="error" sx={{ fontWeight: 900, fontSize: '0.6rem' }} />;
+      default: return <Chip label="PENDIENTE" size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', bgcolor: '#fef3c7', color: '#b45309' }} />;
+    }
+  };
+
+  // Usar los datos reales si vienen, sino caer en los de ejemplo
+  const displayObsGenerales = obsGenerales.length > 0 
+    ? obsGenerales.map((o, i) => ({ id: `gen-${i}`, elemento: o.label, obs: o.text }))
+    : [
+    { id: "Libro de Quejas", elemento: "Libro de Quejas", obs: "No se presenta libro de quejas foliado." },
+    { id: "Plan de Evacuación", elemento: "Plan de Evacuación", obs: "Vencimiento 10/03/2026." },
+    { id: "Habilitación Bomberos", elemento: "Habilitación Bomberos", obs: "Certificado vencido Enero 2026." },
+    { id: "Blindaje Plomo", elemento: "Radiofísica: Blindaje", obs: "Falta blindaje en puerta Rayos X." },
+    { id: "Dosimetría", elemento: "Radiofísica: Dosimetría", obs: "Registros incompletos." },
+    { id: "Señalética", elemento: "Radiofísica: Señalética", obs: "Falta luz roja de advertencia." }
+  ];
+
+  const displayIrregularidades = obsTramite.length > 0
+    ? obsTramite.map((o, i) => ({ 
+        id: `tra-${i}`, 
+        elemento: o.label, 
+        servicio: o.service,
+        obs: o.text,
+        // Valores por defecto para el diseño si no vienen en el objeto plano
+        declarado: o.declarado || 0, 
+        constatado: o.constatado || 0 
+      }))
+    : [
+    { id: "Quirófanos", elemento: "Quirófanos", declarado: 11, constatado: 5, obs: "IRREGULARIDAD: No se constatan 6 quirófanos." },
+    { id: "Camas Uso Transitorio", elemento: "Camas Uso Transitorio", declarado: 5, constatado: 9, obs: "RECTIFICACIÓN: Excedente de 4 camas." },
+  ];
+
+  return (
+    <Box sx={{ animation: 'fadeIn 0.3s ease-in-out' }}>
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+      
+      <Typography variant="h6" sx={{ fontWeight: 950, color: '#1e293b', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <InfoIcon color="primary" /> OBSERVACIONES DATOS GENERALES
+      </Typography>
+
+      <Paper sx={{ p: 0, mb: 5, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+        <TableContainer>
+          <Table size="small">
+            <TableHead sx={{ bgcolor: '#f8fafc' }}>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ELEMENTO / CATEGORÍA</TableCell>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>DETALLE DEL HALLAZGO</TableCell>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ESTADO</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ACCIONES</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {displayObsGenerales.map((row) => (
+                <TableRow key={row.id} hover>
+                  <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>{row.elemento}</TableCell>
+                  <TableCell sx={{ fontSize: '0.75rem', color: '#475569' }}>{row.obs}</TableCell>
+                  <TableCell>{getStatusChip(statuses[row.id])}</TableCell>
+                  <TableCell align="center">
+                     <Stack direction="row" spacing={1} justifyContent="center">
+                        <Button 
+                          size="small" 
+                          variant={statuses[row.id] === "VALIDADO" ? "contained" : "outlined"} 
+                          color="success" 
+                          onClick={() => handleUpdateStatus(row.id, "VALIDADO")}
+                          sx={{ fontSize: '0.65rem', fontWeight: 900, minWidth: 80 }}
+                        >
+                          VALIDAR
+                        </Button>
+                        <Button 
+                          size="small" 
+                          variant={statuses[row.id] === "RECHAZADO" ? "contained" : "outlined"} 
+                          color="error" 
+                          onClick={() => handleUpdateStatus(row.id, "RECHAZADO")}
+                          sx={{ fontSize: '0.65rem', fontWeight: 900, minWidth: 80 }}
+                        >
+                          RECHAZAR
+                        </Button>
+                     </Stack>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
+      <Typography variant="h6" sx={{ fontWeight: 950, color: '#1e293b', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <ErrorIcon color="error" /> IRREGULARIDADES DATOS DEL TRÁMITE
+      </Typography>
+      
+      <Paper sx={{ p: 0, mb: 3, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+        <TableContainer>
+          <Table size="small">
+            <TableHead sx={{ bgcolor: '#f8fafc' }}>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ELEMENTO TÉCNICO</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>DECLARADO</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>CONSTATADO</TableCell>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ESTADO</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ACCIONES</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {displayIrregularidades.map((row) => (
+                <TableRow key={row.id} hover>
+                  <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>
+                    {row.servicio && <Chip label={row.servicio} size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', mr: 1, height: 18 }} />}
+                    {row.elemento}
+                  </TableCell>
+                  <TableCell align="center"><Chip label={row.declarado} size="small" sx={{ fontWeight: 800, bgcolor: '#e2e8f0' }} /></TableCell>
+                  <TableCell align="center"><Chip label={row.constatado} size="small" sx={{ fontWeight: 800, bgcolor: '#fee2e2', color: '#991b1b' }} /></TableCell>
+                  <TableCell>{getStatusChip(statuses[row.id])}</TableCell>
+                  <TableCell align="center">
+                     <Stack direction="row" spacing={1} justifyContent="center">
+                        <Button 
+                          size="small" 
+                          variant={statuses[row.id] === "VALIDADO" ? "contained" : "outlined"} 
+                          color="success" 
+                          onClick={() => handleUpdateStatus(row.id, "VALIDADO")}
+                          sx={{ minWidth: 0, p: 0.5, borderRadius: 1.5 }}
+                        >
+                          <CheckCircleIcon sx={{ fontSize: 18 }} />
+                        </Button>
+                        <Button 
+                          size="small" 
+                          variant={statuses[row.id] === "RECHAZADO" ? "contained" : "outlined"} 
+                          color="error" 
+                          onClick={() => handleUpdateStatus(row.id, "RECHAZADO")}
+                          sx={{ minWidth: 0, p: 0.5, borderRadius: 1.5 }}
+                        >
+                          <ErrorIcon sx={{ fontSize: 18 }} />
+                        </Button>
+                     </Stack>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </Box>
+  );
+};
 
 const SignatureModal = ({ open, step, onClose, onSave }) => {
   const canvasRef = useRef(null);
