@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Box, AppBar, Toolbar, Typography, Avatar, IconButton, 
   Menu, MenuItem, ListItemIcon, Divider, Drawer, List, 
-  ListItemButton, ListItemText 
+  ListItemButton, ListItemText, Fab, Tooltip
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
@@ -13,6 +13,7 @@ import TabletMacIcon from '@mui/icons-material/TabletMac';
 import InboxIcon from '@mui/icons-material/Inbox';
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import fondoOndas from '../../assets/fondo.webp';
 
 const drawerWidthFull = 320;
@@ -183,6 +184,33 @@ const Layout = ({ children }) => {
         }}
       >
         {children}
+
+        {/* Botón de Auto-carga persistente */}
+        <Tooltip title="Cargar Datos de Prueba (Guardia / UTI Neonatal / Quirófanos)">
+          <Fab
+            onClick={() => {
+              localStorage.setItem("efector_servicios", JSON.stringify(["GUARDIA", "UNIDAD DE TERAPIA INTENSIVA NEONATAL"]));
+              localStorage.setItem("efector_infra", JSON.stringify({
+                "QUIRÓFANO": 3,
+                "SHOCK ROOM": 4
+              }));
+              window.location.reload();
+            }}
+            sx={{
+              position: "fixed",
+              bottom: 30,
+              right: 100, // Al lado del botón de ayuda/add si existe
+              zIndex: 2000,
+              backgroundColor: "#ff9800",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#e68a00",
+              },
+            }}
+          >
+            <AutoFixHighIcon />
+          </Fab>
+        </Tooltip>
 
         {/* Footer */}
         {!isInspector && (

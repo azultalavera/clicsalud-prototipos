@@ -59,12 +59,30 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
   ];
 
   return (
-    <Box sx={{ p: { xs: 1, sm: 2 }, bgcolor: '#f1f5f9', minHeight: '100%' }}>
+    <Box sx={{ p: { xs: 1, sm: 2 }, bgcolor: '#f8fafc', minHeight: '100%' }}>
+
+      {/* Cuadro de Conclusión General (Estilo Acta 1/3) */}
+      <Paper sx={{ p: 3, mb: 4, borderRadius: 4, border: '1px solid #FFE0B2', bgcolor: '#FFF9E6', display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+        <DescriptionIcon sx={{ color: '#92400e', mt: 0.5 }} />
+        <Box>
+          <Typography variant="subtitle1" sx={{ fontWeight: 950, color: '#92400e', mb: 0.5, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            RESUMEN DE OBSERVACIONES (ACTA DE REVISIÓN)
+          </Typography>
+          <Typography variant="body1" sx={{ color: '#92400e', fontWeight: 600, lineHeight: 1.6, fontSize: '0.95rem' }}>
+            "Se detectaron múltiples irregularidades en la documentación técnica y en la infraestructura de los servicios críticos. El efector ha respondido a los emplazamientos y se procede a la validación final."
+          </Typography>
+        </Box>
+      </Paper>
 
       {/* SECCIÓN 1: DATOS GENERALES */}
-      <Typography variant="h6" sx={{ fontWeight: 950, color: '#1e293b', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-        <InfoIcon color="primary" /> OBSERVACIONES DATOS GENERALES
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+        <Box sx={{ bgcolor: '#0ea5e9', color: 'white', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <InfoIcon sx={{ fontSize: 18 }} />
+        </Box>
+        <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#1e293b", fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: 1 }}>
+          OBSERVACIONES DATOS GENERALES
+        </Typography>
+      </Box>
 
       <Paper sx={{ p: 0, mb: 5, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
         <TableContainer>
@@ -90,7 +108,7 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
                           variant={statuses[row.id] === "VALIDADO" ? "contained" : "outlined"} 
                           color="success" 
                           onClick={() => handleUpdateStatus(row.id, "VALIDADO")}
-                          sx={{ fontSize: '0.65rem', fontWeight: 900 }}
+                          sx={{ fontSize: '0.65rem', fontWeight: 900, borderRadius: 2 }}
                         >
                           VALIDAR
                         </Button>
@@ -99,7 +117,7 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
                           variant={statuses[row.id] === "RECHAZADO" ? "contained" : "outlined"} 
                           color="error" 
                           onClick={() => handleUpdateStatus(row.id, "RECHAZADO")}
-                          sx={{ fontSize: '0.65rem', fontWeight: 900 }}
+                          sx={{ fontSize: '0.65rem', fontWeight: 900, borderRadius: 2 }}
                         >
                           RECHAZAR
                         </Button>
@@ -113,9 +131,14 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
       </Paper>
 
       {/* SECCIÓN 2: DATOS DEL TRÁMITE */}
-      <Typography variant="h6" sx={{ fontWeight: 950, color: '#1e293b', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-        <ErrorIcon color="error" /> IRREGULARIDADES DATOS DEL TRÁMITE
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+        <Box sx={{ bgcolor: '#ef4444', color: 'white', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <ErrorIcon sx={{ fontSize: 18 }} />
+        </Box>
+        <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#1e293b", fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: 1 }}>
+          IRREGULARIDADES DATOS DEL TRÁMITE
+        </Typography>
+      </Box>
       
       <Paper sx={{ p: 0, mb: 3, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
         <TableContainer>

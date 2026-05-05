@@ -2480,19 +2480,84 @@
               "fields": [
                 {
                   "id": "f-n56ha4",
-                  "label": "NOMBRE DEL ESTABLECIMIENTO",
+                  "label": "N° de Expediente",
                   "type": "text",
                   "options": "",
                   "origin": "TRÁMITE",
-                  "tramiteField": "ARQUITECTURA > NOMBRE DEL ESTABLECIMIENTO",
-                  "valorTramiteMock": "SANATORIO ALLENDE",
-                  "valorTramite": "sanatorio allende"
+                  "tramiteField": "ARQUITECTURA > N° de Expediente"
                 },
                 {
                   "id": "f-foro7rdj",
-                  "label": "TIPO INSPECCIÓN",
+                  "label": "FORMATO INSPECCIÓN",
                   "type": "toggle",
                   "options": "VIRTUAL, PRESENCIAL"
+                },
+                {
+                  "id": "f-raz01uce",
+                  "label": "Denominación",
+                  "type": "text",
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ESTABLECIMIENTO > Denominación",
+                  "valorTramiteMock": "Obispo oro 90"
+                },
+                {
+                  "id": "f-dirs7pux",
+                  "label": "Dirección",
+                  "type": "text",
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ESTABLECIMIENTO > Dirección",
+                  "valorTramiteMock": "Obispo oro 90"
+                },
+                {
+                  "id": "f-locojjjz",
+                  "label": "Localidad",
+                  "type": "text",
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ESTABLECIMIENTO > Localidad"
+                },
+                {
+                  "id": "f-emab2jbz",
+                  "label": "Contacto (Email)",
+                  "type": "text",
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ESTABLECIMIENTO > Contacto (Email)"
+                },
+                {
+                  "id": "f-telkvmy6",
+                  "label": "Contacto (Teléfono)",
+                  "type": "number",
+                  "options": "",
+                  "origin": "TRÁMITE",
+                  "tramiteField": "ESTABLECIMIENTO > Contacto (Teléfono)"
+                },
+                {
+                  "id": "f-rad2gboj",
+                  "label": "Radiofísica",
+                  "type": "boolean",
+                  "options": "SI, NO"
+                },
+                {
+                  "id": "f-tiph0tnw",
+                  "label": "Tipo de Inspección",
+                  "type": "select",
+                  "options": "HABILITACIÓN, RUTINA, DENUNCIA"
+                },
+                {
+                  "id": "f-fectnyn0",
+                  "label": "Fecha de Habilitación M/R",
+                  "type": "date",
+                  "options": ""
+                },
+                {
+                  "id": "f-res1c2cd",
+                  "label": "Resolución Nº M/R",
+                  "type": "number",
+                  "options": "",
+                  "origin": "ADMIN"
                 }
               ]
             },
@@ -2666,25 +2731,19 @@
                   "id": "f-fece1mcv",
                   "label": "FECHA VENCIMIENTO PLAN EVACUACION",
                   "type": "date",
-                  "options": "",
-                  "origin": "TRÁMITE",
-                  "tramiteField": "DATOS GENERALES > DATOS > FECHA VENCIMIENTO PLAN EVACUACION"
+                  "options": ""
                 },
                 {
                   "id": "f-fecnf6ax",
                   "label": "FECHA VENCIMIENTO BOMBEROS",
                   "type": "date",
-                  "options": "",
-                  "origin": "TRÁMITE",
-                  "tramiteField": "DATOS GENERALES > DATOS > FECHA VENCIMIENTO BOMBEROS"
+                  "options": ""
                 },
                 {
                   "id": "f-feczcrfa",
                   "label": "FECHA VENCIMIENTO EXTINGUIDORES",
                   "type": "date",
-                  "options": "",
-                  "origin": "TRÁMITE",
-                  "tramiteField": "DATOS GENERALES > DATOS > FECHA VENCIMIENTO EXTINGUIDORES"
+                  "options": ""
                 }
               ]
             },
@@ -2773,36 +2832,14 @@
                 {
                   "id": "f-prof2qlm",
                   "label": "Propio/Tercerizado",
-                  "type": "toggle",
+                  "type": "select",
                   "options": "PROPIO, TERCERIZADO"
                 },
                 {
                   "id": "new-1776187387395",
                   "label": "Interno/Externo",
-                  "type": "toggle",
+                  "type": "select",
                   "options": "INTERNO, EXTERNO"
-                }
-              ]
-            },
-            {
-              "id": "sec-1777585977690",
-              "name": "SALAS",
-              "fields": [
-                {
-                  "id": "fld-1777585977690-0.15677397174213425",
-                  "label": "TOTAL DE CAMAS",
-                  "type": "number",
-                  "origin": "TRÁMITE",
-                  "options": "",
-                  "tramiteField": "DATOS DEL TRÁMITE > TOTAL DE CAMAS"
-                },
-                {
-                  "id": "fld-1777586235471-0.5168165232191337",
-                  "label": "SERVICIOS SELECCIONADOS",
-                  "type": "number",
-                  "origin": "TRÁMITE",
-                  "options": "",
-                  "tramiteField": "DATOS DEL TRÁMITE > SERVICIOS SELECCIONADOS"
                 }
               ]
             }
@@ -2816,12 +2853,6 @@
               "id": "sec-arq4usxx",
               "name": "ARQUITECTURA",
               "fields": [
-                {
-                  "id": "f-nbsty2",
-                  "label": "N° DE CAMAS",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
                 {
                   "id": "f-coirtqrm",
                   "label": "Coincide con edificacion",
@@ -2972,6 +3003,14 @@
               "options": "",
               "origin": "TRÁMITE",
               "tramiteField": "RECURSOS HUMANOS > CANTIDAD"
+            },
+            {
+              "id": "fld-1777990075935-0.3873453821470212",
+              "label": "JEFE DE SERIVCIO",
+              "type": "text",
+              "origin": "ADMIN",
+              "pasoTramite": "",
+              "options": ""
             }
           ]
         },
@@ -2983,12 +3022,6 @@
               "id": "sec-arqvccn7",
               "name": "ARQUITECTURA",
               "fields": [
-                {
-                  "id": "f-n82jze",
-                  "label": "N° DE CAMAS",
-                  "type": "number",
-                  "options": ""
-                },
                 {
                   "id": "f-coismopf",
                   "label": "Coincide con edificacion",
@@ -3073,12 +3106,6 @@
               "id": "sec-seray9qq",
               "name": "ARQUITECTURA",
               "fields": [
-                {
-                  "id": "f-nwyxjn",
-                  "label": "N° DE CAMAS",
-                  "type": "number",
-                  "options": ""
-                },
                 {
                   "id": "f-coi0xxoj",
                   "label": "Coincide con edificacion",
@@ -3263,12 +3290,6 @@
               "name": "ARQUITECTURA",
               "fields": [
                 {
-                  "id": "f-n6s631",
-                  "label": "N° DE CAMAS",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
                   "id": "f-coi8x91j",
                   "label": "Coincide con edificacion",
                   "type": "boolean",
@@ -3277,30 +3298,6 @@
                 {
                   "id": "f-plavbm0q",
                   "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-mesvm11d",
-                  "label": "Mesa auxiliar",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-lmddzzh",
-                  "label": "Lámpara portátil de altura regulable",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bal61g4k",
-                  "label": "Balanza para recién nacido",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-monqy2ur",
-                  "label": "Monitor fetal portátil",
                   "type": "boolean",
                   "options": "SI, NO"
                 }
@@ -3340,12 +3337,6 @@
               "id": "sec-arq0eijm",
               "name": "ARQUITECTURA",
               "fields": [
-                {
-                  "id": "f-nqkjk8",
-                  "label": "N° DE CAMAS",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
                 {
                   "id": "f-coiud4hc",
                   "label": "Coincide con edificacion",
@@ -3688,12 +3679,6 @@
               "id": "sec-arq33y8k",
               "name": "ARQUITECTURA",
               "fields": [
-                {
-                  "id": "f-nb0o2g",
-                  "label": "N° DE CAMAS",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
                 {
                   "id": "f-coigkn6k",
                   "label": "Coincide con edificacion",
@@ -4145,12 +4130,6 @@
               "name": "ARQUITECTURA",
               "fields": [
                 {
-                  "id": "f-nu8xqv",
-                  "label": "N° DE CAMAS",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
                   "id": "f-coicy345",
                   "label": "Coincide con edificacion",
                   "type": "boolean",
@@ -4263,12 +4242,6 @@
               "id": "sec-arqwkuiq",
               "name": "ARQUITECTURA",
               "fields": [
-                {
-                  "id": "f-ns01g7",
-                  "label": "N° DE CAMAS",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
                 {
                   "id": "f-coi1xsqv",
                   "label": "Coincide con edificacion",
@@ -5062,12 +5035,6 @@
               "name": "ARQUITECTURA",
               "fields": [
                 {
-                  "id": "f-nt6j35",
-                  "label": "N° DE CAMAS",
-                  "type": "number",
-                  "options": ""
-                },
-                {
                   "id": "f-coina13l",
                   "label": "Coincide con edificacion",
                   "type": "boolean",
@@ -5192,12 +5159,6 @@
               "id": "sec-arqsbtrp",
               "name": "ARQUITECTURA",
               "fields": [
-                {
-                  "id": "f-nmdv03",
-                  "label": "N° DE CAMAS",
-                  "type": "number",
-                  "options": ""
-                },
                 {
                   "id": "f-plasj05b",
                   "label": "Planos",

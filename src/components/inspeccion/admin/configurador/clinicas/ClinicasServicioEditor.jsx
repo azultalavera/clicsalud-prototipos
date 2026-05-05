@@ -24,6 +24,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 
 import {
@@ -33,6 +36,7 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   Add as AddIcon,
   Science as ScienceIcon,
+  ExpandMore as ExpandMoreIcon,
 } from "@mui/icons-material";
 
 import { useNavigate, useParams } from "react-router-dom";
@@ -383,15 +387,41 @@ const ClinicasServicioEditor = () => {
           <Box>
             {hasSections ? (
               srv.sections.map((section, sidx) => (
-                <Box key={section.id} sx={{ mb: 0, borderBottom: "1px solid #e2e8f0" }}>
-                  {/* Cabecera de sección */}
-                  <Box sx={{ px: 4, py: 1.5, backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#475569", textTransform: "uppercase", fontSize: "0.75rem" }}>
-                      Sección: {section.name}
-                    </Typography>
+                <Accordion 
+                  key={section.id} 
+                  defaultExpanded 
+                  elevation={0} 
+                  sx={{ 
+                    borderBottom: "1px solid #e2e8f0",
+                    "&:before": { display: "none" },
+                    "&.Mui-expanded": { margin: 0 }
+                  }}
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1 }} onClick={(e) => e.stopPropagation()}>
+                      <TextField
+                        size="small"
+                        variant="standard"
+                        value={section.name}
+                        onChange={(e) => {
+                          const next = servicios.map((s, si) => {
+                            if (si !== srvIdx) return s;
+                            const newSections = [...s.sections];
+                            newSections[sidx] = { ...newSections[sidx], name: e.target.value };
+                            return { ...s, sections: newSections };
+                          });
+                          setServicios(next);
+                        }}
+                        InputProps={{ 
+                          disableUnderline: true,
+                          sx: { fontWeight: 800, color: "#475569", textTransform: "uppercase", fontSize: "0.75rem" } 
+                        }}
+                      />
+                    </Box>
                     <IconButton
                       size="small"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         const next = servicios.map((s, si) => {
                           if (si !== srvIdx) return s;
                           return { ...s, sections: s.sections.filter((_, i) => i !== sidx) };
@@ -401,36 +431,37 @@ const ClinicasServicioEditor = () => {
                     >
                       <DeleteOutlineIcon fontSize="small" />
                     </IconButton>
-                  </Box>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ p: 0 }}>
+                    <TableContainer>
+                      <Table size="small">
+                        <TableHeader />
+                        <TableBody>
+                          {section.fields.map((field, fIdx) => (
+                            <FieldRow
+                              key={field.id}
+                              field={field}
+                              fIdx={fIdx}
+                              onChangeOrigin={(val) => handleOriginChange(sidx, fIdx, val)}
+                              onChangeTramite={(val) => handleTramiteChange(sidx, fIdx, val)}
+                              onChangeLabel={(val) => updateField(sidx, fIdx, { label: val })}
+                              onChangeType={(val) => updateField(sidx, fIdx, { type: val })}
+                              onChangeOptions={(val) => updateField(sidx, fIdx, { options: val })}
+                              onOpenSim={() => handleOpenSim(sidx, fIdx, field)}
+                              onDelete={() => deleteField(sidx, fIdx)}
+                            />
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
 
-                  <TableContainer>
-                    <Table size="small">
-                      <TableHeader />
-                      <TableBody>
-                        {section.fields.map((field, fIdx) => (
-                          <FieldRow
-                            key={field.id}
-                            field={field}
-                            fIdx={fIdx}
-                            onChangeOrigin={(val) => handleOriginChange(sidx, fIdx, val)}
-                            onChangeTramite={(val) => handleTramiteChange(sidx, fIdx, val)}
-                            onChangeLabel={(val) => updateField(sidx, fIdx, { label: val })}
-                            onChangeType={(val) => updateField(sidx, fIdx, { type: val })}
-                            onChangeOptions={(val) => updateField(sidx, fIdx, { options: val })}
-                            onOpenSim={() => handleOpenSim(sidx, fIdx, field)}
-                            onDelete={() => deleteField(sidx, fIdx)}
-                          />
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-
-                  <Box sx={{ p: 1, px: 3 }}>
-                    <Button size="small" startIcon={<AddIcon />} onClick={() => addField(sidx)} sx={{ fontWeight: 600, fontSize: "0.78rem" }}>
-                      Añadir fila en {section.name}
-                    </Button>
-                  </Box>
-                </Box>
+                    <Box sx={{ p: 1, px: 3 }}>
+                      <Button size="small" startIcon={<AddIcon />} onClick={() => addField(sidx)} sx={{ fontWeight: 600, fontSize: "0.78rem" }}>
+                        Añadir requisito en {section.name}
+                      </Button>
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
               ))
             ) : (
               <Box>
