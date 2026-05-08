@@ -21,6 +21,7 @@ import {
 // Subcomponents
 import ClinicasDashboard from "./ClinicasDashboard";
 import ClinicasServicioEditor from "./ClinicasServicioEditor";
+import TramiteMappingEditor from "./components/TramiteMappingEditor";
 
 export const ConfigContext = createContext();
 
@@ -68,6 +69,8 @@ const ConfiguradorClinicas = () => {
   const tipologiaName = "CLÍNICAS, SANATORIOS Y HOSPITALES";
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ open: false, message: "", severity: "success" });
+  const [mapping, setMapping] = useState({});
+  const [pasos, setPasos] = useState([]);
 
   const loadConfig = async () => {
     try {
@@ -75,21 +78,39 @@ const ConfiguradorClinicas = () => {
       const res = await fetch(`http://localhost:3001/configuraciones_maestras?tipologia=${encodeURIComponent(tipologiaName)}`);
       const data = await res.json();
       if (data && data.length > 0) {
-        let loadedServicios = data[0].servicios;
-        // Filter out legacy elements if present in db
-        // Fix: Use ONLY what's on the server, don't force prepending tramite sections
-        // unless explicitly needed by the business rules if they were missing.
-        // But the user asked for ONLY what's in db.json.
+        const loadedServicios = data[0].servicios;
         setServicios(loadedServicios);
       } else {
-        // Fallback more minimal
         setServicios(initialServiciosTemplate);
+      }
+
+      // Load tramite mapping
+      const resMapping = await fetch(`http://localhost:3001/tramite_config`);
+      const dataMapping = await resMapping.json();
+      if (dataMapping) {
+        setMapping(dataMapping.mapping || {});
+        setPasos(dataMapping.pasos || []);
       }
     } catch (err) {
       console.error("Error loading config", err);
       setServicios(initialServiciosTemplate);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveTramiteConfig = async (newMapping, newPasos) => {
+    try {
+      await fetch(`http://localhost:3001/tramite_config`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mapping: newMapping, pasos: newPasos }),
+      });
+      setMapping(newMapping);
+      setPasos(newPasos);
+      setToast({ open: true, message: "Configuración del trámite guardada.", severity: "success" });
+    } catch (err) {
+      setToast({ open: true, message: "Error al guardar configuración del trámite.", severity: "error" });
     }
   };
 
@@ -128,9 +149,12 @@ const ConfiguradorClinicas = () => {
     servicios,
     setServicios,
     tipologiaName,
-    setTipologiaName: () => {}, // static
+    setTipologiaName: () => {}, 
     loadConfig,
     handleSaveConfig,
+    mapping,
+    pasos,
+    handleSaveTramiteConfig,
     loading,
     slugify,
   };
@@ -152,6 +176,7 @@ const ConfiguradorClinicas = () => {
       >
         <Routes>
           <Route index element={<ClinicasDashboard />} />
+          <Route path="tramite-config" element={<TramiteMappingEditor />} />
           <Route path=":servicioSlug" element={<ClinicasServicioEditor />} />
           <Route path="*" element={<Navigate to="" replace />} />
         </Routes>

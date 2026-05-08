@@ -2852,167 +2852,20 @@
             {
               "id": "sec-arq4usxx",
               "name": "ARQUITECTURA",
-              "fields": [
-                {
-                  "id": "f-coirtqrm",
-                  "label": "Coincide con edificacion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-pla4wyit",
-                  "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-reczjbk5",
               "name": "RECURSOS HUMANOS",
-              "fields": [
-                {
-                  "id": "f-medglm59",
-                  "label": "MEDICOS",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-enfitavf",
-                  "label": "ENFERMERAS",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-equ9ks1j",
               "name": "EQUIPAMIENTO",
-              "fields": [
-                {
-                  "id": "f-car1msuf",
-                  "label": "Cardiodesfibrilador",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-ele62wd1",
-                  "label": "Electrocardiógrafo",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-oxonkvr",
-                  "label": "Oxímetro de pulso/monitor multiparamétrico",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-equwny70",
-                  "label": "Equipo para nebulizaciones",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-carnpwlr",
-                  "label": "Carro de paro completo",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             }
           ],
-          "fields": [
-            {
-              "id": "fld-1776800930324-0.12977963729288222",
-              "label": "CARDIODESFIBRILADOR",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800930324-0.5410822191314033",
-              "label": "ELECTROCARDIÓGRAFO",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800930324-0.385689376649032",
-              "label": "OXÍMETRO DE PULSO/MONITOR MULTIPARAMÉTRICO",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800930324-0.9725261655867817",
-              "label": "EQUIPO PARA NEBULIZACIONES",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800930324-0.8761459263331307",
-              "label": "CARRO DE PARO COMPLETO",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800930324-0.5679487685858421",
-              "label": "Oxímetro de pulso",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800930324-0.4312607351696801",
-              "label": "Nebulizador",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776801202771",
-              "label": "TIPO PLANTEL",
-              "type": "rrhh",
-              "options": "",
-              "origin": "TRÁMITE",
-              "tramiteField": "RECURSOS HUMANOS > TIPO PLANTEL"
-            },
-            {
-              "id": "fld-1776801236187",
-              "label": "ÁREA DE DESEMPEÑO",
-              "type": "rrhh",
-              "options": "",
-              "origin": "TRÁMITE",
-              "tramiteField": "RECURSOS HUMANOS > ÁREA DE DESEMPEÑO"
-            },
-            {
-              "id": "fld-1776801243952",
-              "label": "ROL DE DESEMPEÑO",
-              "type": "rrhh",
-              "options": "",
-              "origin": "TRÁMITE",
-              "tramiteField": "RECURSOS HUMANOS > ROL DE DESEMPEÑO"
-            },
-            {
-              "id": "fld-1776801251625",
-              "label": "CANTIDAD",
-              "type": "rrhh",
-              "options": "",
-              "origin": "TRÁMITE",
-              "tramiteField": "RECURSOS HUMANOS > CANTIDAD"
-            },
-            {
-              "id": "fld-1777990075935-0.3873453821470212",
-              "label": "JEFE DE SERIVCIO",
-              "type": "text",
-              "origin": "ADMIN",
-              "pasoTramite": "",
-              "options": ""
-            }
-          ]
+          "fields": []
         },
         {
           "id": "srv-unidad-coronario-de-cuidados-intensivos",
@@ -3021,82 +2874,25 @@
             {
               "id": "sec-arqvccn7",
               "name": "ARQUITECTURA",
-              "fields": [
-                {
-                  "id": "f-coismopf",
-                  "label": "Coincide con edificacion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-playlqha",
-                  "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-jefwzj73",
               "name": "JEFE DE SERVICIO",
-              "fields": [
-                {
-                  "id": "f-jef4ky5q",
-                  "label": "Jefes de servicio",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-recyw6hy",
               "name": "RECURSOS HUMANOS",
-              "fields": [
-                {
-                  "id": "f-mdsajq8",
-                  "label": "Médicos de guardia",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-mdbuv4u",
-                  "label": "Médicos asistenciales",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-enfb97hw",
-                  "label": "Enfermeros",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-equrhnbx",
               "name": "EQUIPAMIENTO",
-              "fields": [
-                {
-                  "id": "f-car6udgz",
-                  "label": "Carro de urgencia",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-ele2ndvs",
-                  "label": "Electrocardiógrafo",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-equk7y85",
-                  "label": "Equipo para intubación",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             }
-          ]
+          ],
+          "fields": []
         },
         {
           "id": "srv-quirofano",
@@ -3105,181 +2901,15 @@
             {
               "id": "sec-seray9qq",
               "name": "ARQUITECTURA",
-              "fields": [
-                {
-                  "id": "f-coi0xxoj",
-                  "label": "Coincide con edificacion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-plam49io",
-                  "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-equdyxre",
               "name": "EQUIPAMIENTO",
-              "fields": [
-                {
-                  "id": "f-eleu06ns",
-                  "label": "Electrobisturí",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-mq0tc8t",
-                  "label": "Máquina de anestesia",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-caj53bnt",
-                  "label": "Caja de traqueotomía",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-monrcfkj",
-                  "label": "Monitor multiparamétrico",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-cambzccn",
-                  "label": "Cama quirúrgica regulable",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-sysmnu4r",
-                  "label": "Sistema de aspiración automática",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-larlekfu",
-                  "label": "Laringoscopio y tubos endotraqueales",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-mesvr9xq",
-                  "label": "Mesa de Cirugía",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-carn87lv",
-                  "label": "Cardiodesfibrilador",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-lm5io8v",
-                  "label": "Lámpara ciálitica",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             }
           ],
-          "fields": [
-            {
-              "id": "fld-1776800943794-0.3494773974500589",
-              "label": "ELECTROBISTURÍ",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.8673115908020126",
-              "label": "MÁQUINA DE ANESTESIA",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.16291565767425542",
-              "label": "SISTEMA DE ASPIRACIÓN AUTOMÁTICA",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.12419102544569571",
-              "label": "LARINGOSCOPIO Y TUBOS ENDOTRAQUEALES",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.8861241430328234",
-              "label": "CAJA DE TRAQUEOTOMÍA",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.23352342901127843",
-              "label": "MESA DE CIRUGÍA TIPO MAYO",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.5746635525466407",
-              "label": "MONITOR MULTIPARAMÉTRICO",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.9892188468208005",
-              "label": "CAMA O CAMILLA QUIRÚRGICA REGULABLE",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.004959273538600706",
-              "label": "CARDIODESFIBRILADOR",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.5475015006386118",
-              "label": "LÁMPARA CIÁLITICA",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.28063943748596454",
-              "label": "Mesa de Cirugía",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800943794-0.8726525435801674",
-              "label": "Lámpara Cialítica",
-              "type": "equipamiento",
-              "origin": "ADMIN",
-              "options": ""
-            },
-            {
-              "id": "fld-1776800953311",
-              "label": "",
-              "type": "rrhh",
-              "options": "",
-              "origin": "TRÁMITE"
-            }
-          ]
+          "fields": []
         },
         {
           "id": "srv-sala-de-parto",
@@ -3290,6 +2920,12 @@
               "name": "ARQUITECTURA",
               "fields": [
                 {
+                  "id": "f-n6s631",
+                  "label": "N° DE CAMAS",
+                  "type": "boolean",
+                  "options": "SI, NO"
+                },
+                {
                   "id": "f-coi8x91j",
                   "label": "Coincide con edificacion",
                   "type": "boolean",
@@ -3298,6 +2934,12 @@
                 {
                   "id": "f-plavbm0q",
                   "label": "Planos",
+                  "type": "boolean",
+                  "options": "SI, NO"
+                },
+                {
+                  "id": "f-mesvm11d",
+                  "label": "Mesa auxiliar",
                   "type": "boolean",
                   "options": "SI, NO"
                 }
@@ -3327,7 +2969,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "fields": []
         },
         {
           "id": "srv-unidades-de-terapia-intensiva",
@@ -3336,340 +2979,25 @@
             {
               "id": "sec-arq0eijm",
               "name": "ARQUITECTURA",
-              "fields": [
-                {
-                  "id": "f-coiud4hc",
-                  "label": "Coincide con edificacion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-plaprb4r",
-                  "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-plaicgj7",
               "name": "Planillas de enfermería con controles diarios",
-              "fields": [
-                {
-                  "id": "f-sigsmnov",
-                  "label": "Signos vitales",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bal3kmto",
-                  "label": "Balance diario",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-volj9bwo",
-                  "label": "Volúmenes de ingresos and egresos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-medpajmu",
-                  "label": "Medicación",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-de37iik",
               "name": "De los Edificios/Locales de the unidad",
-              "fields": [
-                {
-                  "id": "f-uni4ukq0",
-                  "label": "Unidad ubicada en zona de circulación semirrestringida",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sal4w786",
-                  "label": "Sala de internación c/pileta lavamanos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-offl9h5u",
-                  "label": "Office de enfermería",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-monfp6qb",
-                  "label": "Monitores",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-loco6mww",
-                  "label": "Local de ropa and material used",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-arekcsc7",
-                  "label": "Area lavachatas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-dep76ylj",
-                  "label": "Depósito de camillas and aparatología",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-saluhuz9",
-                  "label": "Sala de médicos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-poss85cc",
-                  "label": "Posee otras Unidades de UCI / UCO",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-comu0ftg",
-                  "label": "Comparte algún local UCI / UCO",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-grodul2a",
-                  "label": "Group electrógeno",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sys08d8r",
-                  "label": "system de Iluminación de Emergencia",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-accrq258",
-                  "label": "Acceso directo and exclusivo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-fcu3o18",
-                  "label": "Fácil comunicación c/cirugía",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-cam1fb3t",
-                  "label": "Camas ortopédicas o articuladas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-douwxw23",
-                  "label": "Double comando",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-rod8zo6h",
-                  "label": "Rodantes",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ven96a53",
-                  "label": "Ventanas al exterior",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-viszqajb",
-                  "label": "Visión panorámica directa a todas las camas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-locifj2q",
-                  "label": "Local de Instrumental and material estéril",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-locho5wa",
-                  "label": "Local cerrado c/1 cama para aislamiento",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-evoqrcx0",
-                  "label": "Evoluciones diarias en Historia Clínica",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-lib2ddgy",
-                  "label": "Libro de Registro de Enfermedades Transmisibles",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-lib72imy",
-                  "label": "Libro de Registro de psicofármacos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ves3cxrm",
-                  "label": "Vestuario para visitas c/pileta lavamanos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-habce9om",
-                  "label": "Habitación, c/baño propio para médico de Guardia",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-dou466ad",
-                  "label": "Double circuito de energía eléctrica",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-diertefo",
-                  "label": "Diez tomas de electricidad por cama",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-her8hsvs",
-                  "label": "Hermeticidad",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-pri38lof",
-                  "label": "Privacidad",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-supzmoga",
-                  "label": "Superficie total sala internación",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-iluagsdo",
-                  "label": "Iluminación natural",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ilun16og",
-                  "label": "Iluminación artificial central",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ilu1hy51",
-                  "label": "Iluminación Individual",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-acculxk0",
-                  "label": "Acceso desde 4 posiciones",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-equ6kh50",
               "name": "EQUIPAMIENTO",
-              "fields": [
-                {
-                  "id": "f-mar8n5gl",
-                  "label": "Marcapaso transitorio (si no tiene UCO)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-carxjsog",
-                  "label": "Carro de urgencia",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-tenkkic3",
-                  "label": "Tensiómetro",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-nebncb49",
-                  "label": "Nebulizador",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sysamtwh",
-                  "label": "system portatil de aspiración para drenaje",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-respg2qq",
-                  "label": "Respirador mecánico volumétrico",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equ4bcon",
-                  "label": "Equipo de desfibrilación and sincronizador",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bom0mcw7",
-                  "label": "Bomba de infusión",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-oxbb50d",
-                  "label": "Oxímetro de pulso portátil",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-elejf3an",
-                  "label": "Electrocardiógrafo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equzjxfj",
-                  "label": "Equipo de aspiración",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             }
-          ]
+          ],
+          "fields": []
         },
         {
           "id": "srv-unidad-coronaria",
@@ -3678,448 +3006,25 @@
             {
               "id": "sec-arq33y8k",
               "name": "ARQUITECTURA",
-              "fields": [
-                {
-                  "id": "f-coigkn6k",
-                  "label": "Coincide con edificacion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-plaok22t",
-                  "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-platj9jw",
               "name": "Planillas de enfermería con controles diarios",
-              "fields": [
-                {
-                  "id": "f-sig0arti",
-                  "label": "Signos vitales",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-balb84ru",
-                  "label": "Balance diario",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-vola3mjw",
-                  "label": "Volúmenes de ingresos and egresos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-med6obyx",
-                  "label": "Medicación",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-detc9n7",
               "name": "De los Edificios/Locales de the unidad",
-              "fields": [
-                {
-                  "id": "f-uniuf4wq",
-                  "label": "Unidad ubicada en zona de circulación semirrestringida",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sallge04",
-                  "label": "Sala de internación c/pileta lavamanos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-offlutbv",
-                  "label": "Office de enfermería",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-mondjixw",
-                  "label": "Monitores",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-locfhkoa",
-                  "label": "Local de ropa and material used",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-arexxemu",
-                  "label": "Area lavachatas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-depmf27w",
-                  "label": "Depósito de camillas and aparatología",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sal9xr2k",
-                  "label": "Sala de médicos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-groywwya",
-                  "label": "Group electrógeno",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-accsvljw",
-                  "label": "Acceso directo and exclusivo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-fcijq7s",
-                  "label": "Fácil comunicación c/cirugía",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-pri7bwau",
-                  "label": "Privacidad",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-camgnkmd",
-                  "label": "Camas ortopédicas o articuladas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-dou502p3",
-                  "label": "Double comando",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-rodt1p4u",
-                  "label": "Rodantes",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-plaesuqs",
-                  "label": "Plano apoyo rígido",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-acco1gw3",
-                  "label": "Acceso desde 4 posiciones",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-visaou5n",
-                  "label": "Visión panorámica directa a todas las camas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-loczqj9l",
-                  "label": "Local de Instrumental and material estéril",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-loc8nqt7",
-                  "label": "Local cerrado c/1 cama para aislamiento",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-evo228n2",
-                  "label": "Evoluciones diarias en Historia Clínica",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ves4njji",
-                  "label": "Vestuario para visitas c/pileta lavamanos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-habglc1t",
-                  "label": "Habitación, c/baño propio para médico de Guardia",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-comdhule",
-                  "label": "Comparte algún local UCI / UCO",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-poslof1h",
-                  "label": "Posee otras Unidades de UCI / UCO",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-dief8t9q",
-                  "label": "Diez tomas de electricidad por cama",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sysd0kq9",
-                  "label": "system de Iluminación de Emergencia",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-herd1y3m",
-                  "label": "Hermeticidad",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-supozagg",
-                  "label": "Superficie total sala internación",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ilug555e",
-                  "label": "Iluminación natural",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ilu5sukn",
-                  "label": "Iluminación artificial central",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ilu9g8nr",
-                  "label": "Iluminación Individual",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-venfifxw",
-                  "label": "Ventanas al exterior De paño fijo:",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-equbttnz",
               "name": "EQUIPAMIENTO",
-              "fields": [
-                {
-                  "id": "f-equz5aj2",
-                  "label": "Equipo de aspiración",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-resiyd3g",
-                  "label": "Respirador mecánico volumétrico",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equ6kafd",
-                  "label": "Equipo de desfibrilación and sincronizador",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bomu3fa6",
-                  "label": "Bomba de infusión",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-carkjkfx",
-                  "label": "Carro de urgencias (uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-larjwq1m",
-                  "label": "Laringoscopios",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-mskaok6",
-                  "label": "Máscara",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-resag2wz",
-                  "label": "Resucitador tipo AMBU",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-tenmml6l",
-                  "label": "Tensiometro",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-neb22t14",
-                  "label": "Nebulizador",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ele0owbx",
-                  "label": "Elementos para intubación endotraqueal",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sysvvdtc",
-                  "label": "system portátil de aspiración o/drenaje",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equcfcsn",
-                  "label": "Equipos para cateterización nasogástrica",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equr2wkq",
-                  "label": "Equipos para puncion raquidea",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equ8vlgw",
-                  "label": "Equipo para punción abdominal",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-carnqzkf",
-                  "label": "Carro de paro",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-oxuc31s",
-                  "label": "Oxímetro de pulso portátil",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-elenabgd",
-                  "label": "Electrocardiógrafo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-mariikj4",
-                  "label": "Marcapaso transitorio con 2 catéteres",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equli51b",
-                  "label": "Equipo portatil de Rx.100 Ma/100 Kv",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-eleguqgy",
-                  "label": "Elementos para traqueotomía",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bolay76j",
-                  "label": "Bolsa",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-adaviifp",
-                  "label": "Adaptador",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-carpsfab",
-                  "label": "Carro de curación",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ins99t6k",
-                  "label": "Instrumental de examen",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ilumkuv8",
-                  "label": "Iluminación individual",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-syss5f5z",
-                  "label": "system de aspiración torácica",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equwpv20",
-                  "label": "Equipos para cateterización vesical",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equp4y4p",
-                  "label": "Equipos para cateterización venosa",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equjun1k",
-                  "label": "Equipo para punción torácica",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-botw7akj",
-                  "label": "Botiquín con/medicamentos para urgencias de 24 hs",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             }
-          ]
+          ],
+          "fields": []
         },
         {
           "id": "srv-unidad-de-terapia-intensiva-pediatrica",
@@ -4128,20 +3033,7 @@
             {
               "id": "sec-arqs08l5",
               "name": "ARQUITECTURA",
-              "fields": [
-                {
-                  "id": "f-coicy345",
-                  "label": "Coincide con edificacion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-plant5bj",
-                  "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-jefrbpbw",
@@ -4151,88 +3043,15 @@
             {
               "id": "sec-rec5oh4c",
               "name": "RECURSOS HUMANOS",
-              "fields": [
-                {
-                  "id": "f-mdnjelv",
-                  "label": "Médico asistente",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-kin0mhgz",
-                  "label": "Kinesiólogo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-md4aski",
-                  "label": "Médico de guardia activa",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-enfthyeu",
-                  "label": "Enfermero",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-equc0mfq",
               "name": "EQUIPAMIENTO",
-              "fields": [
-                {
-                  "id": "f-nebb74xk",
-                  "label": "Nebulizador",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-cmto26y",
-                  "label": "Cámara cefálica de Gregory",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equ91rvc",
-                  "label": "Equipo de desfibrilación and sincronizador",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-oxqtzq1",
-                  "label": "Oxímetro de pulso portátil",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equut6v5",
-                  "label": "Equipo de aspiración",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-resxhhd7",
-                  "label": "Respirador mecánico volumétrico",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bomq76jz",
-                  "label": "Bomba de infusión continua",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-elevzvmo",
-                  "label": "Electrocardiógrafo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             }
-          ]
+          ],
+          "fields": []
         },
         {
           "id": "srv-unidad-de-terapia-intensiva-neonatal",
@@ -4241,790 +3060,40 @@
             {
               "id": "sec-arqwkuiq",
               "name": "ARQUITECTURA",
-              "fields": [
-                {
-                  "id": "f-coi1xsqv",
-                  "label": "Coincide con edificacion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-planv7nz",
-                  "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-pla8antm",
               "name": "Planillas de enfermería con controles diarios",
-              "fields": [
-                {
-                  "id": "f-sigt7e5c",
-                  "label": "Signos vitales",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bal9gu8y",
-                  "label": "Balance diario",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-voljy4ka",
-                  "label": "Volúmenes de ingresos and egresos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-meddjc0o",
-                  "label": "Medicación",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-deh0b7t",
               "name": "De los Edificios/Locales de the unidad",
-              "fields": [
-                {
-                  "id": "f-uniyk8kc",
-                  "label": "Unidad ubicada en zona de circulación semirrestringida",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sal47vlb",
-                  "label": "Sala de internación c/pileta lavamanos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-offvl29z",
-                  "label": "Office de enfermería con monitores",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-areq923v",
-                  "label": "Area de deposito ropa limpia",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-locknnr6",
-                  "label": "Local de ropa and material used",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-pilwdeth",
-                  "label": "Pileta para material",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-depqejcl",
-                  "label": "Depósito para incubadora/cuna/aparatos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-salizqde",
-                  "label": "Sala de médicos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-camegq31",
-                  "label": "Camillas accionadas: a codo:",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-campgkou",
-                  "label": "Camilla a pie",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-aemyfm3",
-                  "label": "A electricidad",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-locw8k47",
-                  "label": "Local de formulas lacteas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ext10c15",
-                  "label": "Extrator de aire con filtro",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-venva8ch",
-                  "label": "Ventilacion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-acccqor6",
-                  "label": "Acceso directo and exclusivo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-prin4ig4",
-                  "label": "Privacidad",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-inc2ocpf",
-                  "label": "Incubadoras",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-fuebze5c",
-                  "label": "Fuente de oxigeno",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-airar07p",
-                  "label": "Aire comprimido",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-aspp9pko",
-                  "label": "Aspiracion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-unir59jj",
-                  "label": "Unidades de aisalmiento",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-debbekj",
-                  "label": "De paño fijo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ilupzzke",
-                  "label": "Iluminacion individual difusas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-vis7nb90",
-                  "label": "Visión panorámica directa a todas las camas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-locm844r",
-                  "label": "Local de Instrumental and material estéril",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-lochkp2s",
-                  "label": "Local cerrado c/2 unidades para aislamiento",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-lavhawz9",
-                  "label": "Lavabo propio",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ves6n1b8",
-                  "label": "Vestuario para visitas c/pileta lavamanos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-disa2a5k",
-                  "label": "Dispensador de jabon liquido",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sanoocbg",
-                  "label": "Sanitorios para el personal",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-habz6p96",
-                  "label": "Habitación, c/baño propio para médico de Guardia",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-conlc9yk",
-                  "label": "Con dispensador liquido",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-toapfanv",
-                  "label": "Toalla de papel",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-armsic67",
-                  "label": "Armario con llave",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ochpm6dq",
-                  "label": "Ocho tomas de electricidad por cama con tablero independiente",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-syst9ooj",
-                  "label": "system calefaccion refrigeracion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-fcyq0up",
-                  "label": "Fácil comunicación c/cirugía",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-supg3hyb",
-                  "label": "Superficie total sala internación",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-congrjho",
-                  "label": "Consola de monitoreo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-repntjl1",
-                  "label": "Repisa individual",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-cuncs5eb",
-                  "label": "Cunas",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-fueq13j1",
-                  "label": "Fuente de oxigeno",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-condcqv9",
-                  "label": "Consola para monitoreo",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-venebi20",
-                  "label": "Ventanas al exterior",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ilu7kp0m",
-                  "label": "Iluminacion natural",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ilu2au5x",
-                  "label": "Iluminacion artificial central",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-del0zfxt",
               "name": "Del Equipamiento / Equipamiento en internación cada 8(ocho) unidades:",
-              "fields": [
-                {
-                  "id": "f-inc0hiv1",
-                  "label": "Incubadoras a servocontrol de circuito cerrado 6(seis)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-inc73mjp",
-                  "label": "Incubadoras a servocontrol de reserva 2(dos)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-inctdcoq",
-                  "label": "Incubadora de Transporte dos (2)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-inc7gkv5",
-                  "label": "Incubadoras servocunas dos (2)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-cunmu25v",
-                  "label": "Cunas 2(dos)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-mon0olw3",
-                  "label": "Monitores transcutáneos de oxígeno 1(uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-reszk0aw",
-                  "label": "Respirador de uso Neonatal con respiración sincronizada del paciente (SIMV/INV) dos (2)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-mezjz3p8",
-                  "label": "Mezclador de oxígeno - aire comprimido (Blender) 8(ocho)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-halkill7",
-                  "label": "Halocefálico con tapa rebatible 3(tres) pequeños and 3(tres) medianos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equhbtoc",
-                  "label": "Equipo para reanimación completo 2(DOS)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-aspjpz62",
-                  "label": "Aspirador regulable con manómetro 1 (uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-sinbxrpx",
-                  "label": "Sincronizador desfibrilador con paletas neonatal 1(uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-balbzlzt",
-                  "label": "Balanza electrónica 1(una)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-eleqvdck",
-                  "label": "Electrocardiógrafo 1(uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ped89lok",
-                  "label": "Pediómetro 1(uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-relea8w2",
-                  "label": "Reloj de pared con segundero 1(uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ecuwrto",
-                  "label": "Ecógrafo portátil para ecografías ECO Doppler color 1(uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-cocydpw9",
-                  "label": "Cocina de dos (2) hornallas PARA FORMULA LACTEA",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-hel46gcy",
-                  "label": "Heladera PARA FORMULA LACTEA",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ox9wq7z",
-                  "label": "Oxígeno, aire comprimido and aspiración central una toma por unidad",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-tub6jl4g",
-                  "label": "Tubos de oxígeno portátil 2(dos)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-mon3fsif",
-                  "label": "Monitores cardiorrespiratorios 4(cuatro)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-tenhzulf",
-                  "label": "Tensiómetro Neonatal (efecto Doppler) 2(dos)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bomhixio",
-                  "label": "Bomba de perfusión de jeringa 4(cuatro)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bomkfkcp",
-                  "label": "Bomba de perfusión continua 4(cuatro)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-spock7ty",
-                  "label": "Spot de luminoterapia 4(cuatro)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-oxcthc2",
-                  "label": "Oxímetro de pulso 4(cuatro)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-canog83s",
-                  "label": "canalización de arteria umbilical/curación/punción lumbar/presión venosa central/drenaje torácico/exanguineotransfusión",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-calt2p6u",
-                  "label": "Calentador humidificador tipo Fishel Paykel 1 (uno) para cada halocefálico 6 (seis)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-baleuyqs",
-                  "label": "Balanzas neonatales/incubadoras 6 (seis)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-meskrffk",
-                  "label": "Mesa central 1(una)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-balcr1i4",
-                  "label": "Balanza para pañales 1(una)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-eleiofcr",
-                  "label": "Electroencefalógrafo portátil 1(uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-reljkytj",
-                  "label": "Reloj de pared con segundero 1(uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-lmgewon",
-                  "label": "Lámpara portátil 1(una)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-apaoa2b3",
-                  "label": "Aparato de Rx portátil con 2 delantales plomados 1(uno)",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-hor3xal3",
-                  "label": "Horno de microondas PARA FORMULA LACTEA",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-mesm6fex",
-                  "label": "Mesada con pileta PARA FORMULA LACTEA",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-equvic3b",
               "name": "EQUIPAMIENTO",
-              "fields": [
-                {
-                  "id": "f-equc0e1s",
-                  "label": "Equipo de aspiración 1 cada 4 camas",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-tubzrre7",
-                  "label": "Tubos de oxígeno",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-equyd3rh",
-                  "label": "Equipo de desfibrilación",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-monh1qrm",
-                  "label": "Monitores",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-adaec15h",
-                  "label": "Adaptador",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-car88y8a",
-                  "label": "Carro de curación",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-ten0ezhs",
-                  "label": "Tensiómetro",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-equ9rscb",
-                  "label": "Equipo de Exanguiuneotransfusion",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-dis32ca5",
-                  "label": "Dispositivo PPCVA nasal",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-sysb3vdi",
-                  "label": "system de aspiración torácica",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-equxv9rz",
-                  "label": "Equipos para cateterización vesical",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-equ2xmpc",
-                  "label": "Equipos para cateterización venosa",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-equn3ds3",
-                  "label": "Equipo para punción torácica",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-equxaxfs",
-                  "label": "Equipo de desfibrilación",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-oxieejes",
-                  "label": "Oximetro de pulso portátil",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-bothh9qt",
-                  "label": "Botiquín c/medicamentos para urgencias de 24 hs.",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-oxhc7w7",
-                  "label": "Oxígeno and aspiración central c/boca individual p c/cama",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-resi6y6n",
-                  "label": "Respirador volumétrico c/presión positiva and negativa",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-can2z9bk",
-                  "label": "Canal individual por cama",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-com40w6w",
-                  "label": "Comando central",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-res5gbq0",
-                  "label": "Resucitador tipo AMBU",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-insxtyvw",
-                  "label": "Instrumental de examen",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-nebnyglz",
-                  "label": "Nebulizador",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equ5i5m5",
-                  "label": "Equipo de luminoterapia",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-ele660tv",
-                  "label": "Elementos para intubación endotraqueal",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-systt54f",
-                  "label": "system portátil de aspiración p/ drenaje",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equdps4a",
-                  "label": "Equipos para cateterización nasogástrica",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-eqund03j",
-                  "label": "Equipo para punción raquídea",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-equ9b7v3",
-                  "label": "Equipo para punción abdominal",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-bom36c6p",
-                  "label": "Bomba de infusión continua",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-incgtoky",
-                  "label": "Incubadoras portatiles c/control de t° and alarma",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-cajwb2j7",
-                  "label": "Caja de paro",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-crodinzn",
               "name": "Cronograma de trabajo",
-              "fields": [
-                {
-                  "id": "f-labv051c",
-                  "label": "Lab.bioquímico",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-hemdyl40",
-                  "label": "Hemoterapia",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-radgfda4",
-                  "label": "Radiología",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
+            },
+            {
+              "id": "sec-1778281743853",
+              "name": "RECURSOS HUMANOS",
+              "fields": []
             }
-          ]
+          ],
+          "fields": []
         },
         {
           "id": "srv-hemodinamia",
@@ -5033,20 +3102,7 @@
             {
               "id": "sec-arqh50fg",
               "name": "ARQUITECTURA",
-              "fields": [
-                {
-                  "id": "f-coina13l",
-                  "label": "Coincide con edificacion",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-plazatgm",
-                  "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-jef0xvu9",
@@ -5056,100 +3112,15 @@
             {
               "id": "sec-recne3qd",
               "name": "RECURSOS HUMANOS",
-              "fields": [
-                {
-                  "id": "f-mdwbq0d",
-                  "label": "Médico",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-enfwoxj3",
-                  "label": "Enfermero profesional",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-md4hmbi",
-                  "label": "Médico radiólogo",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-mdygm68",
-                  "label": "Médico anestesista",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-equjwulr",
               "name": "EQUIPAMIENTO",
-              "fields": [
-                {
-                  "id": "f-arcwn6t7",
-                  "label": "Arco en C o paralelogramo deformable",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-mesav7pa",
-                  "label": "Mesa de Cateterismo",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-int5ze6t",
-                  "label": "Intensificador de imágenes",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-tubu9mn2",
-                  "label": "Tubo de rayos X",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-genuro6c",
-                  "label": "Generadores pulsados por tetrodos",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-eleaeneo",
-                  "label": "Electrocardiógrafo",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-oxpqrwi",
-                  "label": "Oxímetro de pulso",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-cark9rde",
-                  "label": "Cardiodesfribilador",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-inyxyys0",
-                  "label": "Inyectora de contraste",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-monolms4",
-                  "label": "Monitor digital",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             }
-          ]
+          ],
+          "fields": []
         },
         {
           "id": "srv-hospital-de-dia",
@@ -5158,14 +3129,7 @@
             {
               "id": "sec-arqsbtrp",
               "name": "ARQUITECTURA",
-              "fields": [
-                {
-                  "id": "f-plasj05b",
-                  "label": "Planos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-jefud66t",
@@ -5175,94 +3139,15 @@
             {
               "id": "sec-rec91gj1",
               "name": "RECURSOS HUMANOS",
-              "fields": [
-                {
-                  "id": "f-md0goz2",
-                  "label": "Médico oncólogico",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-traagss6",
-                  "label": "Trabajador social",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-enffjpx8",
-                  "label": "Enfermeros",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-kintpkxm",
-                  "label": "Kinesiólogo",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-psij6siz",
-                  "label": "Psicólogo",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-nutho96v",
-                  "label": "Nutricionista",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-equvq19g",
               "name": "EQUIPAMIENTO",
-              "fields": [
-                {
-                  "id": "f-sil2fmpg",
-                  "label": "Sillón de Oncología",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-colqb41v",
-                  "label": "Colchón antiescaras de corresponder",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-bomz50lm",
-                  "label": "Bomba de infusión",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-camn4tqq",
-                  "label": "Campana de flujo laminar",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-bal4sf0b",
-                  "label": "Balanza de uso clínico con cartabón",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-equu8wsk",
-                  "label": "Equipo de monitoreo presión arterial",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-ox0qgbg",
-                  "label": "Oxímetro de pulso",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             }
-          ]
+          ],
+          "fields": []
         },
         {
           "id": "srv-hemodialisis",
@@ -5271,196 +3156,30 @@
             {
               "id": "sec-dei0vmu",
               "name": "De la Direccion and Funcionamiento",
-              "fields": [
-                {
-                  "id": "f-unib66dz",
-                  "label": "Unidad de Dialisis Independiente",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-reg3l41w",
-                  "label": "Registro de Psicofarmacos Actualizado",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-regr5d5b",
-                  "label": "Registro de Enfermedades Trasmisibles",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-regzgu2e",
-                  "label": "Reglamento Interno",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-plaui5w7",
-                  "label": "Plan de Evacuacion",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-habqtuex",
-                  "label": "Habilitacion de Bomberos",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-noryy6h1",
-                  "label": "Normas bioseguridad expuestas",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-norxcklf",
-                  "label": "Normas de Procedimientos para Medicos",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-norlna4t",
-                  "label": "Normas de Procedimientos para enfermeras",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-nro0u1ml",
-                  "label": "Nro de Inscripcion de pacientes al INCUCAI y/o ECODAI:",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-de6iovl",
               "name": "De the Direccion and Funcionamiento",
-              "fields": [
-                {
-                  "id": "f-carlpgdh",
-                  "label": "Carpetas de Inscripcion de pacientes al INCUCAI y/o ECODAI",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-conhj4sa",
-                  "label": "Convenio de Internacion",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-regh44x2",
-                  "label": "Registro Historia clinica completa",
-                  "type": "number",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-ana80wfs",
               "name": "Analisis de agua",
-              "fields": [
-                {
-                  "id": "f-fis8jiqk",
-                  "label": "Fisico, Quimico",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-bac5j0nj",
-                  "label": "Bacteriologico",
-                  "type": "number",
-                  "options": ""
-                },
-                {
-                  "id": "f-fechide3",
-                  "label": "Fecha ultimo fisico-quimico",
-                  "type": "date",
-                  "options": ""
-                },
-                {
-                  "id": "f-fecg0utn",
-                  "label": "Fecha ultimo bacteriologico",
-                  "type": "date",
-                  "options": ""
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-pos2sqcn",
               "name": "Posee Serologia del personal para",
-              "fields": [
-                {
-                  "id": "f-hivg9h1w",
-                  "label": "HIV",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-hep8r8an",
-                  "label": "Hepatitis B",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-hepbexkr",
-                  "label": "Hepatitis C",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-obsau26s",
-                  "label": "Observaciones:",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-plaxya91",
-                  "label": "Planillas de Personal Enfermeria",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             },
             {
               "id": "sec-possxms9",
               "name": "Posee Serologia de pacientes",
-              "fields": [
-                {
-                  "id": "f-hivdzgub",
-                  "label": "HIV",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-hep4e9ma",
-                  "label": "Hepatitis B",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-hephhjod",
-                  "label": "Hepatitis C",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-liby361h",
-                  "label": "Libro de Reusos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                },
-                {
-                  "id": "f-canxx715",
-                  "label": "Cant. maxima reusos",
-                  "type": "boolean",
-                  "options": "SI, NO"
-                }
-              ]
+              "fields": []
             }
-          ]
+          ],
+          "fields": []
         }
       ]
     },
@@ -6515,5 +4234,53 @@
       ]
     }
   ],
+  "tramite_config": {
+    "mapping": {
+      "ARQUITECTURA": [
+        "NOMBRE DEL ESTABLECIMIENTO",
+        "PROFESIONAL DEL ÁREA CONSTRUCTIVA",
+        "Plano/s completo/s gral/es. de arquitectura (*)",
+        "Memoria descriptiva o planilla de locales (*)"
+      ],
+      "ESTABLECIMIENTO": [
+        "DATOS DE CONTACTO DEL ESTABLECIMIENTO",
+        "DOMICILIO DEL ESTABLECIMIENTO",
+        "DATOS DE CONTACTO DEL PROPIETARIO",
+        "DOMICILIO DEL PROPIETARIO"
+      ],
+      "DIRECTOR TÉCNICO": [
+        "CUIL",
+        "Constancia de matrícula activa del director técnico (*)",
+        "Certificado de ética del director técnico",
+        "Constancia de matricula de especialidad"
+      ],
+      "SERVICIOS": [],
+      "RECURSOS HUMANOS": [
+        "PERSONAL MÉDICO",
+        "ENFERMEROS"
+      ],
+      "JEFE DE SERVICIO": [
+        "CUIL",
+        "NOMBRE",
+        "APELLIDO"
+      ],
+      "EQUIPAMIENTOS": [],
+      "DOCUMENTOS ADJUNTOS": [
+        "Tasa retributiva de servicios.",
+        "Certificado registro deudores alimentarios morosos (*)",
+        "Constancia de ARCA"
+      ]
+    },
+    "pasos": [
+      "ARQUITECTURA",
+      "DIRECTOR TÉCNICO",
+      "DOCUMENTOS ADJUNTOS",
+      "EQUIPAMIENTOS",
+      "ESTABLECIMIENTO",
+      "JEFE DE SERVICIO",
+      "RECURSOS HUMANOS",
+      "SERVICIOS"
+    ]
+  },
   "$schema": "./node_modules/json-server/schema.json"
 }
