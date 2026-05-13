@@ -5,6 +5,7 @@ import {
   ListItemButton, ListItemText, Fab, Tooltip
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useRole } from '../../context/RoleContext';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -14,16 +15,28 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import BusinessIcon from '@mui/icons-material/Business';
 import fondoOndas from '../../assets/fondo.webp';
 
 const drawerWidthFull = 320;
 const drawerWidthMini = 70;
 
+const ROLES = [
+  { id: "efector",      label: "Efector",             color: "#005596" },
+  { id: "auditor",      label: "Agente Auditor",       color: "#7b1fa2" },
+  { id: "inspector",   label: "Agente Inspector",     color: "#00796b" },
+  { id: "protocolizador", label: "Agente Protocolizador", color: "#e65100" },
+];
+
 const Layout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Estado para el despliegue
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { role: activeRole, changeRole } = useRole();
+  const isEfectorRole = activeRole === "efector";
   const openMenu = Boolean(anchorEl);
 
   const menuItems = [
@@ -76,9 +89,42 @@ const Layout = ({ children }) => {
             </Typography>
           </Box>
           
+          {/* Selector de Roles */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.75, mx: 2 }}>
+            {ROLES.map(role => {
+              const isActive = activeRole === role.id;
+              return (
+                <Box
+                  key={role.id}
+                  onClick={() => {
+                    changeRole(role.id);
+                  }}
+                  sx={{
+                    px: 1.5, py: 0.5,
+                    borderRadius: "20px",
+                    fontSize: "0.72rem",
+                    fontWeight: isActive ? 800 : 500,
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    bgcolor: isActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.15)",
+                    color: isActive ? role.color : "rgba(255,255,255,0.85)",
+                    border: isActive ? `2px solid rgba(255,255,255,0.9)` : "2px solid rgba(255,255,255,0.2)",
+                    "&:hover": {
+                      bgcolor: isActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.25)",
+                    },
+                    userSelect: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {role.label}
+                </Box>
+              );
+            })}
+          </Box>
+
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 500, color: 'white', opacity: 0.9 }}>
-              {location.pathname.startsWith('/home-efector') ? 'Efector' : location.pathname.startsWith('/inspector') ? 'Inspector' : 'Administrador'}
+              {ROLES.find(r => r.id === activeRole)?.label || 'Efector'}
             </Typography>
             <IconButton onClick={handleMenuClick} sx={{ p: 0 }}>
               <Avatar sx={{ width: 32, height: 32, bgcolor: 'white', color: '#0090d0', border: '2px solid white' }}>C</Avatar>
@@ -129,7 +175,9 @@ const Layout = ({ children }) => {
           <List>
             {(isEfector ? [
               { text: 'Inicio', icon: <HomeIcon />, path: '/home-efector' },
-              { text: 'Mis Establecimientos', icon: <LocalHospitalIcon />, path: '/home-efector/dashboard' },
+              { text: 'Panel de Control', icon: <DashboardIcon />, path: '/home-efector/dashboard' },
+              { text: 'Mis Establecimientos', icon: <BusinessIcon />, path: '/home-efector/mis-establecimientos' },
+              { text: 'Trámites en Curso', icon: <AssignmentIcon />, path: '/home-efector/mis-tramites' },
             ] : menuItems).map((item) => {
               const isActive = location.pathname === item.path || (item.path === '/home-efector' && location.pathname === '/home-efector/');
               return (
@@ -185,32 +233,32 @@ const Layout = ({ children }) => {
       >
         {children}
 
-        {/* Botón de Auto-carga persistente */}
-        <Tooltip title="Cargar Datos de Prueba (Guardia / UTI Neonatal / Quirófanos)">
-          <Fab
-            onClick={() => {
-              localStorage.setItem("efector_servicios", JSON.stringify(["GUARDIA", "UNIDAD DE TERAPIA INTENSIVA NEONATAL"]));
-              localStorage.setItem("efector_infra", JSON.stringify({
-                "QUIRÓFANO": 3,
-                "SHOCK ROOM": 4
-              }));
-              window.location.reload();
-            }}
-            sx={{
-              position: "fixed",
-              bottom: 30,
-              right: 100, // Al lado del botón de ayuda/add si existe
-              zIndex: 2000,
-              backgroundColor: "#ff9800",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#e68a00",
-              },
-            }}
-          >
-            <AutoFixHighIcon />
-          </Fab>
-        </Tooltip>
+        {/* Botón de Auto-carga persistente — solo Efector */}
+        {isEfectorRole && (
+          <Tooltip title="Cargar Datos de Prueba (Guardia / UTI Neonatal / Quirófanos)">
+            <Fab
+              onClick={() => {
+                localStorage.setItem("efector_servicios", JSON.stringify(["GUARDIA", "UNIDAD DE TERAPIA INTENSIVA NEONATAL"]));
+                localStorage.setItem("efector_infra", JSON.stringify({
+                  "QUIRÓFANO": 3,
+                  "SHOCK ROOM": 4
+                }));
+                window.location.reload();
+              }}
+              sx={{
+                position: "fixed",
+                bottom: 30,
+                right: 100,
+                zIndex: 2000,
+                backgroundColor: "#ff9800",
+                color: "white",
+                "&:hover": { backgroundColor: "#e68a00" },
+              }}
+            >
+              <AutoFixHighIcon />
+            </Fab>
+          </Tooltip>
+        )}
 
         {/* Footer */}
         {!isInspector && (

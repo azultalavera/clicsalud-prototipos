@@ -15,6 +15,7 @@ import ConfiguradorInspeccionRouter from './components/inspeccion/admin/configur
 import PantallaInspeccion from './components/inspeccion/inspector/PantallaInspeccion';
 import Layout from './components/ui/Layout';
 import RoleSelection from './components/ui/RoleSelection';
+import { RoleProvider } from './context/RoleContext';
 
 const theme = createTheme({
   palette: {
@@ -55,8 +56,9 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline /> 
-      <Router>
+      <CssBaseline />
+      <RoleProvider>
+        <Router>
         <Routes>
           {/* LANDING SELECCIÓN DE ROL */}
           <Route path="/" element={<RoleSelection />} />
@@ -80,7 +82,8 @@ function App() {
           {/* FALLBACK: Solo si no entra en ninguna de las de arriba */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Router>
+        </Router>
+      </RoleProvider>
     </ThemeProvider>
   );
 }

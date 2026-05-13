@@ -16,6 +16,7 @@ import {
   Tabs,
   Tab,
   Divider,
+  Popover,
 } from "@mui/material";
 import {
   Map as MapIcon,
@@ -31,17 +32,13 @@ import {
   ArrowBackIos as ArrowBackIosIcon,
   Cancel as CancelIcon,
   Add as AddIcon,
+  Build as BuildIcon,
+  Autorenew as AutorenewIcon,
+  CheckCircleOutline as CheckCircleOutlineIcon,
 } from "@mui/icons-material";
 
-// Navegación
-import {
-  Routes,
-  Route,
-  useNavigate,
-  useLocation,
-  Navigate,
-  Link,
-} from "react-router-dom";
+import { useNavigate, useLocation, Navigate, Link, Routes, Route } from "react-router-dom";
+import { useRole } from "../../context/RoleContext";
 
 // Componentes
 import Layout from "../ui/Layout";
@@ -52,8 +49,9 @@ import JefeServicioStep from "./steps/JefeServicioStep";
 import ModalHabilitacion from "../ui/ModalHabilitacion";
 import PantallaInspeccion from "../inspeccion/inspector/PantallaInspeccion";
 import TramitesEnCurso from "./TramitesEnCurso";
-import MisEstablecimientos from "./MisEstablecimientos";
+import MisEstablecimientos, { MisEstablecimientosPorRol } from "./MisEstablecimientos";
 import DashboardEfector from "./DashboardEfector";
+import MinisterioDashboard from "./MinisterioDashboard";
 import RectificacionTramite from "./RectificacionTramite";
 
 // --- ESTILOS STEPPER ---
@@ -155,6 +153,9 @@ const HomeEfector = () => {
   const [isServiceValid, setIsServiceValid] = useState(false);
   const [isEquipamientoValid, setIsEquipamientoValid] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [tramiteAnchor, setTramiteAnchor] = useState(null);
+  const { role } = useRole();
+  const isEfector = role === "efector" && location.pathname.includes("mis-tramites");
 
   // EFECTOR -> INSPECTOR SYNC
   useEffect(() => {
@@ -259,10 +260,13 @@ const HomeEfector = () => {
               textAlign: "center",
             }}
           >
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            <Typography variant="h5" sx={{ fontWeight: 900, letterSpacing: -0.5 }}>
               Expediente N° 170-2026 | Habilitación
             </Typography>
-            <Typography variant="body2">Azul Talavera - CIDS</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, opacity: 0.9, mt: 0.5, textTransform: "uppercase", letterSpacing: 1.5 }}>
+              {activeStep !== -1 ? steps[activeStep].label : ""}
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5 }}>Azul Talavera - CIDS</Typography>
           </Box>
         )}
 
@@ -307,8 +311,8 @@ const HomeEfector = () => {
           <Box sx={{ minHeight: "450px" }}>
             <Routes>
               <Route path="/" element={<DashboardEfector />} />
-              <Route path="dashboard" element={<DashboardEfector />} />
-              <Route path="mis-establecimientos" element={<MisEstablecimientos />} />
+              <Route path="dashboard" element={<MinisterioDashboard />} />
+              <Route path="mis-establecimientos" element={<MisEstablecimientosPorRol />} />
               <Route path="mis-tramites" element={<TramitesEnCurso />} />
               <Route path="rectificacion" element={<Navigate to={`${baseRoute}/respuesta-emplazamiento`} replace />} />
               <Route path="respuesta-emplazamiento" element={<RectificacionTramite />} />
@@ -419,18 +423,6 @@ const HomeEfector = () => {
         </Box>
       </Paper>
 
-      <Fab
-        onClick={() => setOpenModal(true)}
-        sx={{
-          position: "fixed",
-          bottom: 30,
-          right: 30,
-          backgroundColor: "#005596",
-          color: "white",
-        }}
-      >
-        <AddIcon />
-      </Fab>
       <ModalHabilitacion open={openModal} onClose={() => setOpenModal(false)} />
     </Layout>
   );

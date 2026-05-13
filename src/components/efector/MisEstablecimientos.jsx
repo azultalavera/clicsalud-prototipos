@@ -22,6 +22,8 @@ import {
   Menu,
   ListItemIcon,
   ListItemText,
+  Popover,
+  Divider,
 } from "@mui/material";
 import {
   Search as SearchIcon,
@@ -35,121 +37,51 @@ import {
   Refresh as RefreshIcon,
   AddCircleOutline as AddCircleOutlineIcon,
   MoreVert as MoreVertIcon,
+  Build as BuildIcon,
+  Autorenew as AutorenewIcon,
+  CheckCircleOutline as CheckCircleOutlineIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import ModalHabilitacion from "../ui/ModalHabilitacion";
+import VistaAuditor from "./vistas/VistaAuditor";
+import VistaInspector from "./vistas/VistaInspector";
+import VistaProtocolizador from "./vistas/VistaProtocolizador";
+import { useRole } from "../../context/RoleContext";
+import { MOCK_ESTABLECIMIENTOS } from "../../data/mockData";
 
-const ESTABLECIMIENTOS = [
-  {
-    id: 1,
-    nSolicitud: "4408",
-    expediente: "0425-382230/2026",
-    nombre: "Hospital Rawson",
-    cuit: "30666666661",
-    fechaCreacion: "04/05/2026",
-    departamento: "Capital",
-    localidad: "Córdoba",
-    tipologia: "CLÍNICAS, SANATORIOS y HOSPITALES",
-    tipoTramite: "Modificación",
-    etapa: "Documentos adjuntos",
-    estado: "EN PROCESO DE MODIFICACIÓN",
-    fechaFin: "-",
-    color: "#8C8888",
-  },
-  {
-    id: 2,
-    nSolicitud: "4409",
-    expediente: "0425-382231/2026",
-    nombre: "Clínica Universitaria Reina Fabiola",
-    cuit: "30555555551",
-    fechaCreacion: "05/05/2026",
-    departamento: "Capital",
-    localidad: "Córdoba",
-    tipologia: "CLÍNICAS, SANATORIOS y HOSPITALES",
-    tipoTramite: "Habilitación",
-    etapa: "Finalizado",
-    estado: "HABILITADO",
-    fechaFin: "29/4/2043",
-    color: "#32A430",
-  },
-  {
-    id: 3,
-    nSolicitud: "4410",
-    expediente: "0425-382232/2026",
-    nombre: "Sanatorio Allende (Cerro)",
-    cuit: "30444444441",
-    fechaCreacion: "06/05/2026",
-    departamento: "Capital",
-    localidad: "Córdoba",
-    tipologia: "CLÍNICAS, SANATORIOS y HOSPITALES",
-    tipoTramite: "Renovación",
-    etapa: "Auditoría en curso",
-    estado: "PRÓXIMO A VENCER",
-    fechaFin: "15/6/2026",
-    color: "#F7BE2B",
-  },
-  {
-    id: 4,
-    nSolicitud: "4411",
-    expediente: "0425-382233/2026",
-    nombre: "Hospital Privado Universitario de Córdoba",
-    cuit: "30333333331",
-    fechaCreacion: "07/05/2026",
-    departamento: "Capital",
-    localidad: "Córdoba",
-    tipologia: "CLÍNICAS, SANATORIOS y HOSPITALES",
-    tipoTramite: "Renovación",
-    etapa: "Abono de tasas",
-    estado: "VENCIDO",
-    fechaFin: "01/01/2026",
-    color: "#E2464C",
-  },
-  {
-    id: 5,
-    nSolicitud: "4412",
-    expediente: "0425-382234/2026",
-    nombre: "Hospital de Niños de la Santísima Trinidad",
-    cuit: "30222222221",
-    fechaCreacion: "08/05/2026",
-    departamento: "Capital",
-    localidad: "Córdoba",
-    tipologia: "CLÍNICAS, SANATORIOS y HOSPITALES",
-    tipoTramite: "Habilitación",
-    etapa: "Cancelado",
-    estado: "NO VIGENTE",
-    fechaFin: "-",
-    color: "#004582",
-  },
-];
+
+const ESTABLECIMIENTOS = MOCK_ESTABLECIMIENTOS;
 
 // Acciones contextuales según estado
 const ACCIONES_POR_ESTADO = {
   "EN PROCESO DE MODIFICACIÓN": [
-    { label: "Continuar",         icon: <EditIcon fontSize="small" />,          color: "rgb(9, 155, 227)",    primary: true },
-    { label: "Visualizar",        icon: <VisibilityIcon fontSize="small" />,    color: "rgb(254, 222, 39)" },
-    { label: "Historial",         icon: <HistoryIcon fontSize="small" />,       color: "rgb(46, 125, 50)" },
+    { label: "Continuar", icon: <EditIcon fontSize="small" />, color: "rgb(9, 155, 227)", primary: true },
+    { label: "Visualizar", icon: <VisibilityIcon fontSize="small" />, color: "rgb(254, 222, 39)" },
+    { label: "Historial", icon: <HistoryIcon fontSize="small" />, color: "rgb(46, 125, 50)" },
   ],
   "HABILITADO": [
-    { label: "Visualizar",        icon: <VisibilityIcon fontSize="small" />,    color: "rgb(254, 222, 39)",   primary: true },
-    { label: "Descargar",         icon: <CloudDownloadIcon fontSize="small" />, color: "rgb(9, 155, 227)" },
-    { label: "Ver Resolución",    icon: <DescriptionIcon fontSize="small" />,  color: "rgb(46, 125, 50)" },
-    { label: "Certificado",       icon: <AssignmentIcon fontSize="small" />,   color: "rgb(175, 65, 120)" },
-    { label: "Historial",         icon: <HistoryIcon fontSize="small" />,       color: "rgb(46, 125, 50)" },
+    { label: "Visualizar", icon: <VisibilityIcon fontSize="small" />, color: "rgb(254, 222, 39)", primary: true },
+    { label: "Descargar", icon: <CloudDownloadIcon fontSize="small" />, color: "rgb(9, 155, 227)" },
+    { label: "Ver Resolución", icon: <DescriptionIcon fontSize="small" />, color: "rgb(46, 125, 50)" },
+    { label: "Certificado", icon: <AssignmentIcon fontSize="small" />, color: "rgb(175, 65, 120)" },
+    { label: "Historial", icon: <HistoryIcon fontSize="small" />, color: "rgb(46, 125, 50)" },
   ],
   "PRÓXIMO A VENCER": [
-    { label: "Iniciar Renovación",icon: <EditIcon fontSize="small" />,          color: "rgb(9, 155, 227)",    primary: true },
-    { label: "Visualizar",        icon: <VisibilityIcon fontSize="small" />,    color: "rgb(254, 222, 39)" },
-    { label: "Descargar",         icon: <CloudDownloadIcon fontSize="small" />, color: "rgb(9, 155, 227)" },
-    { label: "Historial",         icon: <HistoryIcon fontSize="small" />,       color: "rgb(46, 125, 50)" },
+    { label: "Iniciar Renovación", icon: <EditIcon fontSize="small" />, color: "rgb(9, 155, 227)", primary: true },
+    { label: "Visualizar", icon: <VisibilityIcon fontSize="small" />, color: "rgb(254, 222, 39)" },
+    { label: "Descargar", icon: <CloudDownloadIcon fontSize="small" />, color: "rgb(9, 155, 227)" },
+    { label: "Historial", icon: <HistoryIcon fontSize="small" />, color: "rgb(46, 125, 50)" },
   ],
   "VENCIDO": [
-    { label: "Continuar",         icon: <EditIcon fontSize="small" />,          color: "rgb(9, 155, 227)",    primary: true },
-    { label: "Visualizar",        icon: <VisibilityIcon fontSize="small" />,    color: "rgb(254, 222, 39)" },
-    { label: "Historial",         icon: <HistoryIcon fontSize="small" />,       color: "rgb(46, 125, 50)" },
+    { label: "Continuar", icon: <EditIcon fontSize="small" />, color: "rgb(9, 155, 227)", primary: true },
+    { label: "Visualizar", icon: <VisibilityIcon fontSize="small" />, color: "rgb(254, 222, 39)" },
+    { label: "Historial", icon: <HistoryIcon fontSize="small" />, color: "rgb(46, 125, 50)" },
   ],
   "NO VIGENTE": [
-    { label: "Visualizar",        icon: <VisibilityIcon fontSize="small" />,    color: "rgb(254, 222, 39)",   primary: true },
-    { label: "Ver Resolución",    icon: <DescriptionIcon fontSize="small" />,  color: "rgb(46, 125, 50)" },
-    { label: "Historial",         icon: <HistoryIcon fontSize="small" />,       color: "rgb(46, 125, 50)" },
+    { label: "Visualizar", icon: <VisibilityIcon fontSize="small" />, color: "rgb(254, 222, 39)", primary: true },
+    { label: "Ver Resolución", icon: <DescriptionIcon fontSize="small" />, color: "rgb(46, 125, 50)" },
+    { label: "Historial", icon: <HistoryIcon fontSize="small" />, color: "rgb(46, 125, 50)" },
   ],
 };
 
@@ -214,20 +146,26 @@ const AccionesCell = ({ row, onAction }) => {
 
 const MisEstablecimientos = () => {
   const navigate = useNavigate();
+  const isEfector = localStorage.getItem("clicsalud_role") === "efector"
+    || !localStorage.getItem("clicsalud_role");
   const [generalSearch, setGeneralSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openModal, setOpenModal] = useState(false);
   const [filters, setFilters] = useState({
+    nombre: "",
+    expediente: "",
+    tipologia: "",
+    tipoTramite: "",
     departamento: "",
+    localidad: "",
     estado: "",
     fechaDesde: "",
-    tipologia: "",
+    fechaHasta: "",
   });
 
   const handleAction = (est) => {
-    if (est.accion === "CONTINUAR" || est.accion === "MODIFICAR" || est.accion === "INICIAR RENOVACIÓN") {
-      navigate("/home-efector/servicios");
-    }
+    navigate("/home-efector/servicios");
   };
 
   const handleFilterChange = (e) => {
@@ -236,27 +174,36 @@ const MisEstablecimientos = () => {
 
   const clearFilters = () => {
     setFilters({
+      nombre: "",
+      expediente: "",
+      cuit: "",
+      tipologia: "",
+      tipoTramite: "",
       departamento: "",
+      localidad: "",
       estado: "",
       fechaDesde: "",
-      tipologia: "",
+      fechaHasta: "",
     });
     setGeneralSearch("");
   };
 
   const filteredData = ESTABLECIMIENTOS.filter((est) => {
-    if (generalSearch) {
-      const matchSearch = Object.values(est).some(
-        (val) => val && val.toString().toLowerCase().includes(generalSearch.toLowerCase())
-      );
-      if (!matchSearch) return false;
-    }
+    if (filters.nombre && !est.nombre.toLowerCase().includes(filters.nombre.toLowerCase())) return false;
+    if (filters.expediente && !est.expediente.toLowerCase().includes(filters.expediente.toLowerCase())) return false;
+    if (filters.cuit && !est.cuit.toLowerCase().includes(filters.cuit.toLowerCase())) return false;
     if (filters.tipologia && est.tipologia !== filters.tipologia) return false;
+    if (filters.tipoTramite && est.tipoTramite !== filters.tipoTramite) return false;
     if (filters.departamento && est.departamento !== filters.departamento) return false;
+    if (filters.localidad && !est.localidad.toLowerCase().includes(filters.localidad.toLowerCase())) return false;
     if (filters.estado && est.estado !== filters.estado) return false;
     if (filters.fechaDesde) {
-      const estDateStr = est.fechaCreacion.split('/').reverse().join('-');
-      if (estDateStr < filters.fechaDesde) return false;
+      const d = est.fechaCreacion.split('/').reverse().join('-');
+      if (d < filters.fechaDesde) return false;
+    }
+    if (filters.fechaHasta) {
+      const d = est.fechaCreacion.split('/').reverse().join('-');
+      if (d > filters.fechaHasta) return false;
     }
     return true;
   });
@@ -271,7 +218,9 @@ const MisEstablecimientos = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ maxWidth: "1600px", mx: "auto" }}>
+
+
       {/* === SECCIÓN FILTROS === */}
       <Paper
         elevation={0}
@@ -279,9 +228,12 @@ const MisEstablecimientos = () => {
           mb: 3,
           borderRadius: "12px",
           border: "1px solid #e2e8f0",
-          overflow: "hidden",
+
         }}
       >
+        <Typography variant="h4" sx={{ fontWeight: 900, color: "#005596", letterSpacing: -1, p: 2 }}>
+          Bandeja de Establecimientos
+        </Typography>
         {/* Header de filtros */}
         <Box
           sx={{
@@ -307,73 +259,26 @@ const MisEstablecimientos = () => {
               Filtros de búsqueda
             </Typography>
           </Box>
-          <Button
-            variant="contained"
-            startIcon={<AddCircleOutlineIcon />}
-            sx={{
-              bgcolor: "#005596",
-              "&:hover": { bgcolor: "#003b6b" },
-              textTransform: "none",
-              fontWeight: 700,
-              borderRadius: "8px",
-              boxShadow: "none",
-              px: 2.5,
-            }}
-          >
-            Iniciar Nuevo Trámite
-          </Button>
         </Box>
 
-        {/* Campos de filtros */}
+
+
+        {/* Campos de filtros — 3 filas de 3 */}
         <Box sx={{ p: 3 }}>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2.5, alignItems: "flex-end" }}>
-            <TextField
-              select
-              label="Tipología"
-              name="tipologia"
-              value={filters.tipologia}
-              onChange={handleFilterChange}
-              size="small"
-              sx={{
-                width: 280,
-                "& .MuiOutlinedInput-root": { borderRadius: "8px", bgcolor: "#fff" },
-              }}
-            >
-              <MenuItem value="">Todas las tipologías</MenuItem>
-              <MenuItem value="CLÍNICAS, SANATORIOS y HOSPITALES">Clínicas, Sanatorios y Hospitales</MenuItem>
-              <MenuItem value="ESTABLECIMIENTOS GERIÁTRICOS">Establecimientos Geriátricos</MenuItem>
-              <MenuItem value="CENTRO DE SALUD AMBULATORIO">Centro de Salud Ambulatorio</MenuItem>
-              <MenuItem value="CENTRO DE CIRUGÍA AMBULATORIA">Centro de Cirugía Ambulatoria</MenuItem>
-            </TextField>
+          {/* Fila 1: N° Expediente · Nombre · CUIT */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0 32px", mb: 3 }}>
+            <TextField variant="standard" label="N° Expediente" name="expediente"
+              value={filters.expediente} onChange={handleFilterChange} placeholder="Ej: 0425-382230/2026" />
+            <TextField variant="standard" label="Nombre del establecimiento" name="nombre"
+              value={filters.nombre} onChange={handleFilterChange} placeholder="Buscar por nombre..." />
+            <TextField variant="standard" label="CUIT" name="cuit"
+              value={filters.cuit} onChange={handleFilterChange} placeholder="Ej: 30-12345678-9" />
+          </Box>
 
-            <TextField
-              select
-              label="Departamento"
-              name="departamento"
-              value={filters.departamento}
-              onChange={handleFilterChange}
-              size="small"
-              sx={{
-                width: 220,
-                "& .MuiOutlinedInput-root": { borderRadius: "8px", bgcolor: "#fff" },
-              }}
-            >
-              <MenuItem value="">Todos los departamentos</MenuItem>
-              <MenuItem value="Capital">Capital</MenuItem>
-            </TextField>
-
-            <TextField
-              select
-              label="Estado"
-              name="estado"
-              value={filters.estado}
-              onChange={handleFilterChange}
-              size="small"
-              sx={{
-                width: 260,
-                "& .MuiOutlinedInput-root": { borderRadius: "8px", bgcolor: "#fff" },
-              }}
-            >
+          {/* Fila 2: Estado · Fecha desde · Tipología */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0 32px", mb: 3 }}>
+            <TextField variant="standard" select label="Estado" name="estado"
+              value={filters.estado} onChange={handleFilterChange}>
               <MenuItem value="">Todos los estados</MenuItem>
               <MenuItem value="EN PROCESO DE MODIFICACIÓN">En Proceso de Modificación</MenuItem>
               <MenuItem value="HABILITADO">Habilitado</MenuItem>
@@ -381,101 +286,83 @@ const MisEstablecimientos = () => {
               <MenuItem value="VENCIDO">Vencido</MenuItem>
               <MenuItem value="NO VIGENTE">No Vigente</MenuItem>
             </TextField>
-
-            <TextField
-              label="Fecha desde"
-              name="fechaDesde"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              value={filters.fechaDesde}
-              onChange={handleFilterChange}
-              size="small"
-              sx={{
-                width: 190,
-                "& .MuiOutlinedInput-root": { borderRadius: "8px", bgcolor: "#fff" },
-              }}
-            />
+            <TextField variant="standard" label="Fecha desde" name="fechaDesde" type="date"
+              InputLabelProps={{ shrink: true }} value={filters.fechaDesde} onChange={handleFilterChange} />
+            <TextField variant="standard" select label="Tipología" name="tipologia"
+              value={filters.tipologia} onChange={handleFilterChange}>
+              <MenuItem value="">Todas las tipologías</MenuItem>
+              <MenuItem value="CLÍNICAS, SANATORIOS y HOSPITALES">Clínicas, Sanatorios y Hospitales</MenuItem>
+              <MenuItem value="ESTABLECIMIENTOS GERIÁTRICOS">Establecimientos Geriátricos</MenuItem>
+              <MenuItem value="CENTRO DE SALUD AMBULATORIO">Centro de Salud Ambulatorio</MenuItem>
+              <MenuItem value="CENTRO DE CIRUGÍA AMBULATORIA">Centro de Cirugía Ambulatoria</MenuItem>
+            </TextField>
           </Box>
 
-          {/* Botones de acción */}
-          <Box display="flex" justifyContent="flex-end" gap={1.5} mt={3}>
-            <Button
-              variant="outlined"
-              onClick={clearFilters}
-              startIcon={<RefreshIcon />}
+          {/* Fila 3: Tipo de Trámite · Departamento · Localidad */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0 32px" }}>
+            <TextField variant="standard" select label="Tipo de Trámite" name="tipoTramite"
+              value={filters.tipoTramite} onChange={handleFilterChange}>
+              <MenuItem value="">Todos</MenuItem>
+              <MenuItem value="Habilitación">Habilitación</MenuItem>
+              <MenuItem value="Renovación">Renovación</MenuItem>
+              <MenuItem value="Modificación">Modificación</MenuItem>
+            </TextField>
+            <TextField variant="standard" select label="Departamento" name="departamento"
+              value={filters.departamento} onChange={handleFilterChange}>
+              <MenuItem value="">Todos los departamentos</MenuItem>
+              <MenuItem value="Capital">Capital</MenuItem>
+              <MenuItem value="Río Cuarto">Río Cuarto</MenuItem>
+              <MenuItem value="Punilla">Punilla</MenuItem>
+              <MenuItem value="Colón">Colón</MenuItem>
+              <MenuItem value="General San Martín">General San Martín</MenuItem>
+            </TextField>
+            <TextField variant="standard" label="Localidad" name="localidad"
+              value={filters.localidad} onChange={handleFilterChange} placeholder="Ej: Córdoba" />
+          </Box>
+
+          {/* Botones */}
+          <Box display="flex" justifyContent="flex-end" gap={1.5} mt={4}>
+            <Button variant="outlined" onClick={clearFilters} startIcon={<RefreshIcon />}
               sx={{
-                borderColor: "#cbd5e1",
-                color: "#64748b",
-                borderRadius: "8px",
-                textTransform: "none",
-                fontWeight: 600,
-                "&:hover": { borderColor: "#94a3b8", bgcolor: "#f8fafc" },
-              }}
-            >
+                borderColor: "#cbd5e1", color: "#64748b", borderRadius: "8px",
+                textTransform: "none", fontWeight: 600,
+                "&:hover": { borderColor: "#94a3b8", bgcolor: "#f8fafc" }
+              }}>
               Limpiar
             </Button>
-            <Button
-              variant="contained"
-              startIcon={<SearchIcon />}
+            <Button variant="contained" startIcon={<SearchIcon />}
               sx={{
-                bgcolor: "#005596",
-                "&:hover": { bgcolor: "#003b6b" },
-                textTransform: "none",
-                fontWeight: 700,
-                borderRadius: "8px",
-                boxShadow: "none",
-                px: 3,
-              }}
-            >
+                bgcolor: "#005596", "&:hover": { bgcolor: "#003b6b" },
+                textTransform: "none", fontWeight: 700, borderRadius: "8px",
+                boxShadow: "none", px: 3
+              }}>
               Buscar
             </Button>
           </Box>
         </Box>
-      </Paper>
+      </Paper >
 
       {/* Tabla Principal */}
-      <Paper elevation={0} sx={{ borderRadius: "8px", border: "1px solid #e0e0e0", overflow: "hidden" }}>
-        
-        {/* Cabecera de la tabla con tabs falsos (Estilo de la imagen) */}
-        <Box sx={{ bgcolor: "#005596", display: "flex", overflowX: 'auto' }}>
-          {["TODOS", "HABILITADOS", "EN PROCESO", "VENCIDOS"].map((tab, idx) => (
-            <Box 
-              key={tab}
-              sx={{ 
-                py: 1.5, 
-                px: 4, 
-                color: "#fff", 
-                fontWeight: "bold", 
-                fontSize: "0.85rem",
-                bgcolor: idx === 0 ? "rgba(255,255,255,0.15)" : "transparent",
-                cursor: "pointer",
-                '&:hover': { bgcolor: "rgba(255,255,255,0.1)" }
-              }}
-            >
-              {tab}
-            </Box>
-          ))}
-        </Box>
+      < Paper elevation={0} sx={{ borderRadius: "8px", border: "1px solid #e0e0e0", overflow: "hidden" }}>
 
-        {/* Búsqueda integrada en cabecera - eliminada */}
 
-        <TableContainer>
+        < TableContainer >
           <Table sx={{ minWidth: 1000 }} size="medium">
             <TableHead>
-              <TableRow sx={{ bgcolor: "#f8f9fa" }}>
-                <TableCell sx={{ fontWeight: "bold", color: "#444", fontSize: "0.75rem" }}>EXPEDIENTE</TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "#444", fontSize: "0.75rem" }}>ESTABLECIMIENTO</TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "#444", fontSize: "0.75rem" }}>ESTADO ACTUAL</TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "#444", fontSize: "0.75rem" }}>FECHA DE INGRESO</TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "#444", fontSize: "0.75rem" }}>TIPOLOGÍA</TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "#444", fontSize: "0.75rem" }}>UBICACIÓN</TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold", color: "#444", fontSize: "0.75rem" }}>ACCIONES</TableCell>
+              <TableRow sx={{ bgcolor: "#005596" }}>
+                <TableCell sx={{ fontWeight: "bold", color: "white", fontSize: "0.75rem" }}>EXPEDIENTE</TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white", fontSize: "0.75rem" }}>ESTABLECIMIENTO</TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white", fontSize: "0.75rem" }}>ESTADO</TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white", fontSize: "0.75rem" }}>FECHA DE INGRESO</TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white", fontSize: "0.75rem" }}>TIPOLOGÍA</TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white", fontSize: "0.75rem" }}>UBICACIÓN</TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold", color: "white", fontSize: "0.75rem" }}>ACCIONES</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                <TableRow 
-                  key={row.id} 
+                <TableRow
+                  key={row.id}
                   hover
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
@@ -483,24 +370,24 @@ const MisEstablecimientos = () => {
                     <Typography variant="body2" sx={{ fontWeight: 600, color: "#1a1a1a" }}>{row.expediente}</Typography>
                     <Typography variant="caption" sx={{ color: "#777" }}>Sol: {row.nSolicitud}</Typography>
                   </TableCell>
-                  
+
                   <TableCell>
                     <Typography variant="body2" sx={{ fontWeight: 600, color: "#1a1a1a" }}>{row.nombre}</Typography>
                     <Typography variant="caption" sx={{ color: "#777" }}>CUIT: {row.cuit}</Typography>
                   </TableCell>
 
                   <TableCell>
-                    <Chip 
-                      label={row.estado} 
+                    <Chip
+                      label={row.estado}
                       size="small"
-                      sx={{ 
-                        fontWeight: "bold", 
+                      sx={{
+                        fontWeight: "bold",
                         fontSize: "0.7rem",
-                        bgcolor: `${row.color}15`, 
+                        bgcolor: `${row.color}15`,
                         color: row.color,
                         borderRadius: '4px',
                         border: `1px solid ${row.color}30`
-                      }} 
+                      }}
                     />
                     <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: "#666" }}>
                       {row.etapa}
@@ -536,7 +423,7 @@ const MisEstablecimientos = () => {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer >
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -547,9 +434,24 @@ const MisEstablecimientos = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
           labelRowsPerPage="Filas por página"
         />
-      </Paper>
-    </Box>
+      </Paper >
+
+      {/* Modal Habilitación */}
+      <ModalHabilitacion open={openModal} onClose={() => setOpenModal(false)} />
+
+    </Box >
   );
 };
 
 export default MisEstablecimientos;
+
+// ─── Router de roles ─────────────────────────────────────────────────────────
+const MisEstablecimientosPorRol = () => {
+  const { role } = useRole(); // reactivo: cambia cuando el navbar chip cambia
+  if (role === "auditor") return <VistaAuditor />;
+  if (role === "inspector") return <VistaInspector />;
+  if (role === "protocolizador") return <VistaProtocolizador />;
+  return <MisEstablecimientos />; // efector (default)
+};
+
+export { MisEstablecimientosPorRol };
