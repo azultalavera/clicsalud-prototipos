@@ -367,7 +367,11 @@ const TramitesEnCurso = () => {
                 <TableRow
                   key={row.id}
                   hover
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 }, "&:hover": { bgcolor: "#f8fafc" } }}
+                  sx={{ 
+                    "&:last-child td, &:last-child th": { border: 0 }, 
+                    "&:hover": { bgcolor: row.id === 2 ? "#fff3e0" : "#f8fafc" },
+                    bgcolor: row.id === 2 ? "#fff8e1" : "inherit"
+                  }}
                 >
                   <TableCell>
                     <Typography variant="body2" sx={{ fontWeight: 600, color: "#0f172a" }}>{row.expediente}</Typography>

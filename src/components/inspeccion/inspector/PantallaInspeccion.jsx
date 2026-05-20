@@ -86,6 +86,7 @@ const PantallaInspeccion = ({
   serviciosEfector: propsServicios,
   infraEfector: propsInfra,
   rrhhEfector: propsRrhh,
+  jefesEfector: propsJefes,
   equiposEfector: propsEquipos,
 }) => {
   const [loading, setLoading] = useState(true);
@@ -192,7 +193,6 @@ const PantallaInspeccion = ({
   const [expandedDatosGenerales, setExpandedDatosGenerales] = useState(true);
   const [expandedEstablecimiento, setExpandedEstablecimiento] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("ARQUITECTURA");
-  const [selectedSubService, setSelectedSubService] = useState("");
   const [serviciosEfector, setServiciosEfector] = useState([]);
   const [infraEfector, setInfraEfector] = useState({});
   const [rrhhEfector, setRrhhEfector] = useState([]);
@@ -216,25 +216,28 @@ const PantallaInspeccion = ({
       ];
 
       return allEfectorSelection.some((effSrv) => {
-        const nSrvName = (s.name || "").toUpperCase();
-        const nEffSrv = (effSrv || "").toUpperCase();
+        const nSrvName = normalize(s.name || "");
+        const nEffSrv = normalize(effSrv || "");
 
         if (nSrvName === nEffSrv) return true;
-
-        // Lógica de variantes
+        
+        // Búsqueda de sub-cadena para casos como "UCO (Unidad Coronaria)"
         if (nSrvName.includes(nEffSrv) || nEffSrv.includes(nSrvName)) {
-          const isPed = (str) => str.includes("PEDIAT") || str.includes("UTIP");
-          const isNeo = (str) => str.includes("NEONAT") || str.includes("UTIN");
-          const isUco = (str) => str.includes("CORONARI") || str.includes("UCO");
-          const isUcim = (str) => str.includes("INTERMEDIO") || str.includes("UCIM");
+           // Evitar falsos positivos entre tipos de terapias
+           const isPed = (str) => str.includes("PEDIAT") || str.includes("UTIP");
+           const isNeo = (str) => str.includes("NEONAT") || str.includes("UTIN");
+           const isUco = (str) => str.includes("CORONARI") || str.includes("UCO");
+           
+           if (isPed(nSrvName) !== isPed(nEffSrv)) return false;
+           if (isNeo(nSrvName) !== isNeo(nEffSrv)) return false;
+           if (isUco(nSrvName) !== isUco(nEffSrv)) return false;
 
-          if (isPed(nSrvName) !== isPed(nEffSrv)) return false;
-          if (isNeo(nSrvName) !== isNeo(nEffSrv)) return false;
-          if (isUco(nSrvName) !== isUco(nEffSrv)) return false;
-          if (isUcim(nSrvName) !== isUcim(nEffSrv)) return false;
-
-          return true;
+           return true;
         }
+
+        const isQuir = (str) => str.includes("QUIR") || str.includes("PABELLON");
+        if (isQuir(nSrvName) && isQuir(nEffSrv)) return true;
+        
         return false;
       });
     }) || [];
@@ -245,13 +248,23 @@ const PantallaInspeccion = ({
       const cachedSrv = localStorage.getItem("efector_servicios");
       const cachedInfra = localStorage.getItem("efector_infra");
       const cachedRrhh = localStorage.getItem("efector_rrhh");
+      const cachedJefes = localStorage.getItem("efector_jefes");
       const cachedEquipos = localStorage.getItem("efector_equipos");
       const cachedTipo = localStorage.getItem("efector_tipo");
       const cachedDT = localStorage.getItem("efector_dt");
 
       if (cachedSrv) setServiciosEfector(JSON.parse(cachedSrv));
       if (cachedInfra) setInfraEfector(JSON.parse(cachedInfra));
-      if (cachedRrhh) setRrhhEfector(JSON.parse(cachedRrhh));
+      
+      let rrhhList = [];
+      if (cachedRrhh) rrhhList = JSON.parse(cachedRrhh);
+      if (cachedJefes) {
+        const jefes = JSON.parse(cachedJefes);
+        // Asegurar que tengan el flag o tipo para identificarlos
+        rrhhList = [...rrhhList, ...jefes.map(j => ({ ...j, isJefe: true }))];
+      }
+      setRrhhEfector(rrhhList);
+
       if (cachedEquipos) setEquiposEfector(JSON.parse(cachedEquipos));
       if (cachedTipo) setTipologia(cachedTipo);
       if (cachedDT) setDirectorTecnico(JSON.parse(cachedDT));
@@ -261,7 +274,13 @@ const PantallaInspeccion = ({
     if (propsServicios) {
       setServiciosEfector(propsServicios);
       setInfraEfector(propsInfra || {});
-      setRrhhEfector(propsRrhh || []);
+      
+      let rrhhList = propsRrhh || [];
+      if (propsJefes) {
+        rrhhList = [...rrhhList, ...propsJefes.map(j => ({ ...j, isJefe: true }))];
+      }
+      setRrhhEfector(rrhhList);
+      
       setEquiposEfector(propsEquipos || []);
     } else {
       // 2. Fallback: LocalStorage
@@ -480,87 +499,6 @@ const PantallaInspeccion = ({
     fetchData();
   }, [tipologia]);
 
-  const SUBSERVICIOS = [
-    "UNIDADES DE TERAPIA INTENSIVA",
-    "UNIDAD CORONARIA",
-    "UNIDAD DE TERAPIA INTENSIVA NEONATAL",
-    "HEMODIALISIS",
-  ];
-  const TARGET_MAPPINGS = {
-    "UNIDADES DE TERAPIA INTENSIVA": [
-      "UTI",
-      "TERAPIA INTENSIVA",
-      "CUIDADOS INTENSIVOS",
-      "CUIDADOS CRITICOS",
-      "UNIDAD DE TERAPIA INTENSIVA",
-      "UNIDADES DE TERAPIA INTENSIVA",
-    ],
-    "UNIDAD CORONARIA": ["UCO", "CORONARIA", "CORONARIO", "UNIDAD CORONARIA"],
-    "UNIDAD DE TERAPIA INTENSIVA NEONATAL": ["UTIN", "NEONATAL", "UNIDAD DE TERAPIA INTENSIVA NEONATAL"],
-    HEMODIALISIS: ["HEMODIALISIS", "DIALISIS"],
-  };
-
-  const normalizedMatch = (srvName, targetKey) => {
-    const nSrv = srvName
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toUpperCase();
-    const nKey = targetKey
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toUpperCase();
-
-    if (nSrv.includes(nKey) || nKey.includes(nSrv)) return true;
-
-    const srvWords = nSrv.split(/\W+/).filter((w) => w.length > 3);
-    const keyWords = nKey.split(/\W+/).filter((w) => w.length > 3);
-    return keyWords.some((kw) => srvWords.includes(kw));
-  };
-
-  const activeSubServicios = SUBSERVICIOS.filter((sub) => {
-    const allEfectorSelection = [
-      ...serviciosEfector,
-      ...Object.keys(infraEfector || {}).filter(
-        (k) => (infraEfector[k] || 0) > 0,
-      ),
-    ];
-
-    return allEfectorSelection.some((srvName) => {
-      const isMatch = TARGET_MAPPINGS[sub]?.some((k) =>
-        normalizedMatch(srvName, k),
-      );
-      const nSrv = srvName
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toUpperCase();
-
-      const isExcluded =
-        sub === "UNIDADES DE TERAPIA INTENSIVA" &&
-        (nSrv.includes("PEDIAT") ||
-          nSrv.includes("NEONAT") ||
-          nSrv.includes("CORONARI") ||
-          nSrv.includes("INTERMEDIA"));
-
-      // Si es exactamente la UTI que buscamos, nunca la excluimos de su propio chip
-      if (
-        sub === "UNIDADES DE TERAPIA INTENSIVA" &&
-        (nSrv.includes("TERAPIA INTENSIVA") || nSrv.includes("UTI"))
-      ) {
-        if (!nSrv.includes("PEDIAT") && !nSrv.includes("NEONAT")) return true;
-      }
-
-      return isMatch && !isExcluded;
-    });
-  });
-
-  useEffect(() => {
-    if (
-      activeSubServicios.length > 0 &&
-      !activeSubServicios.includes(selectedSubService)
-    ) {
-      setSelectedSubService(activeSubServicios[0]);
-    }
-  }, [activeSubServicios, selectedSubService]);
 
   const handleFieldChange = (fieldId, newValue) => {
     setInspectorData((prev) => {
@@ -1092,55 +1030,8 @@ const PantallaInspeccion = ({
                   </Box>
                 )}
 
-                {selectedCategory === "SERVICIOS" && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: 1,
-                      mb: 4,
-                      mt: 1,
-                      justifyContent: "center",
-                      p: 2,
-                      bgcolor: "#f8fafc",
-                      borderRadius: 4,
-                      border: "1px dashed #cbd5e1",
-                    }}
-                  >
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        width: "100%",
-                        textAlign: "center",
-                        fontWeight: 700,
-                        mb: 1,
-                        color: "#94a3b8",
-                      }}
-                    >
-                      SUB-ÁREAS TÉCNICAS A EVALUAR
-                    </Typography>
-                    {activeSubServicios.map((sub) => (
-                      <Chip
-                        key={sub}
-                        size="medium"
-                        label={sub}
-                        clickable
-                        onClick={() => setSelectedSubService(sub)}
-                        sx={{
-                          fontWeight: 800,
-                          fontSize: "0.85rem",
-                          px: 1,
-                          bgcolor: selectedSubService === sub ? "#e0f2fe" : "white",
-                          color: selectedSubService === sub ? "#0369a1" : "#64748b",
-                          border: "2px solid",
-                          borderColor: selectedSubService === sub ? "#0ea5e9" : "#e2e8f0",
-                        }}
-                      />
-                    ))}
-                  </Box>
-                )}
 
-                {(selectedCategory === "EQUIPAMIENTO" || selectedCategory === "SALAS Y CAMAS") && (
+                {(selectedCategory === "EQUIPAMIENTO" || selectedCategory === "SALAS Y CAMAS" || selectedCategory === "RECURSOS HUMANOS") && (
                   <Box sx={{ mb: 4 }}>
                     <AggregatedInspectionTable
                       category={selectedCategory}
@@ -1148,6 +1039,7 @@ const PantallaInspeccion = ({
                       inspectorData={inspectorData}
                       infraEfector={infraEfector}
                       equiposEfector={equiposEfector}
+                      rrhhEfector={rrhhEfector}
                       onChange={handleFieldChange}
                       onOpenObs={handleOpenObsDialog}
                     />
@@ -1163,44 +1055,16 @@ const PantallaInspeccion = ({
                   let matchedSections = [];
 
                   if (selectedCategory === "SERVICIOS") {
-                    const isTargetService = TARGET_MAPPINGS[selectedSubService]?.some(
-                      (k) => normalizedMatch(srv.name, k),
-                    );
-                    const nSrv = (srv.name || "").toUpperCase();
-                    const isExcluded =
-                      selectedSubService === "UTI" &&
-                      (nSrv.includes("PEDIAT") ||
-                        nSrv.includes("NEONAT") ||
-                        nSrv.includes("CORONARI") ||
-                        nSrv.includes("INTERMEDIA"));
-
-                    if (
-                      isTargetService &&
-                      (!isExcluded || nSrv === "UNIDAD DE TERAPIA INTENSIVA") &&
-                      srv.sections
-                    ) {
+                    if (srv.sections) {
                       matchedSections = srv.sections.filter((sec) => {
                         const n = sec.name.toUpperCase();
-
-                        // Si estamos en una sub-área técnica específica (UTI, UCO, etc), 
-                        // mostramos TODO (incluyendo equipamiento y rrhh) para que la evaluación sea integral
-                        const isSubAreaTecnica = [
-                          "UNIDADES DE TERAPIA INTENSIVA",
-                          "UNIDAD CORONARIA",
-                          "UNIDAD DE TERAPIA INTENSIVA NEONATAL",
-                          "HEMODIALISIS"
-                        ].includes(selectedSubService);
-
-                        const isRelevant = isSubAreaTecnica || (
+                        return (
                           !n.includes("ARQUITECTURA") &&
                           !n.includes("EQUIPAMIENTO") &&
                           !n.includes("RECURSOS") &&
                           !n.includes("RRHH") &&
                           !n.includes("JEFE")
                         );
-
-                        if (!isRelevant) return false;
-                        return sec.fields && sec.fields.length > 0;
                       });
                     }
                   } else {
@@ -1213,37 +1077,17 @@ const PantallaInspeccion = ({
                             : selectedCategory === "DOCUMENTACION"
                               ? "DOCUMENTO"
                               : selectedCategory;
+                      
                       matchedSections = srv.sections.filter((sec) => {
+                        const n = sec.name.toUpperCase();
                         const isMatch =
-                          sec.name.toUpperCase().includes(keyword) ||
-                          (selectedCategory === "DOCUMENTACION" &&
-                            sec.name.toUpperCase().includes("DOCUMENTA")) ||
-                          (selectedCategory === "RECURSOS HUMANOS" &&
-                            sec.name.toUpperCase().includes("JEFE")) ||
-                          (selectedCategory === "SALAS Y CAMAS" &&
-                            sec.name.toUpperCase().includes("CAMA"));
+                          n.includes(keyword) ||
+                          (selectedCategory === "DOCUMENTACION" && n.includes("DOCUMENTA")) ||
+                          (selectedCategory === "RECURSOS HUMANOS" && n.includes("JEFE")) ||
+                          (selectedCategory === "SALAS Y CAMAS" && n.includes("CAMA"));
 
-                        if (!isMatch || selectedCategory === "DOCUMENTACION" || selectedCategory === "EQUIPAMIENTO" || selectedCategory === "SALAS Y CAMAS") return false;
-
-                        // Verificar si tiene campos válidos después de filtrar por infraEfector si aplica
-                        const validFields = (sec.fields || []).filter((f) => {
-                          if (
-                            sec.name.toUpperCase().includes("SALA") ||
-                            sec.name.toUpperCase().includes("CAMA")
-                          ) {
-                            const label = f.label || f.name;
-                            const uLabel = label.toUpperCase();
-                            const isGenericLabel = uLabel.includes("CAMAS") || uLabel.includes("SALAS") || uLabel.includes("HABITACION") || (uLabel.includes("N") && uLabel.includes("DE"));
-
-                            // Si es etiqueta genérica, basta con que el servicio esté en infraEfector
-                            if (isGenericLabel && infraEfector && (infraEfector[srv.name] || infraEfector[srv.id])) return true;
-
-                            return (infraEfector && (infraEfector[label] || 0) > 0);
-                          }
-                          return true;
-                        });
-
-                        return validFields.length > 0;
+                        if (!isMatch || ["DOCUMENTACION", "EQUIPAMIENTO", "SALAS Y CAMAS", "RECURSOS HUMANOS"].includes(selectedCategory)) return false;
+                        return sec.fields && sec.fields.length > 0;
                       });
                     }
                   }

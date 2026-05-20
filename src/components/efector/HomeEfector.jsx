@@ -150,6 +150,11 @@ const HomeEfector = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [jefesCargados, setJefesCargados] = useState(() => {
+    const saved = localStorage.getItem("efector_jefes");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [isServiceValid, setIsServiceValid] = useState(false);
   const [isEquipamientoValid, setIsEquipamientoValid] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -164,7 +169,8 @@ const HomeEfector = () => {
     localStorage.setItem("efector_infra", JSON.stringify(infraSelection));
     localStorage.setItem("efector_equipos", JSON.stringify(equiposCargados));
     localStorage.setItem("efector_rrhh", JSON.stringify(rrhhCargado));
-  }, [selectedServices, infraSelection, equiposCargados, rrhhCargado]);
+    localStorage.setItem("efector_jefes", JSON.stringify(jefesCargados));
+  }, [selectedServices, infraSelection, equiposCargados, rrhhCargado, jefesCargados]);
 
   // Moví 'steps' fuera o aseguro su referencia para el useMemo
   const steps = useMemo(
@@ -323,6 +329,7 @@ const HomeEfector = () => {
                     serviciosEfector={Object.keys(selectedServices).filter(k => !!selectedServices[k])} 
                     infraEfector={infraSelection}
                     rrhhEfector={rrhhCargado}
+                    jefesEfector={jefesCargados}
                     equiposEfector={equiposCargados}
                   />
                 }
@@ -350,7 +357,11 @@ const HomeEfector = () => {
               <Route
                 path="jefes"
                 element={
-                  <JefeServicioStep selectedServices={selectedServices} />
+                  <JefeServicioStep 
+                    selectedServices={selectedServices} 
+                    cargados={jefesCargados} 
+                    setCargados={setJefesCargados}
+                  />
                 }
               />
               <Route

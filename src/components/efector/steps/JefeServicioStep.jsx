@@ -9,9 +9,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
 
-const JefeServicioStep = ({ selectedServices }) => {
+const JefeServicioStep = ({ selectedServices, cargados, setCargados }) => {
   const [requeridos, setRequeridos] = useState([]);
-  const [cargados, setCargados] = useState([]);
   const [busqueda, setBusqueda] = useState({ 
     cuil: '', 
     nombre: '', 

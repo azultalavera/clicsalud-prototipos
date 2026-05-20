@@ -43,6 +43,7 @@ import {
   Warning as WarningIcon,
   CheckCircle as CheckCircleIcon,
   PhotoCamera,
+  Visibility as VisibilityIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import PantallaInspeccion from "../inspeccion/inspector/PantallaInspeccion";
@@ -55,36 +56,82 @@ const RectificacionTramite = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openActaPopup, setOpenActaPopup] = useState(false);
   const [viewerPhoto, setViewerPhoto] = useState(null);
+  const [photoPage, setPhotoPage] = useState(1);
+  const [generalObsText, setGeneralObsText] = useState("");
+  const [uploadedPhotos, setUploadedPhotos] = useState([
+    "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=800", 
+    "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800", 
+    "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?w=800", 
+    "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800", 
+    "https://images.unsplash.com/photo-1504813184591-015556152144?w=800", 
+    "https://images.unsplash.com/photo-1551076805-e1869f363f9d?w=800", 
+    "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800", 
+    "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=800", 
+  ]);
+
+  const handleAddPhoto = () => {
+    const mockPhotos = [
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800",
+      "https://images.unsplash.com/photo-1583912267670-65355b6dbafb?w=800",
+      "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800",
+      "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800",
+      "https://images.unsplash.com/photo-1603398938378-e54eab446dde?w=800"
+    ];
+    const randomImg = mockPhotos[Math.floor(Math.random() * mockPhotos.length)];
+    setUploadedPhotos(prev => [...prev, randomImg]);
+  };
+
+  const handleDeletePhoto = (idx) => {
+    setUploadedPhotos(prev => prev.filter((_, i) => i !== idx));
+    const newTotal = uploadedPhotos.length - 1;
+    const newPages = Math.ceil(newTotal / 5) || 1;
+    if (photoPage > newPages) {
+      setPhotoPage(newPages);
+    }
+  };
 
   // Datos hardcodeados para ACTA 1 (Baseline) Categorizados
   const acta1Data = {
     generales: {
       "DATOS DEL ESTABLECIMIENTO Y DE LA INSPECCION": [],
       "REGISTROS": [
-        { id: "L-Quejas", elemento: "Libro de Quejas", obs: "No se presenta libro de quejas foliado." }
+        { id: "L-Quejas", elemento: "Libro de Quejas", tipo: "irregularidad", obs: "Falta libro de quejas foliado." }
       ],
       "REVISION": [],
       "DATOS": [],
       "RADIOFÍSICA": [
-        { id: "R-Blind", elemento: "Radiofísica: Blindaje", obs: "Falta blindaje en puerta Rayos X." },
-        { id: "R-Dosim", elemento: "Radiofísica: Dosimetría", obs: "Registros incompletos." },
-        { id: "R-Senal", elemento: "Radiofísica: Señalética", obs: "Falta luz roja de advertencia." }
+        { id: "R-Blind", elemento: "Radiofísica: Blindaje", tipo: "irregularidad", obs: "Falta blindaje en puerta de Rayos X." },
+        { id: "R-Dosim", elemento: "Radiofísica: Dosimetría", tipo: "irregularidad", obs: "Registros de dosimetría de personal incompletos." },
+        { id: "R-Senal", elemento: "Radiofísica: Señalética", tipo: "irregularidad", obs: "Falta luz roja de advertencia exterior." }
       ],
       "SECTOR DE INTERNACION CUMPLE Y AREA DE RESIDUOS": [],
       "LABORATORIO": []
     },
     tramite: {
       "ARQUITECTURA": [
-        { id: "P-Evac", elemento: "Plan de Evacuación", obs: "Vencimiento 10/03/2026." },
+        { id: "P-Evac", elemento: "Plan de Evacuación", tipo: "irregularidad", obs: "Fecha de vencimiento operada el 10/03/2026." },
+        { id: "P-PlanoEdif", elemento: "Plano de Edificación y Distribución", tipo: "irregularidad", obs: "El plano de edificación no coincide con la distribución actual.", photo: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800" },
+        { id: "P-Electrico", elemento: "Certificado de Instalación Eléctrica", tipo: "irregularidad", obs: "Falta firma o matrícula del profesional en el protocolo." }
       ],
       "SERVICIOS": [
-        { id: "Quir", elemento: "Quirófanos", msg: "IRREGULARIDAD: No se constatan 6 quirófanos." },
+        { id: "Quir", elemento: "Quirófanos", declarado: 6, observado: 5, tipo: "rectificacion", obs: "No se constatan 6 quirófanos en funcionamiento." },
       ],
-      "SALAS Y CAMAS": [],
-      "RRHH Y JS": [],
-      "EQUIPAMIENTO": [],
+      "SALAS Y CAMAS": [
+        { id: "SC-Camas", elemento: "Camas de Terapia Intensiva", declarado: 12, observado: 10, tipo: "rectificacion", obs: "Faltan 2 unidades.", photo: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800" },
+        { id: "SC-Salas", elemento: "Salas de Aislamiento", declarado: 2, observado: 1, tipo: "rectificacion", obs: "Falta acondicionar una de las salas declaradas." }
+      ],
+      "RRHH Y JS": [
+        { id: "RH-Enf", elemento: "Enfermeros (Guardia)", declarado: 15, observado: 12, tipo: "rectificacion", obs: "Personal de enfermería insuficiente para el sector de guardia." },
+        { id: "JS-Guardia", elemento: "Jefe de Servicio (Guardia)", declarado: 1, observado: 0, tipo: "rectificacion", obs: "Sin Jefe de Servicio presente ni designado en el sector." }
+      ],
+      "EQUIPAMIENTO": [
+        { id: "EQ-Desfib", elemento: "DEA (Desfibrilador)", declarado: 5, observado: 4, tipo: "irregularidad", obs: "Falta un cardiodesfibrilador en el sector de consultorios.", photo: "https://images.unsplash.com/photo-1603398938378-e54eab446dde?w=800" },
+        { id: "EQ-Respirador", elemento: "Respiradores de Alta Complejidad", declarado: 8, observado: 6, tipo: "rectificacion", obs: "Dos respiradores declarados están fuera de servicio." }
+      ],
       "DOCUMENTOS ADJUNTOS": [
-        { id: "H-Bomb", elemento: "Habilitación Bomberos", obs: "Certificado vencido Enero 2026." },
+        { id: "H-Bomb", elemento: "Habilitación Bomberos", tipo: "irregularidad", obs: "Habilitación vencida en Enero 2026.", photo: "https://images.unsplash.com/photo-1599740831138-095cf07f62d8?w=800" },
+        { id: "Doc-Residuos", elemento: "Contrato Residuos Patógenos", tipo: "irregularidad", obs: "Contrato vencido o sin comprobante de última recolección." },
+        { id: "Doc-Seguro", elemento: "Seguro Responsabilidad Civil", tipo: "irregularidad", obs: "Póliza presentada cuenta con cobertura insuficiente." }
       ]
     }
   };
@@ -257,13 +304,89 @@ const RectificacionTramite = () => {
                         <Chip label={items.length} size="small" color="error" sx={{ ml: 2, height: 20, fontWeight: 900, fontSize: '0.7rem' }} />
                       </AccordionSummary>
                       <AccordionDetails sx={{ p: 0 }}>
+                        {/* Cabecera de Columnas */}
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', bgcolor: '#f1f5f9', py: 1, px: 2, borderBottom: '1px solid #cbd5e1' }}>
+                          <Typography sx={{ fontWeight: 750, color: '#475569', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Observación / Requisito</Typography>
+                          <Stack direction="row" spacing={2} sx={{ width: 220, justifyContent: 'flex-end', pr: 1 }}>
+                            <Typography sx={{ fontWeight: 750, color: '#475569', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', width: 90, textAlign: 'center' }}>Ver Evidencia</Typography>
+                            <Typography sx={{ fontWeight: 750, color: '#475569', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', width: 110, textAlign: 'center' }}>Subir Respuesta</Typography>
+                          </Stack>
+                        </Box>
                         {items.map((row) => (
-                          <Box key={row.id} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f1f5f9', py: 2, px: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Typography sx={{ fontWeight: 800, color: '#ef4444', fontSize: '0.85rem' }}>{row.elemento}</Typography>
-                              <Typography sx={{ fontWeight: 500, color: '#64748b', fontSize: '0.85rem' }}> : {row.obs}</Typography>
+                          <Box 
+                            key={row.id} 
+                            sx={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'space-between', 
+                              borderTop: '1px solid #f1f5f9', 
+                              py: 2, 
+                              px: 2,
+                              transition: 'all 0.2s',
+                              '&:hover': { 
+                                bgcolor: row.tipo === 'irregularidad' ? '#fef2f2' : '#fffbeb', 
+                                boxShadow: `inset 4px 0 0 ${row.tipo === 'irregularidad' ? '#ef4444' : '#f59e0b'}` 
+                              }
+                            }}
+                          >
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flex: 1, pr: 2 }}>
+                              {/* 1. REQUISITO */}
+                              <Typography sx={{ fontWeight: 850, color: '#1e293b', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                                {row.elemento}
+                              </Typography>
+
+                              {/* 2. DECLARADO / OBSERVADO */}
+                              {row.declarado !== undefined && (
+                                <Box sx={{ display: 'flex', gap: 3, my: 0.2 }}>
+                                  <Typography sx={{ fontWeight: 700, color: '#64748b', fontSize: '0.8rem' }}>
+                                    Declarado: <span style={{ color: '#005596', fontWeight: 900 }}>{row.declarado}</span>
+                                  </Typography>
+                                  <Typography sx={{ fontWeight: 700, color: '#64748b', fontSize: '0.8rem' }}>
+                                    Observado: <span style={{ color: '#c2410c', fontWeight: 900 }}>{row.observado}</span>
+                                  </Typography>
+                                </Box>
+                              )}
+
+                              {/* 3. ICONO + OBSERVACIÓN */}
+                              {row.obs && (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mt: 0.2 }}>
+                                  {row.tipo === "irregularidad" ? (
+                                    <ErrorIcon sx={{ color: '#ef4444', fontSize: '0.95rem' }} />
+                                  ) : (
+                                    <span style={{ fontSize: '0.95rem', lineHeight: 1 }}>⚠️</span>
+                                  )}
+                                  <Typography 
+                                    sx={{ 
+                                      color: row.tipo === 'irregularidad' ? '#ef4444' : '#d97706', 
+                                      fontWeight: 650, 
+                                      fontSize: '0.8rem' 
+                                    }}
+                                  >
+                                    {row.obs}
+                                  </Typography>
+                                </Box>
+                              )}
                             </Box>
-                            <Button variant="outlined" size="small" startIcon={<CloudUploadIcon />} sx={{ borderRadius: 1.5, fontSize: '0.65rem', fontWeight: 900, textTransform: 'none' }}>ADJUNTAR</Button>
+                            <Stack direction="row" spacing={2} sx={{ width: 220, justifyContent: 'flex-end', alignItems: 'center' }}>
+                              <Box sx={{ width: 90, display: 'flex', justifyContent: 'center' }}>
+                                {row.photo ? (
+                                  <Tooltip title="Ver evidencia fotográfica (Inspector)" arrow>
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => setViewerPhoto(row.photo)}
+                                      sx={{ color: '#0ea5e9', '&:hover': { bgcolor: 'rgba(14, 165, 233, 0.08)' } }}
+                                    >
+                                      <VisibilityIcon fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                ) : (
+                                  <Typography variant="caption" sx={{ color: '#94a3b8' }}>-</Typography>
+                                )}
+                              </Box>
+                              <Box sx={{ width: 110, display: 'flex', justifyContent: 'center' }}>
+                                <Button variant="outlined" size="small" startIcon={<CloudUploadIcon />} sx={{ borderRadius: 1.5, fontSize: '0.65rem', fontWeight: 900, textTransform: 'none' }}>ADJUNTAR</Button>
+                              </Box>
+                            </Stack>
                           </Box>
                         ))}
                       </AccordionDetails>
@@ -288,13 +411,89 @@ const RectificacionTramite = () => {
                         <Chip label={items.length} size="small" color="error" sx={{ ml: 2, height: 20, fontWeight: 900, fontSize: '0.7rem' }} />
                       </AccordionSummary>
                       <AccordionDetails sx={{ p: 0 }}>
+                        {/* Cabecera de Columnas */}
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', bgcolor: '#f1f5f9', py: 1, px: 2, borderBottom: '1px solid #cbd5e1' }}>
+                          <Typography sx={{ fontWeight: 750, color: '#475569', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Observación / Requisito</Typography>
+                          <Stack direction="row" spacing={2} sx={{ width: 220, justifyContent: 'flex-end', pr: 1 }}>
+                            <Typography sx={{ fontWeight: 750, color: '#475569', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', width: 90, textAlign: 'center' }}>Ver Evidencia</Typography>
+                            <Typography sx={{ fontWeight: 750, color: '#475569', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', width: 110, textAlign: 'center' }}>Subir Respuesta</Typography>
+                          </Stack>
+                        </Box>
                         {items.map((row) => (
-                          <Box key={row.id} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f1f5f9', py: 2, px: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Typography sx={{ fontWeight: 800, color: '#ef4444', fontSize: '0.85rem' }}>{row.elemento}</Typography>
-                              <Typography sx={{ fontWeight: 500, color: '#64748b', fontSize: '0.85rem' }}> : {row.msg || row.obs}</Typography>
+                          <Box 
+                            key={row.id} 
+                            sx={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'space-between', 
+                              borderTop: '1px solid #f1f5f9', 
+                              py: 2, 
+                              px: 2,
+                              transition: 'all 0.2s',
+                              '&:hover': { 
+                                bgcolor: row.tipo === 'irregularidad' ? '#fef2f2' : '#fffbeb', 
+                                boxShadow: `inset 4px 0 0 ${row.tipo === 'irregularidad' ? '#ef4444' : '#f59e0b'}` 
+                              }
+                            }}
+                          >
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flex: 1, pr: 2 }}>
+                              {/* 1. REQUISITO */}
+                              <Typography sx={{ fontWeight: 850, color: '#1e293b', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                                {row.elemento}
+                              </Typography>
+
+                              {/* 2. DECLARADO / OBSERVADO */}
+                              {row.declarado !== undefined && (
+                                <Box sx={{ display: 'flex', gap: 3, my: 0.2 }}>
+                                  <Typography sx={{ fontWeight: 700, color: '#64748b', fontSize: '0.8rem' }}>
+                                    Declarado: <span style={{ color: '#005596', fontWeight: 900 }}>{row.declarado}</span>
+                                  </Typography>
+                                  <Typography sx={{ fontWeight: 700, color: '#64748b', fontSize: '0.8rem' }}>
+                                    Observado: <span style={{ color: '#c2410c', fontWeight: 900 }}>{row.observado}</span>
+                                  </Typography>
+                                </Box>
+                              )}
+
+                              {/* 3. ICONO + OBSERVACIÓN */}
+                              {row.obs && (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mt: 0.2 }}>
+                                  {row.tipo === "irregularidad" ? (
+                                    <ErrorIcon sx={{ color: '#ef4444', fontSize: '0.95rem' }} />
+                                  ) : (
+                                    <span style={{ fontSize: '0.95rem', lineHeight: 1 }}>⚠️</span>
+                                  )}
+                                  <Typography 
+                                    sx={{ 
+                                      color: row.tipo === 'irregularidad' ? '#ef4444' : '#d97706', 
+                                      fontWeight: 650, 
+                                      fontSize: '0.8rem' 
+                                    }}
+                                  >
+                                    {row.obs}
+                                  </Typography>
+                                </Box>
+                              )}
                             </Box>
-                            <Button variant="contained" size="small" startIcon={<CloudUploadIcon />} sx={{ borderRadius: 1.5, fontSize: '0.65rem', fontWeight: 900, bgcolor: '#005596', textTransform: 'none' }}>SUBIR</Button>
+                            <Stack direction="row" spacing={2} sx={{ width: 220, justifyContent: 'flex-end', alignItems: 'center' }}>
+                              <Box sx={{ width: 90, display: 'flex', justifyContent: 'center' }}>
+                                {row.photo ? (
+                                  <Tooltip title="Ver evidencia fotográfica (Inspector)" arrow>
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => setViewerPhoto(row.photo)}
+                                      sx={{ color: '#0ea5e9', '&:hover': { bgcolor: 'rgba(14, 165, 233, 0.08)' } }}
+                                    >
+                                      <VisibilityIcon fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                ) : (
+                                  <Typography variant="caption" sx={{ color: '#94a3b8' }}>-</Typography>
+                                )}
+                              </Box>
+                              <Box sx={{ width: 110, display: 'flex', justifyContent: 'center' }}>
+                                <Button variant="contained" size="small" startIcon={<CloudUploadIcon />} sx={{ borderRadius: 1.5, fontSize: '0.65rem', fontWeight: 900, bgcolor: '#005596', textTransform: 'none' }}>SUBIR</Button>
+                              </Box>
+                            </Stack>
                           </Box>
                         ))}
                       </AccordionDetails>
@@ -305,32 +504,162 @@ const RectificacionTramite = () => {
             </Box>
 
             {/* SECCIÓN FINAL: CONCLUSIÓN Y FOTOS */}
-            <Box sx={{ mt: 2, pt: 3, borderTop: '1px dashed #cbd5e1' }}>
+            <Box sx={{ mt: 3, pt: 3, borderTop: '1px dashed #cbd5e1' }}>
               <Box sx={{ mb: 4 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#1e293b", mb: 1.5, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <MessageIcon sx={{ color: '#f59e0b' }} /> Conclusión General de la Inspección
+                <Typography variant="subtitle2" sx={{ fontWeight: 950, color: "#1e293b", mb: 1.5, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <MessageIcon sx={{ color: '#0ea5e9' }} /> OBSERVACIONES GENERALES
                 </Typography>
-                <Paper variant="outlined" sx={{ p: 2, bgcolor: '#fffbeb', border: '1px solid #fef3c7', borderRadius: 3 }}>
-                  <Typography variant="body2" sx={{ color: '#92400e', fontWeight: 600, fontStyle: 'italic', lineHeight: 1.6 }}>
-                    "{acta?.generalObs || "Sin conclusión general registrada."}"
-                  </Typography>
-                </Paper>
+                <textarea
+                  placeholder="Escriba aquí cualquier observación general sobre la inspección..."
+                  value={generalObsText}
+                  onChange={(e) => setGeneralObsText(e.target.value)}
+                  style={{
+                    width: '100%',
+                    minHeight: '100px',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    border: '1px solid #cbd5e1',
+                    fontSize: '0.9rem',
+                    color: '#1e293b',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    transition: 'border-color 0.2s',
+                    resize: 'vertical'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#005596'}
+                  onBlur={(e) => e.target.style.borderColor = '#cbd5e1'}
+                />
               </Box>
 
-              <Box>
-                <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#1e293b", mb: 1.5, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 950, color: "#1e293b", mb: 2, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
                   <PhotoCamera sx={{ color: '#64748b' }} /> Evidencia Fotográfica General
                 </Typography>
-                {acta?.generalPhotos?.length > 0 ? (
-                  <Box sx={{ display: 'flex', gap: 1.5, overflowX: 'auto', pb: 1 }}>
-                    {acta.generalPhotos.map((photo, i) => (
-                      <Paper key={i} variant="outlined" sx={{ minWidth: 140, height: 100, borderRadius: 2, overflow: 'hidden', cursor: 'pointer' }} onClick={() => setViewerPhoto(photo)}>
-                        <img src={photo} alt="Evidencia" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </Paper>
-                    ))}
+                
+                {/* Botón Abrir Cámara */}
+                <Button
+                  variant="outlined"
+                  onClick={handleAddPhoto}
+                  startIcon={<PhotoCamera />}
+                  sx={{
+                    borderRadius: 3,
+                    border: '1.5px solid #cbd5e1',
+                    color: '#334155',
+                    fontWeight: 800,
+                    textTransform: 'none',
+                    px: 3,
+                    py: 1,
+                    mb: 3,
+                    '&:hover': {
+                      border: '1.5px solid #005596',
+                      bgcolor: 'rgba(0, 85, 150, 0.04)'
+                    }
+                  }}
+                >
+                  Abrir Cámara
+                </Button>
+
+                {uploadedPhotos.length > 0 ? (
+                  <Box>
+                    <Box sx={{ display: 'flex', gap: 2.5, flexWrap: 'nowrap', overflowX: 'auto', pb: 2 }}>
+                      {uploadedPhotos.slice((photoPage - 1) * 5, photoPage * 5).map((photo, i) => {
+                        const actualIdx = (photoPage - 1) * 5 + i;
+                        return (
+                          <Box 
+                            key={actualIdx} 
+                            sx={{ 
+                              position: 'relative', 
+                              minWidth: 140, 
+                              width: 140,
+                              height: 100, 
+                              borderRadius: 3, 
+                              border: '1.5px solid #e2e8f0',
+                              boxShadow: '0 3px 8px rgba(0,0,0,0.06)',
+                              overflow: 'visible',
+                              cursor: 'pointer',
+                              transition: 'transform 0.2s',
+                              '&:hover': { transform: 'scale(1.02)' }
+                            }}
+                          >
+                            <img 
+                              src={photo} 
+                              alt={`Evidencia ${actualIdx + 1}`} 
+                              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} 
+                              onClick={() => setViewerPhoto(photo)}
+                            />
+                          </Box>
+                        );
+                      })}
+                    </Box>
+
+                    {/* Paginador */}
+                    {Math.ceil(uploadedPhotos.length / 5) > 1 && (
+                      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1.5, mt: 3 }}>
+                        <IconButton 
+                          disabled={photoPage === 1} 
+                          onClick={() => setPhotoPage(prev => Math.max(prev - 1, 1))}
+                          sx={{ 
+                            color: '#1e293b', 
+                            '&.Mui-disabled': { color: '#cbd5e1' },
+                            fontSize: '1.25rem',
+                            fontWeight: 900
+                          }}
+                        >
+                          &lt;
+                        </IconButton>
+                        
+                        {Array.from({ length: Math.ceil(uploadedPhotos.length / 5) }, (_, idx) => {
+                          const pageNum = idx + 1;
+                          const isActive = photoPage === pageNum;
+                          return (
+                            <Box
+                              key={pageNum}
+                              onClick={() => setPhotoPage(pageNum)}
+                              sx={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: 32,
+                                height: 32,
+                                borderRadius: '50%',
+                                border: '2px solid',
+                                borderColor: isActive ? '#005596' : '#cbd5e1',
+                                bgcolor: isActive ? '#005596' : 'transparent',
+                                color: isActive ? 'white' : '#1e293b',
+                                fontWeight: 900,
+                                fontSize: '0.85rem',
+                                transition: 'all 0.2s',
+                                '&:hover': {
+                                  borderColor: '#005596',
+                                  bgcolor: isActive ? '#005596' : '#f1f5f9'
+                                }
+                              }}
+                            >
+                              {pageNum}
+                            </Box>
+                          );
+                        })}
+                        
+                        <IconButton 
+                          disabled={photoPage === Math.ceil(uploadedPhotos.length / 5)} 
+                          onClick={() => setPhotoPage(prev => Math.min(prev + 1, Math.ceil(uploadedPhotos.length / 5)))}
+                          sx={{ 
+                            color: '#1e293b', 
+                            '&.Mui-disabled': { color: '#cbd5e1' },
+                            fontSize: '1.25rem',
+                            fontWeight: 900
+                          }}
+                        >
+                          &gt;
+                        </IconButton>
+                      </Box>
+                    )}
                   </Box>
                 ) : (
-                  <Typography variant="caption" sx={{ color: '#94a3b8', fontStyle: 'italic' }}>No se adjuntaron fotos generales.</Typography>
+                  <Typography variant="caption" sx={{ color: '#94a3b8', fontStyle: 'italic', display: 'block', mt: 1 }}>
+                    No se adjuntaron fotos generales.
+                  </Typography>
                 )}
               </Box>
             </Box>
@@ -341,8 +670,8 @@ const RectificacionTramite = () => {
   );
 
   const renderActa2 = () => {
-    const hasGenerales = dataGroupsActa2.generales.items.length > 0;
-    const hasTramite = Object.keys(dataGroupsActa2.tramite.itemsByService).length > 0;
+    const hasGenerales = Object.values(dataGroupsActa2.generales).some(items => items.length > 0);
+    const hasTramite = Object.values(dataGroupsActa2.tramite).some(items => items.length > 0);
 
     return (
       <Box>
@@ -409,15 +738,60 @@ const RectificacionTramite = () => {
                           <Chip label={items.length} size="small" color="error" sx={{ ml: 2, height: 20, fontWeight: 900, fontSize: '0.7rem' }} />
                         </AccordionSummary>
                         <AccordionDetails sx={{ p: 0 }}>
-                          {items.map((item, idx) => (
-                            <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f1f5f9', py: 2, px: 2 }}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Typography sx={{ fontWeight: 800, color: '#ef4444', fontSize: '0.85rem' }}>{item.label}</Typography>
-                                <Typography sx={{ fontWeight: 500, color: '#64748b', fontSize: '0.85rem' }}> : {item.obs || "Sin detalle"}</Typography>
+                          {items.map((item, idx) => {
+                            const isIrregularidad = ["REGISTROS", "RADIOFÍSICA", "ARQUITECTURA", "DOCUMENTOS ADJUNTOS"].includes(category);
+                            return (
+                              <Box 
+                                key={idx} 
+                                sx={{ 
+                                  display: 'flex', 
+                                  alignItems: 'center', 
+                                  justifyContent: 'space-between', 
+                                  borderTop: '1px solid #f1f5f9', 
+                                  py: 2, 
+                                  px: 2,
+                                  transition: 'all 0.2s',
+                                  '&:hover': { 
+                                    bgcolor: isIrregularidad ? '#fef2f2' : '#fffbeb', 
+                                    boxShadow: `inset 4px 0 0 ${isIrregularidad ? '#ef4444' : '#f59e0b'}` 
+                                  }
+                                }}
+                              >
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flex: 1, pr: 2 }}>
+                                  {/* 1. REQUISITO */}
+                                  <Typography sx={{ fontWeight: 850, color: '#1e293b', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                                    {item.label}
+                                  </Typography>
+                                  
+                                  {/* 3. ICONO + OBSERVACIÓN */}
+                                  {item.obs && (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mt: 0.2 }}>
+                                      {isIrregularidad ? (
+                                        <ErrorIcon sx={{ color: '#ef4444', fontSize: '0.95rem' }} />
+                                      ) : (
+                                        <span style={{ fontSize: '0.95rem', lineHeight: 1 }}>⚠️</span>
+                                      )}
+                                      <Typography 
+                                        sx={{ 
+                                          color: isIrregularidad ? '#ef4444' : '#d97706', 
+                                          fontWeight: 650, 
+                                          fontSize: '0.8rem' 
+                                        }}
+                                      >
+                                        {item.obs}
+                                      </Typography>
+                                    </Box>
+                                  )}
+                                </Box>
+                                <Chip 
+                                  label={`Observado: ${item.valorObservado}`} 
+                                  size="small" 
+                                  color="warning" 
+                                  sx={{ fontWeight: 800, height: 22, fontSize: '0.72rem' }} 
+                                />
                               </Box>
-                              <Chip label={item.valorObservado} size="small" color="warning" sx={{ fontWeight: 900, fontSize: '0.7rem' }} />
-                            </Box>
-                          ))}
+                            );
+                          })}
                         </AccordionDetails>
                       </Accordion>
                     );
@@ -440,15 +814,60 @@ const RectificacionTramite = () => {
                           <Chip label={items.length} size="small" color="error" sx={{ ml: 2, height: 20, fontWeight: 900, fontSize: '0.7rem' }} />
                         </AccordionSummary>
                         <AccordionDetails sx={{ p: 0 }}>
-                          {items.map((item, idx) => (
-                            <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f1f5f9', py: 2, px: 2 }}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Typography sx={{ fontWeight: 800, color: '#ef4444', fontSize: '0.85rem' }}>{item.label}</Typography>
-                                <Typography sx={{ fontWeight: 500, color: '#64748b', fontSize: '0.85rem' }}> : {item.obs || "Sin detalle"}</Typography>
+                          {items.map((item, idx) => {
+                            const isIrregularidad = ["REGISTROS", "RADIOFÍSICA", "ARQUITECTURA", "DOCUMENTOS ADJUNTOS"].includes(category);
+                            return (
+                              <Box 
+                                key={idx} 
+                                sx={{ 
+                                  display: 'flex', 
+                                  alignItems: 'center', 
+                                  justifyContent: 'space-between', 
+                                  borderTop: '1px solid #f1f5f9', 
+                                  py: 2, 
+                                  px: 2,
+                                  transition: 'all 0.2s',
+                                  '&:hover': { 
+                                    bgcolor: isIrregularidad ? '#fef2f2' : '#fffbeb', 
+                                    boxShadow: `inset 4px 0 0 ${isIrregularidad ? '#ef4444' : '#f59e0b'}` 
+                                  }
+                                }}
+                              >
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flex: 1, pr: 2 }}>
+                                  {/* 1. REQUISITO */}
+                                  <Typography sx={{ fontWeight: 850, color: '#1e293b', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                                    {item.label}
+                                  </Typography>
+                                  
+                                  {/* 3. ICONO + OBSERVACIÓN */}
+                                  {item.obs && (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mt: 0.2 }}>
+                                      {isIrregularidad ? (
+                                        <ErrorIcon sx={{ color: '#ef4444', fontSize: '0.95rem' }} />
+                                      ) : (
+                                        <span style={{ fontSize: '0.95rem', lineHeight: 1 }}>⚠️</span>
+                                      )}
+                                      <Typography 
+                                        sx={{ 
+                                          color: isIrregularidad ? '#ef4444' : '#d97706', 
+                                          fontWeight: 650, 
+                                          fontSize: '0.8rem' 
+                                        }}
+                                      >
+                                        {item.obs}
+                                      </Typography>
+                                    </Box>
+                                  )}
+                                </Box>
+                                <Chip 
+                                  label={`Observado: ${item.valorObservado}`} 
+                                  size="small" 
+                                  color="warning" 
+                                  sx={{ fontWeight: 800, height: 22, fontSize: '0.72rem' }} 
+                                />
                               </Box>
-                              <Chip label={item.valorObservado} size="small" color="warning" sx={{ fontWeight: 900, fontSize: '0.7rem' }} />
-                            </Box>
-                          ))}
+                            );
+                          })}
                         </AccordionDetails>
                       </Accordion>
                     );
@@ -563,20 +982,37 @@ const RectificacionTramite = () => {
                       </AccordionSummary>
                       <AccordionDetails sx={{ p: 0 }}>
                         {items.map((row) => (
-                          <Box key={row.id} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f1f5f9', py: 2, px: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                              <Chip label={row.tipo} size="small" color="warning" sx={{ fontWeight: 900, fontSize: '0.65rem', borderRadius: 1 }} />
-                              <Typography sx={{ fontWeight: 800, color: '#ef4444', fontSize: '0.85rem' }}>{row.elemento}</Typography>
-                              <Typography sx={{ fontWeight: 500, color: '#64748b', fontSize: '0.85rem' }}> : {row.obs}</Typography>
+                          <Box 
+                            key={row.id} 
+                            sx={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'space-between', 
+                              borderTop: '1px solid #f1f5f9', 
+                              py: 2, 
+                              px: 2,
+                              transition: 'all 0.2s',
+                              '&:hover': { 
+                                bgcolor: '#fef2f2', 
+                                boxShadow: 'inset 4px 0 0 #ef4444' 
+                              }
+                            }}
+                          >
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flex: 1, pr: 2 }}>
+                              {/* 1. REQUISITO */}
+                              <Typography sx={{ fontWeight: 850, color: '#1e293b', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                                {row.elemento}
+                              </Typography>
+                              
+                              {/* 3. ICONO + OBSERVACIÓN */}
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mt: 0.2 }}>
+                                <ErrorIcon sx={{ color: '#ef4444', fontSize: '0.95rem' }} />
+                                <Typography sx={{ color: '#ef4444', fontWeight: 650, fontSize: '0.8rem' }}>
+                                  {row.obs}
+                                </Typography>
+                              </Box>
                             </Box>
-                            <Button 
-                              variant="contained" 
-                              size="small" 
-                              sx={{ borderRadius: 2, fontSize: '0.65rem', fontWeight: 900, textTransform: 'none', bgcolor: '#005596' }}
-                              onClick={() => navigate("/home-efector/servicios")}
-                            >
-                              INICIAR TRÁMITE
-                            </Button>
+
                           </Box>
                         ))}
                       </AccordionDetails>
@@ -642,9 +1078,9 @@ const RectificacionTramite = () => {
           '& .MuiTab-root': { fontWeight: 900, fontSize: '1rem', textTransform: 'none' }
         }}
       >
-        <Tab label="ACTA 1 (Baseline)" icon={<AssignmentIcon />} iconPosition="start" />
-        <Tab label="ACTA 2 (En proceso)" icon={<SettingsIcon />} iconPosition="start" />
-        <Tab label="ACTA 3 (Aprobada c/ Obs)" icon={<CheckCircleIcon />} iconPosition="start" />
+        <Tab label="ACTA 1" icon={<AssignmentIcon />} iconPosition="start" />
+        <Tab label="ACTA 2" icon={<SettingsIcon />} iconPosition="start" />
+        <Tab label="ACTA 3" icon={<CheckCircleIcon />} iconPosition="start" />
       </Tabs>
 
       {activeTab === 0 ? renderActa1() : (activeTab === 1 ? renderActa2() : renderActa3())}

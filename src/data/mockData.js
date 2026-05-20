@@ -82,7 +82,11 @@ const generateMockData = () => {
   for (let i = 1; i <= 500; i++) {
     const est = establishments[Math.floor(Math.random() * establishments.length)];
     const tipo = TIPOS_TRAMITE[Math.floor(Math.random() * TIPOS_TRAMITE.length)];
-    const estadoObj = ESTADOS_TRAMITE[Math.floor(Math.random() * ESTADOS_TRAMITE.length)];
+    let estadoObj = ESTADOS_TRAMITE[Math.floor(Math.random() * ESTADOS_TRAMITE.length)];
+    
+    if (i === 2) {
+      estadoObj = ESTADOS_TRAMITE.find(e => e.label === "RESPUESTA EMPLAZAMIENTO") || estadoObj;
+    }
     
     tramites.push({
       id: i,

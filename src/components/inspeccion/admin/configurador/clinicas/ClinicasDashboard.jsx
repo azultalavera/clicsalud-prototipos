@@ -312,26 +312,28 @@ const ClinicasDashboard = () => {
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => {
-                const mockServicios = ["INTERNACIÓN GENERAL", "CENTRO QUIRÚRGICO", "UNIDAD DE TERAPIA INTENSIVA ADULTOS", "NEONATOLOGÍA"];
-                const mockInfra = { "QUIRÓFANOS": 2, "SALA DE PARTOS": 1, "INTERNACIÓN GENERAL": 20, "NEONATOLOGÍA": 6 };
-                const mockRrhh = [
-                  { origen: "CENTRO QUIRÚRGICO", especialidad: "Enfermero/a", cantidad: 4 },
-                  { origen: "UNIDAD DE TERAPIA INTENSIVA ADULTOS", especialidad: "Médico/a Especialista", cantidad: 2 }
-                ];
-                const mockEquipos = [
-                  { origen: "CENTRO QUIRÚRGICO", equipamiento: "Mesa de Cirugía", cantidad: 2 },
-                  { origen: "CENTRO QUIRÚRGICO", equipamiento: "Monitor Multiparamétrico", cantidad: 4 }
-                ];
-
-                localStorage.setItem("efector_servicios", JSON.stringify(mockServicios));
-                localStorage.setItem("efector_infra", JSON.stringify(mockInfra));
-                localStorage.setItem("efector_rrhh", JSON.stringify(mockRrhh));
-                localStorage.setItem("efector_equipos", JSON.stringify(mockEquipos));
-                localStorage.setItem("efector_tipo", "CLÍNICAS, SANATORIOS Y HOSPITALES");
-                localStorage.setItem("efector_dt", JSON.stringify({ nombre: "MARIA", apellido: "GOMEZ", dni: "25.123.456" }));
-
-                setSnackbar({ open: true, message: "Datos de Trámite simulados para el Inspector.", severity: "success" });
+              onClick={async () => {
+                try {
+                  const res = await fetch("http://localhost:3001/simulacion_inspeccion");
+                  const rawData = await res.json();
+                  const simData = Array.isArray(rawData) ? rawData[0] : rawData;
+                  
+                  if (simData) {
+                    localStorage.setItem("efector_servicios", JSON.stringify(simData.servicios));
+                    localStorage.setItem("efector_infra", JSON.stringify(simData.infraestructura));
+                    localStorage.setItem("efector_rrhh", JSON.stringify(simData.rrhh));
+                    localStorage.setItem("efector_jefes", JSON.stringify(simData.jefes));
+                    localStorage.setItem("efector_equipos", JSON.stringify(simData.equipos));
+                    localStorage.setItem("efector_tipo", simData.tipologia);
+                    localStorage.setItem("efector_dt", JSON.stringify(simData.directorTecnico));
+                    
+                    setSnackbar({ open: true, message: "Datos de Trámite cargados desde db.json. Reiniciando para aplicar...", severity: "success" });
+                    setTimeout(() => window.location.reload(), 1000);
+                  }
+                } catch (err) {
+                  console.error("Error al cargar simulación:", err);
+                  setSnackbar({ open: true, message: "Error al conectar con la base de datos de simulación.", severity: "error" });
+                }
               }}
               sx={{ fontWeight: 800, borderRadius: 3, textTransform: 'none' }}
             >
