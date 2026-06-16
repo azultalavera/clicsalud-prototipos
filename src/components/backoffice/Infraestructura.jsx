@@ -28,14 +28,31 @@ import CheckIcon from "@mui/icons-material/Check";
 import Layout from "../ui/Layout";
 
 // --- CONSTANTES ---
-const opcionesTipologia = ["CLÍNICAS, SANATORIOS Y HOSPITALES", "GERIÁTRICOS"];
+const opcionesTipologia = [
+  "UNIDAD O SERVICIO DE DIÁLISIS",
+  "CENTRO DE ESTÉTICA CORPORAL",
+  "CENTRO DE SALUD AMBULATORIO",
+  "CENTRO CIRUGÍA AMBULATORIA",
+  "CLÍNICAS, SANATORIO U HOSPITAL PRIVADO",
+  "CONSULTORIO",
+  "ESTABLECIMIENTO / UNIDAD DE CUIDADOS PALIATIVOS CON INTERNACIÓN",
+  "SERVICIO DE ATENCIÓN EXTRAHOSPITALARIO MÓVIL",
+  "ESTABLECIMIENTOS GERIÁTRICOS",
+  "HOSPITAL DE DÍA ONCOLÓGICO. CENTRO Y/O SERVICIO DE QUIMIOTERAPIA",
+  "LABORATORIO DE ANÁLISIS CLÍNICOS",
+  "ÓPTICA Y CONTACTOLOGÍA",
+  "RADIOFÍSICA",
+  "SERVICIO DE INTERNACIÓN DOMICILIARIA",
+  "TATUADORES Y PERFORADORES"
+];
 
 const categoriasMapper = [
   { label: "SERVICIO", id: "SERVICIO" },
-  { label: "SERVICIO COMPLEMENTARIO", id: "COMPLEMENTARIO" },
-  { label: "SERVICIO CON INTERNACION", id: "INTERNACION" },
+  { label: "SERVICIO COMPLEMENTARIO", id: "SERVICIOS COMPLEMENTARIOS" },
+  { label: "SERVICIO CON INTERNACION", id: "SERVICIOS CON INTERNACIÓN" },
   { label: "SALAS", id: "SALA" },
-  { label: "CAMAS", id: "CAMA" },
+  { label: "CAMAS", id: "CAMAS-PUESTOS" },
+  { label: "TIPO DE CONSULTORIO", id: "CONSULTORIO" },
 ];
 
 const styleModal = {
@@ -80,7 +97,7 @@ const Infraestructura = () => {
     try {
       const [resInfra, resOrigenes] = await Promise.all([
         fetch("http://localhost:3001/infraestructura"),
-        fetch("http://localhost:3001/origenes"),
+        fetch("http://localhost:3001/servicios"),
       ]);
       const jsonInfra = await resInfra.json();
       const jsonOrigenes = await resOrigenes.json();
@@ -98,41 +115,41 @@ const Infraestructura = () => {
 
   // --- LÓGICA DE LISTADOS DINÁMICOS (PARA FILTROS Y MODAL) ---
   // Lógica para obtener el listado de nombres según la categoría elegida
-  const getOrigenesPorTipo = (tipoLabel) => {
-    // Si no hay lista maestra aún, devolvemos vacío
+  const getOrigenesPorTipo = (tipoLabel, tipologiaFiltro) => {
     if (!listaMaestraOrigenes || listaMaestraOrigenes.length === 0) return [];
 
-    // Si no hay tipo seleccionado, devolvemos todos los nombres únicos disponibles
-    if (!tipoLabel) {
-      return [...new Set(listaMaestraOrigenes.map((o) => o.nombre))].sort();
+    let filtrados = listaMaestraOrigenes;
+
+    // Filtrar por tipología
+    if (tipologiaFiltro) {
+      filtrados = filtrados.filter(s => s.tipologias && s.tipologias.includes(tipologiaFiltro));
     }
 
-    // Buscamos el ID de la categoría (ej: "SALA") para el label seleccionado (ej: "SALAS")
-    const catId = categoriasMapper.find((c) => c.label === tipoLabel)?.id;
+    // Filtrar por categoría / tipo de servicio
+    if (tipoLabel) {
+      const catId = categoriasMapper.find((c) => c.label === tipoLabel)?.id;
+      filtrados = filtrados.filter(s => s.tipoServicio === catId);
+    }
 
-    // Filtramos y devolvemos solo los nombres
-    return listaMaestraOrigenes
-      .filter((o) => o.categoriaId === catId)
-      .map((o) => o.nombre)
-      .sort();
+    return [...new Set(filtrados.map((s) => s.servicio))].sort();
   };
 
   const listadoOrigenesFiltro = useMemo(
-    () => getOrigenesPorTipo(filtroTipoOrigen),
-    [listaMaestraOrigenes, filtroTipoOrigen],
+    () => getOrigenesPorTipo(filtroTipoOrigen, filtroTipologia),
+    [listaMaestraOrigenes, filtroTipoOrigen, filtroTipologia],
   );
   const listadoRequeridaFiltro = useMemo(
-    () => getOrigenesPorTipo(filtroTipoInfra),
-    [listaMaestraOrigenes, filtroTipoInfra],
+    () => getOrigenesPorTipo(filtroTipoInfra, filtroTipologia),
+    [listaMaestraOrigenes, filtroTipoInfra, filtroTipologia],
   );
 
   const listadoOrigenesModal = useMemo(
-    () => getOrigenesPorTipo(currentItem.tipo),
-    [listaMaestraOrigenes, currentItem.tipo],
+    () => getOrigenesPorTipo(currentItem.tipo, currentItem.tipologia),
+    [listaMaestraOrigenes, currentItem.tipo, currentItem.tipologia],
   );
   const listadoRequeridaModal = useMemo(
-    () => getOrigenesPorTipo(currentItem.tipoInfra),
-    [listaMaestraOrigenes, currentItem.tipoInfra],
+    () => getOrigenesPorTipo(currentItem.tipoInfra, currentItem.tipologia),
+    [listaMaestraOrigenes, currentItem.tipoInfra, currentItem.tipologia],
   );
 
   const dataFiltrada = useMemo(() => {

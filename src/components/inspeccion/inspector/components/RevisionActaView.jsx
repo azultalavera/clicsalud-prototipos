@@ -71,10 +71,26 @@ const RevisionActaView = ({ obsGenerales = [], obsTramite = [] }) => {
   };
 
   const [reviewDialog, setReviewDialog] = useState({ open: false, id: null, response: "", photos: [] });
+  const [obsDialog, setObsDialog] = useState({ open: false, text: "" });
 
-  const renderActions = (id, response, photos = []) => (
+  const renderActions = (id, response, photos = [], obs = null) => (
     <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
-      <Tooltip title="Ver respuesta del efector">
+      {obs && (
+        <Tooltip title="Ver observación">
+          <IconButton
+            size="small"
+            onClick={() => setObsDialog({ open: true, text: obs })}
+            sx={{
+              bgcolor: "#fffbeb",
+              color: "#d97706",
+              "&:hover": { bgcolor: "#fef3c7" },
+            }}
+          >
+            <InfoIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        </Tooltip>
+      )}
+      <Tooltip title="Ver documento adjunto">
         <IconButton
           size="small"
           onClick={() => setReviewDialog({ open: true, id, response, photos })}
@@ -115,31 +131,53 @@ const RevisionActaView = ({ obsGenerales = [], obsTramite = [] }) => {
     </Stack>
   );
 
+  const getSeccionGenerales = (label, service) => {
+    if (service && service !== "DATOS GENERALES") return service;
+    const lower = label?.toLowerCase() || "";
+    if (lower.includes("radiofísica") || lower.includes("plomo") || lower.includes("dosimetría") || lower.includes("señalética")) return "RADIOFÍSICA";
+    if (lower.includes("libro") || lower.includes("registro")) return "REGISTROS";
+    if (lower.includes("plan") || lower.includes("habilitación") || lower.includes("bomberos") || lower.includes("evacuación")) return "REVISIÓN";
+    return "DATOS GENERALES";
+  };
+
   const displayObsGenerales = obsGenerales.length > 0
-    ? obsGenerales.map((o, i) => ({ id: `gen-${i}`, elemento: o.label, obs: o.text }))
+    ? obsGenerales.map((o, i) => ({ id: `gen-${i}`, seccion: getSeccionGenerales(o.label, o.service), elemento: o.label, obs: o.text }))
     : [
-      { id: "Libro de Quejas", elemento: "Libro de Quejas", obs: "No se presenta libro de quejas foliado.", respuesta: "Se adjunta foto del libro foliado que estaba en administración." },
-      { id: "Plan de Evacuación", elemento: "Plan de Evacuación", obs: "Vencimiento 10/03/2026.", respuesta: "Se ha solicitado la renovación, adjuntamos comprobante de trámite." },
-      { id: "Habilitación Bomberos", elemento: "Habilitación Bomberos", obs: "Certificado vencido Enero 2026.", respuesta: "Trámite en curso en la municipalidad." },
-      { id: "Blindaje Plomo", elemento: "Radiofísica: Blindaje", obs: "Falta blindaje en puerta Rayos X.", respuesta: "Se instaló la lámina de plomo el 02/05/2026." },
-      { id: "Dosimetría", elemento: "Radiofísica: Dosimetría", obs: "Registros incompletos.", respuesta: "Se completaron los registros faltantes." },
-      { id: "Señalética", elemento: "Radiofísica: Señalética", obs: "Falta luz roja de advertencia.", respuesta: "Se instaló nueva luz de advertencia." }
+      { id: "Libro de Quejas", seccion: "REGISTROS", elemento: "Libro de Quejas", obs: "No se presenta libro de quejas foliado.", respuesta: "Se adjunta foto del libro foliado que estaba en administración." },
+      { id: "Plan de Evacuación", seccion: "REVISIÓN", elemento: "Plan de Evacuación", obs: "Vencimiento 10/03/2026.", respuesta: "Se ha solicitado la renovación, adjuntamos comprobante de trámite." },
+      { id: "Habilitación Bomberos", seccion: "REVISIÓN", elemento: "Habilitación Bomberos", obs: "Certificado vencido Enero 2026.", respuesta: "Trámite en curso en la municipalidad." },
+      { id: "Blindaje Plomo", seccion: "RADIOFÍSICA", elemento: "Radiofísica: Blindaje", obs: "Falta blindaje en puerta Rayos X.", respuesta: "Se instaló la lámina de plomo el 02/05/2026." },
+      { id: "Dosimetría", seccion: "RADIOFÍSICA", elemento: "Radiofísica: Dosimetría", obs: "Registros incompletos.", respuesta: "Se completaron los registros faltantes." },
+      { id: "Señalética", seccion: "RADIOFÍSICA", elemento: "Radiofísica: Señalética", obs: "Falta luz roja de advertencia.", respuesta: "Se instaló nueva luz de advertencia." }
     ];
 
   const displayIrregularidades = obsTramite.length > 0
     ? obsTramite.map((o, i) => ({
       id: `tra-${i}`,
       elemento: o.label,
-      servicio: o.service,
+      seccion: o.service || "TRÁMITE",
       obs: o.text,
       declarado: o.declarado || 0,
       constatado: o.constatado || 0,
       respuesta: o.respuesta || "Se ha regularizado la situación según lo solicitado."
     }))
     : [
-      { id: "Quirófanos", elemento: "Quirófanos", declarado: 11, constatado: 5, obs: "IRREGULARIDAD: No se constatan 6 quirófanos.", respuesta: "Los quirófanos estaban en mantenimiento, ya están operativos." },
-      { id: "Camas Uso Transitorio", elemento: "Camas Uso Transitorio", declarado: 5, constatado: 9, obs: "RECTIFICACIÓN: Excedente de 4 camas.", respuesta: "Se han retirado las camas excedentes." },
+      { id: "Quirófanos", seccion: "CIRUGÍA", elemento: "Quirófanos", declarado: 11, constatado: 5, obs: "IRREGULARIDAD: No se constatan 6 quirófanos.", respuesta: "Los quirófanos estaban en mantenimiento, ya están operativos." },
+      { id: "Camas Uso Transitorio", seccion: "INTERNACIÓN", elemento: "Camas Uso Transitorio", declarado: 5, constatado: 9, obs: "RECTIFICACIÓN: Excedente de 4 camas.", respuesta: "Se han retirado las camas excedentes." },
     ];
+
+  const displayDocumentos = [
+    { id: "Plano Arquitectura", seccion: "ARQUITECTURA", elemento: "Plano de Arquitectura", obs: "Falta firma de profesional interviniente.", respuesta: "Se adjunta plano firmado y legalizado." },
+    { id: "Contrato Residuos", seccion: "DOCUMENTACIÓN", elemento: "Contrato Recolección Residuos", obs: "Contrato vencido.", respuesta: "Se adjunta nuevo contrato vigente." },
+  ];
+
+  const allIds = [
+    ...displayObsGenerales.map(o => o.id),
+    ...displayIrregularidades.map(o => o.id),
+    ...displayDocumentos.map(o => o.id)
+  ];
+  const isAllValidado = allIds.every(id => statuses[id] === "VALIDADO");
+  const hasRechazado = allIds.some(id => statuses[id] === "RECHAZADO");
 
   return (
     <Box sx={{ animation: 'fadeIn 0.3s ease-in-out' }}>
@@ -159,18 +197,20 @@ const RevisionActaView = ({ obsGenerales = [], obsTramite = [] }) => {
           <Table size="small">
             <TableHead sx={{ bgcolor: '#f8fafc' }}>
               <TableRow>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>SECCIÓN / SERVICIO</TableCell>
                 <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ELEMENTO / CATEGORÍA</TableCell>
                 <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>DETALLE DEL HALLAZGO</TableCell>
-                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ESTADO</TableCell>
                 <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ACCIONES</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {displayObsGenerales.map((row) => (
                 <TableRow key={row.id} hover>
+                  <TableCell>
+                    <Chip label={row.seccion} size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', height: 18 }} />
+                  </TableCell>
                   <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>{row.elemento}</TableCell>
                   <TableCell sx={{ fontSize: '0.75rem', color: '#475569' }}>{row.obs}</TableCell>
-                  <TableCell>{getStatusChip(statuses[row.id])}</TableCell>
                   <TableCell align="center">
                     {renderActions(row.id, row.respuesta)}
                   </TableCell>
@@ -185,28 +225,64 @@ const RevisionActaView = ({ obsGenerales = [], obsTramite = [] }) => {
         <ErrorIcon color="error" /> IRREGULARIDADES DATOS DEL TRÁMITE
       </Typography>
 
+      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#475569", mb: 1, ml: 1, fontSize: '0.8rem' }}>
+        Diferencias Constatadas
+      </Typography>
       <Paper sx={{ p: 0, mb: 3, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
         <TableContainer>
           <Table size="small">
             <TableHead sx={{ bgcolor: '#f8fafc' }}>
               <TableRow>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>SECCIÓN / SERVICIO</TableCell>
                 <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ELEMENTO TÉCNICO</TableCell>
                 <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>DECLARADO</TableCell>
                 <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>CONSTATADO</TableCell>
-                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ESTADO</TableCell>
                 <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ACCIONES</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {displayIrregularidades.map((row) => (
                 <TableRow key={row.id} hover>
+                  <TableCell>
+                    <Chip label={row.seccion} size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', height: 18 }} />
+                  </TableCell>
                   <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>
-                    {row.servicio && <Chip label={row.servicio} size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', mr: 1, height: 18 }} />}
                     {row.elemento}
                   </TableCell>
                   <TableCell align="center"><Chip label={row.declarado} size="small" sx={{ fontWeight: 800, bgcolor: '#e2e8f0' }} /></TableCell>
                   <TableCell align="center"><Chip label={row.constatado} size="small" sx={{ fontWeight: 800, bgcolor: '#fee2e2', color: '#991b1b' }} /></TableCell>
-                  <TableCell>{getStatusChip(statuses[row.id])}</TableCell>
+                  <TableCell align="center">
+                    {renderActions(row.id, row.respuesta, [], row.obs)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
+      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#475569", mb: 1, ml: 1, fontSize: '0.8rem' }}>
+        Documentos Observados
+      </Typography>
+      <Paper sx={{ p: 0, mb: 3, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+        <TableContainer>
+          <Table size="small">
+            <TableHead sx={{ bgcolor: '#f8fafc' }}>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>SECCIÓN / SERVICIO</TableCell>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>DOCUMENTO</TableCell>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>OBSERVACIÓN</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ACCIONES</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {displayDocumentos.map((row) => (
+                <TableRow key={row.id} hover>
+                  <TableCell>
+                    <Chip label={row.seccion} size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', height: 18 }} />
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>{row.elemento}</TableCell>
+                  <TableCell sx={{ fontSize: '0.75rem', color: '#475569' }}>{row.obs}</TableCell>
                   <TableCell align="center">
                     {renderActions(row.id, row.respuesta)}
                   </TableCell>
@@ -218,6 +294,26 @@ const RevisionActaView = ({ obsGenerales = [], obsTramite = [] }) => {
       </Paper>
 
       <Dialog
+        open={obsDialog.open}
+        onClose={() => setObsDialog({ ...obsDialog, open: false })}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: 4, overflow: 'hidden' } }}
+      >
+        <DialogTitle sx={{ fontWeight: 900, bgcolor: '#fffbeb', color: '#b45309', borderBottom: '1px solid #fef3c7', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Observación del Inspector
+          <IconButton onClick={() => setObsDialog({ ...obsDialog, open: false })} size="small">
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 3, pt: 3 }}>
+          <Typography variant="body2" sx={{ fontWeight: 600, color: '#1e293b', lineHeight: 1.6 }}>
+            {obsDialog.text}
+          </Typography>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
         open={reviewDialog.open}
         onClose={() => setReviewDialog({ ...reviewDialog, open: false })}
         maxWidth="sm"
@@ -225,35 +321,19 @@ const RevisionActaView = ({ obsGenerales = [], obsTramite = [] }) => {
         PaperProps={{ sx: { borderRadius: 4, overflow: 'hidden' } }}
       >
         <DialogTitle sx={{ fontWeight: 900, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          Revisión de Respuesta
+          Documento Adjunto
           <IconButton onClick={() => setReviewDialog({ ...reviewDialog, open: false })} size="small">
             <Close />
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ p: 3 }}>
-          <Typography variant="caption" sx={{ fontWeight: 900, color: '#64748b', textTransform: 'uppercase', mb: 1, display: 'block' }}>
-            Explicación del Efector
-          </Typography>
-          <Paper variant="outlined" sx={{ p: 2, bgcolor: '#f1f5f9', mb: 3, borderRadius: 3 }}>
-            <Typography variant="body2" sx={{ fontWeight: 600, color: '#1e293b', lineHeight: 1.6 }}>
-              {reviewDialog.response || "No se proporcionó una explicación escrita."}
-            </Typography>
-          </Paper>
-
-          <Typography variant="caption" sx={{ fontWeight: 900, color: '#64748b', textTransform: 'uppercase', mb: 1.5, display: 'block' }}>
-            Evidencia Adjunta
-          </Typography>
-          
-          <Box sx={{ display: 'flex', gap: 1.5, overflowX: 'auto', pb: 1 }}>
-            {(reviewDialog.photos && reviewDialog.photos.length > 0) ? reviewDialog.photos.map((p, idx) => (
-              <Box key={idx} sx={{ minWidth: 100, height: 100, borderRadius: 3, overflow: 'hidden', border: '2px solid #e2e8f0' }}>
-                <img src={p} alt="evidencia" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </Box>
-            )) : (
-              <Typography variant="caption" sx={{ color: '#94a3b8', fontStyle: 'italic' }}>
-                No se adjuntaron fotos de evidencia.
-              </Typography>
-            )}
+        <DialogContent sx={{ p: 0, bgcolor: '#f1f5f9' }}>
+          <Box sx={{ height: 400, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+             <Typography variant="h6" sx={{ color: '#64748b', fontWeight: 800, mb: 1 }}>
+                📄 Visor de PDF
+             </Typography>
+             <Typography variant="caption" sx={{ color: '#94a3b8' }}>
+                Simulación del documento subido por el efector
+             </Typography>
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 3, bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
@@ -280,6 +360,26 @@ const RevisionActaView = ({ obsGenerales = [], obsTramite = [] }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Box sx={{ mt: 6, mb: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Button 
+          variant="contained" 
+          color="error" 
+          disabled={!hasRechazado}
+          sx={{ fontWeight: 900, px: 4, py: 1.5, borderRadius: 3, boxShadow: hasRechazado ? '0 4px 14px 0 rgba(239, 68, 68, 0.39)' : 'none' }}
+        >
+          EMPLAZAR
+        </Button>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          disabled={!isAllValidado}
+          sx={{ fontWeight: 900, px: 4, py: 1.5, borderRadius: 3, boxShadow: isAllValidado ? '0 4px 14px 0 rgba(14, 165, 233, 0.39)' : 'none' }}
+        >
+          INICIAR NUEVA ACTA
+        </Button>
+      </Box>
+
     </Box>
   );
 };

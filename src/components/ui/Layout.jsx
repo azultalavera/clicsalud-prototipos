@@ -89,39 +89,7 @@ const Layout = ({ children }) => {
             </Typography>
           </Box>
           
-          {/* Selector de Roles */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.75, mx: 2 }}>
-            {ROLES.map(role => {
-              const isActive = activeRole === role.id;
-              return (
-                <Box
-                  key={role.id}
-                  onClick={() => {
-                    changeRole(role.id);
-                  }}
-                  sx={{
-                    px: 1.5, py: 0.5,
-                    borderRadius: "20px",
-                    fontSize: "0.72rem",
-                    fontWeight: isActive ? 800 : 500,
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    bgcolor: isActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.15)",
-                    color: isActive ? role.color : "rgba(255,255,255,0.85)",
-                    border: isActive ? `2px solid rgba(255,255,255,0.9)` : "2px solid rgba(255,255,255,0.2)",
-                    "&:hover": {
-                      bgcolor: isActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.25)",
-                    },
-                    userSelect: "none",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {role.label}
-                </Box>
-              );
-            })}
-          </Box>
-
+          {/* Selector de Roles Eliminado */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 500, color: 'white', opacity: 0.9 }}>
               {ROLES.find(r => r.id === activeRole)?.label || 'Efector'}
@@ -174,8 +142,6 @@ const Layout = ({ children }) => {
         >
           <List>
             {(isEfector ? [
-              { text: 'Inicio', icon: <HomeIcon />, path: '/home-efector' },
-              { text: 'Panel de Control', icon: <DashboardIcon />, path: '/home-efector/dashboard' },
               { text: 'Mis Establecimientos', icon: <BusinessIcon />, path: '/home-efector/mis-establecimientos' },
               { text: 'Trámites en Curso', icon: <AssignmentIcon />, path: '/home-efector/mis-tramites' },
             ] : menuItems).map((item) => {

@@ -30,7 +30,23 @@ const RecursosHumanosConfig = () => {
   const [filtroTipoPlantel, setFiltroTipoPlantel] = useState(null);
   const [filtroEspecialidad, setFiltroEspecialidad] = useState(null);
 
-  const opcionesTipologia = ["CLÍNICAS, SANATORIOS Y HOSPITALES", "GERIÁTRICOS", "CENTROS DE SALUD"];
+  const opcionesTipologia = [
+    "UNIDAD O SERVICIO DE DIÁLISIS",
+    "CENTRO DE ESTÉTICA CORPORAL",
+    "CENTRO DE SALUD AMBULATORIO",
+    "CENTRO CIRUGÍA AMBULATORIA",
+    "CLÍNICAS, SANATORIO U HOSPITAL PRIVADO",
+    "CONSULTORIO",
+    "ESTABLECIMIENTO / UNIDAD DE CUIDADOS PALIATIVOS CON INTERNACIÓN",
+    "SERVICIO DE ATENCIÓN EXTRAHOSPITALARIO MÓVIL",
+    "ESTABLECIMIENTOS GERIÁTRICOS",
+    "HOSPITAL DE DÍA ONCOLÓGICO. CENTRO Y/O SERVICIO DE QUIMIOTERAPIA",
+    "LABORATORIO DE ANÁLISIS CLÍNICOS",
+    "ÓPTICA Y CONTACTOLOGÍA",
+    "RADIOFÍSICA",
+    "SERVICIO DE INTERNACIÓN DOMICILIARIA",
+    "TATUADORES Y PERFORADORES"
+  ];
   const opcionesTipoPlantel = ["MÉDICO", "ENFERMERÍA", "TÉCNICO", "ADMINISTRATIVO"];
 
   const [currentItem, setCurrentItem] = useState({

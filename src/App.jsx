@@ -12,6 +12,7 @@ import EquipamientosConfig from './components/backoffice/EquipamientosConfig';
 import RecursosHumanosConfig from './components/backoffice/RecursosHumanosConfig';
 import JefeServicioConfig from './components/backoffice/JefeServicioConfig';
 import ConfiguradorInspeccionRouter from './components/inspeccion/admin/configurador/ConfiguradorRouter';
+import ServiciosConfig from './components/backoffice/ServiciosConfig';
 import PantallaInspeccion from './components/inspeccion/inspector/PantallaInspeccion';
 import Layout from './components/ui/Layout';
 import RoleSelection from './components/ui/RoleSelection';
@@ -71,6 +72,7 @@ function App() {
           <Route path="/clicsalud-backoffice/gestion-recursos/equipamientos" element={<EquipamientosConfig />} />
           <Route path="/clicsalud-backoffice/gestion-recursos/recursos-humanos" element={<RecursosHumanosConfig />} />
           <Route path="/clicsalud-backoffice/gestion-recursos/jefe-servicio" element={<JefeServicioConfig />} />
+          <Route path="/clicsalud-backoffice/gestion-recursos/servicios" element={<ServiciosConfig />} />
           <Route path="/clicsalud-backoffice/gestion-recursos/acta-inpeccion/*" element={<ConfiguradorInspeccionRouter />} />
 
           {/* RUTA EFECTOR: Usamos /* para que HomeEfector maneje sus sub-rutas internamente */}

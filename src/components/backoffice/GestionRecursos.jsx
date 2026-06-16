@@ -16,47 +16,44 @@ const categorias = [
   { 
     id: 'infra',
     title: "Infraestructura", 
-    description: "Configuración de parámetros físicos y tipologías edilicias.",
     path: "/clicsalud-backoffice/gestion-recursos/infraestructura", 
-    icon: <BusinessIcon sx={{ fontSize: 32 }} />,
+    icon: <BusinessIcon sx={{ fontSize: 48 }} />,
     color: "#0B85C4",
-    bg: "linear-gradient(135deg, #0B85C4 0%, #086a9f 100%)"
   },
   { 
     id: 'equip',
     title: "Equipamientos", 
-    description: "Matriz de equipos médicos, calibración y tecnología instalada.",
     path: "/clicsalud-backoffice/gestion-recursos/equipamientos", 
-    icon: <HomeRepairServiceIcon sx={{ fontSize: 32 }} />,
+    icon: <HomeRepairServiceIcon sx={{ fontSize: 48 }} />,
     color: "#8b5cf6",
-    bg: "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)"
   },
   { 
     id: 'rrhh',
     title: "Recursos Humanos", 
-    description: "Definición paramétrica de personal, matrículas y roles.",
     path: "/clicsalud-backoffice/gestion-recursos/recursos-humanos", 
-    icon: <PeopleIcon sx={{ fontSize: 32 }} />,
+    icon: <PeopleIcon sx={{ fontSize: 48 }} />,
     color: "#32A430",
-    bg: "linear-gradient(135deg, #32A430 0%, #257e24 100%)"
   },
   { 
     id: 'jefes',
     title: "Jefe de Servicio", 
-    description: "Perfiles requeridos para directores de área y coordinadores médicos.",
     path: "/clicsalud-backoffice/gestion-recursos/jefe-servicio", 
-    icon: <SupervisorAccountIcon sx={{ fontSize: 32 }} />,
+    icon: <SupervisorAccountIcon sx={{ fontSize: 48 }} />,
     color: "#f59e0b",
-    bg: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
   },
   {
     id: 'acta',
     title: "Actas de Inspección",
-    description: "Constructor de formularios maestros y requisitos automáticos.",
     path: "/clicsalud-backoffice/gestion-recursos/acta-inpeccion",
-    icon: <AssignmentIcon sx={{ fontSize: 32 }} />,
+    icon: <AssignmentIcon sx={{ fontSize: 48 }} />,
     color: "#E2464C",
-    bg: "linear-gradient(135deg, #E2464C 0%, #b91c1c 100%)"
+  },
+  {
+    id: 'servicios',
+    title: "Servicios",
+    path: "/clicsalud-backoffice/gestion-recursos/servicios",
+    icon: <SettingsSuggestIcon sx={{ fontSize: 48 }} />,
+    color: "#00796b",
   }
 ];
 
@@ -106,7 +103,8 @@ const GestionRecursos = () => {
                 sx={{ 
                   borderRadius: 4, 
                   border: "1px solid #e2e8f0",
-                  height: "210px",
+                  aspectRatio: "1/1",
+                  backgroundColor: "#ffffff",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   '&:hover': {
                     borderColor: item.color,
@@ -117,25 +115,13 @@ const GestionRecursos = () => {
               >
                 <CardActionArea 
                   onClick={() => navigate(item.path)}
-                  sx={{ p: 3, height: "100%", display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-start" }}
+                  sx={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", p: 3 }}
                 >
-                  <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                    <Box sx={{ p: 1.5, borderRadius: 3, background: item.bg, color: "#ffffff", display: "flex", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
-                      {item.icon}
-                    </Box>
-                    <IconButton sx={{ backgroundColor: "#f8fafc", color: item.color, width: 32, height: 32 }}>
-                       <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
-                    </IconButton>
+                  <Box sx={{ color: item.color, mb: 2 }}>
+                    {item.icon}
                   </Box>
-                  
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 800, color: "#0f172a", mb: 1, lineHeight: 1.2 }}>
-                      {item.title}
-                    </Typography>
-                  </Box>
-                  
-                  <Typography variant="body2" sx={{ color: "#64748b", flexGrow: 1, lineHeight: 1.6, fontSize: "0.95rem" }}>
-                    {item.description}
+                  <Typography variant="h6" sx={{ fontWeight: 800, color: "#0f172a", textAlign: "center", lineHeight: 1.2 }}>
+                    {item.title}
                   </Typography>
                 </CardActionArea>
               </Card>

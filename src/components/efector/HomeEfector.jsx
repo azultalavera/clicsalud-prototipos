@@ -50,8 +50,6 @@ import ModalHabilitacion from "../ui/ModalHabilitacion";
 import PantallaInspeccion from "../inspeccion/inspector/PantallaInspeccion";
 import TramitesEnCurso from "./TramitesEnCurso";
 import MisEstablecimientos, { MisEstablecimientosPorRol } from "./MisEstablecimientos";
-import DashboardEfector from "./DashboardEfector";
-import MinisterioDashboard from "./MinisterioDashboard";
 import RectificacionTramite from "./RectificacionTramite";
 
 // --- ESTILOS STEPPER ---
@@ -316,8 +314,7 @@ const HomeEfector = () => {
 
           <Box sx={{ minHeight: "450px" }}>
             <Routes>
-              <Route path="/" element={<DashboardEfector />} />
-              <Route path="dashboard" element={<MinisterioDashboard />} />
+              <Route path="/" element={<Navigate to="mis-tramites" replace />} />
               <Route path="mis-establecimientos" element={<MisEstablecimientosPorRol />} />
               <Route path="mis-tramites" element={<TramitesEnCurso />} />
               <Route path="rectificacion" element={<Navigate to={`${baseRoute}/respuesta-emplazamiento`} replace />} />

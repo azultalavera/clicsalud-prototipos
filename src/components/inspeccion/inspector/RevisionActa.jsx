@@ -30,6 +30,8 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
     "Blindaje Plomo": "PENDIENTE",
     "Dosimetría": "PENDIENTE",
     "Señalética": "PENDIENTE",
+    "Plano Arquitectura": "PENDIENTE",
+    "Contrato Residuos": "PENDIENTE",
   });
 
   const handleUpdateStatus = (elemento, newStatus) => {
@@ -45,18 +47,26 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
   };
 
   const irregularidadesTramite = [
-    { id: "Quirófanos", elemento: "Quirófanos", declarado: 11, constatado: 5, obs: "IRREGULARIDAD: No se constatan 6 quirófanos." },
-    { id: "Camas Uso Transitorio", elemento: "Camas Uso Transitorio", declarado: 5, constatado: 9, obs: "RECTIFICACIÓN: Excedente de 4 camas." },
+    { id: "Quirófanos", seccion: "CIRUGÍA", elemento: "Quirófanos", declarado: 11, constatado: 5, obs: "IRREGULARIDAD: No se constatan 6 quirófanos." },
+    { id: "Camas Uso Transitorio", seccion: "INTERNACIÓN", elemento: "Camas Uso Transitorio", declarado: 5, constatado: 9, obs: "RECTIFICACIÓN: Excedente de 4 camas." },
   ];
 
   const obsGenerales = [
-    { id: "Libro de Quejas", elemento: "Libro de Quejas", obs: "No se presenta libro de quejas foliado." },
-    { id: "Plan de Evacuación", elemento: "Plan de Evacuación", obs: "Vencimiento 10/03/2026." },
-    { id: "Habilitación Bomberos", elemento: "Habilitación Bomberos", obs: "Certificado vencido Enero 2026." },
-    { id: "Blindaje Plomo", elemento: "Radiofísica: Blindaje", obs: "Falta blindaje en puerta Rayos X." },
-    { id: "Dosimetría", elemento: "Radiofísica: Dosimetría", obs: "Registros incompletos." },
-    { id: "Señalética", elemento: "Radiofísica: Señalética", obs: "Falta luz roja de advertencia." }
+    { id: "Libro de Quejas", seccion: "REGISTROS", elemento: "Libro de Quejas", obs: "No se presenta libro de quejas foliado." },
+    { id: "Plan de Evacuación", seccion: "REVISIÓN", elemento: "Plan de Evacuación", obs: "Vencimiento 10/03/2026." },
+    { id: "Habilitación Bomberos", seccion: "REVISIÓN", elemento: "Habilitación Bomberos", obs: "Certificado vencido Enero 2026." },
+    { id: "Blindaje Plomo", seccion: "RADIOFÍSICA", elemento: "Radiofísica: Blindaje", obs: "Falta blindaje en puerta Rayos X." },
+    { id: "Dosimetría", seccion: "RADIOFÍSICA", elemento: "Radiofísica: Dosimetría", obs: "Registros incompletos." },
+    { id: "Señalética", seccion: "RADIOFÍSICA", elemento: "Radiofísica: Señalética", obs: "Falta luz roja de advertencia." }
   ];
+
+  const documentosObservados = [
+    { id: "Plano Arquitectura", seccion: "ARQUITECTURA", elemento: "Plano de Arquitectura", obs: "Falta firma de profesional interviniente." },
+    { id: "Contrato Residuos", seccion: "DOCUMENTACIÓN", elemento: "Contrato Recolección Residuos", obs: "Contrato vencido." },
+  ];
+
+  const isAllValidado = Object.values(statuses).every(s => s === "VALIDADO");
+  const hasRechazado = Object.values(statuses).some(s => s === "RECHAZADO");
 
   return (
     <Box sx={{ p: { xs: 1, sm: 2 }, bgcolor: '#f8fafc', minHeight: '100%' }}>
@@ -89,6 +99,7 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
           <Table size="small">
             <TableHead sx={{ bgcolor: '#f8fafc' }}>
               <TableRow>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>SECCIÓN / SERVICIO</TableCell>
                 <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ELEMENTO / CATEGORÍA</TableCell>
                 <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>DETALLE DEL HALLAZGO</TableCell>
                 <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ESTADO</TableCell>
@@ -98,6 +109,9 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
             <TableBody>
               {obsGenerales.map((row) => (
                 <TableRow key={row.id} hover>
+                  <TableCell>
+                    <Chip label={row.seccion} size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', height: 18 }} />
+                  </TableCell>
                   <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>{row.elemento}</TableCell>
                   <TableCell sx={{ fontSize: '0.75rem', color: '#475569' }}>{row.obs}</TableCell>
                   <TableCell>{getStatusChip(statuses[row.id])}</TableCell>
@@ -140,11 +154,15 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
         </Typography>
       </Box>
       
+      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#475569", mb: 1, ml: 1, fontSize: '0.8rem' }}>
+        Diferencias Constatadas
+      </Typography>
       <Paper sx={{ p: 0, mb: 3, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
         <TableContainer>
           <Table size="small">
             <TableHead sx={{ bgcolor: '#f8fafc' }}>
               <TableRow>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>SECCIÓN / SERVICIO</TableCell>
                 <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ELEMENTO TÉCNICO</TableCell>
                 <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>DECLARADO</TableCell>
                 <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>CONSTATADO</TableCell>
@@ -155,6 +173,9 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
             <TableBody>
               {irregularidadesTramite.map((row) => (
                 <TableRow key={row.id} hover>
+                  <TableCell>
+                    <Chip label={row.seccion} size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', height: 18 }} />
+                  </TableCell>
                   <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>{row.elemento}</TableCell>
                   <TableCell align="center"><Chip label={row.declarado} size="small" sx={{ fontWeight: 800, bgcolor: '#e2e8f0' }} /></TableCell>
                   <TableCell align="center"><Chip label={row.constatado} size="small" sx={{ fontWeight: 800, bgcolor: '#fee2e2', color: '#991b1b' }} /></TableCell>
@@ -187,6 +208,78 @@ const RevisionActa = ({ efectorResponses = {}, onValidate }) => {
           </Table>
         </TableContainer>
       </Paper>
+
+      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#475569", mb: 1, ml: 1, fontSize: '0.8rem' }}>
+        Documentos Observados
+      </Typography>
+      <Paper sx={{ p: 0, mb: 3, borderRadius: 4, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+        <TableContainer>
+          <Table size="small">
+            <TableHead sx={{ bgcolor: '#f8fafc' }}>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>SECCIÓN / SERVICIO</TableCell>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>DOCUMENTO</TableCell>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>OBSERVACIÓN</TableCell>
+                <TableCell sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ESTADO</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 900, fontSize: '0.7rem' }}>ACCIONES</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {documentosObservados.map((row) => (
+                <TableRow key={row.id} hover>
+                  <TableCell>
+                    <Chip label={row.seccion} size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', height: 18 }} />
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>{row.elemento}</TableCell>
+                  <TableCell sx={{ fontSize: '0.75rem', color: '#475569' }}>{row.obs}</TableCell>
+                  <TableCell>{getStatusChip(statuses[row.id])}</TableCell>
+                  <TableCell align="center">
+                     <Stack direction="row" spacing={1} justifyContent="center">
+                        <Button 
+                          size="small" 
+                          variant={statuses[row.id] === "VALIDADO" ? "contained" : "outlined"} 
+                          color="success" 
+                          onClick={() => handleUpdateStatus(row.id, "VALIDADO")}
+                          sx={{ minWidth: 0, p: 0.5, borderRadius: 1.5 }}
+                        >
+                          <CheckCircleIcon sx={{ fontSize: 18 }} />
+                        </Button>
+                        <Button 
+                          size="small" 
+                          variant={statuses[row.id] === "RECHAZADO" ? "contained" : "outlined"} 
+                          color="error" 
+                          onClick={() => handleUpdateStatus(row.id, "RECHAZADO")}
+                          sx={{ minWidth: 0, p: 0.5, borderRadius: 1.5 }}
+                        >
+                          <ErrorIcon sx={{ fontSize: 18 }} />
+                        </Button>
+                     </Stack>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
+      <Box sx={{ mt: 6, mb: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Button 
+          variant="contained" 
+          color="error" 
+          disabled={!hasRechazado}
+          sx={{ fontWeight: 900, px: 4, py: 1.5, borderRadius: 3, boxShadow: hasRechazado ? '0 4px 14px 0 rgba(239, 68, 68, 0.39)' : 'none' }}
+        >
+          EMPLAZAR
+        </Button>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          disabled={!isAllValidado}
+          sx={{ fontWeight: 900, px: 4, py: 1.5, borderRadius: 3, boxShadow: isAllValidado ? '0 4px 14px 0 rgba(14, 165, 233, 0.39)' : 'none' }}
+        >
+          INICIAR NUEVA ACTA
+        </Button>
+      </Box>
 
     </Box>
   );
