@@ -47,6 +47,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import PantallaInspeccion from "../inspeccion/inspector/PantallaInspeccion";
+import ReporteInspeccionPDF from "../../ReporteInspeccion.pdf";
 
 const RectificacionTramite = () => {
   const navigate = useNavigate();
@@ -136,13 +137,11 @@ const RectificacionTramite = () => {
     }
   };
 
-  // Datos hardcodeados para ACTA 3 (Aprobada con Observaciones)
+  // Datos hardcodeados para ACTA 3 (Aprobada sin observaciones o con observación general)
   const acta3Data = {
-    estado: "APROBADO CON OBSERVACIONES",
-    obsInspector: "Se aprueba la inspección pero se observó que hay un servicio adicional a los declarados (KINESIOLOGÍA), se tiene que hacer un trámite de modificación urgente.",
-    hallazgos: [
-      { id: "S-Kine", elemento: "Servicio de Kinesiología", tipo: "SERVICIO NO DECLARADO", obs: "Se constata funcionamiento de sala de kinesiología con 3 camillas y equipamiento láser." }
-    ]
+    estado: "APROBADA FINALIZADA",
+    obsInspector: "Se aprueba la inspección. El establecimiento cumple con las normativas vigentes.",
+    hallazgos: []
   };
 
   useEffect(() => {
@@ -921,7 +920,16 @@ const RectificacionTramite = () => {
 
   const renderActa3 = () => (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 2 }}>
+        <Button 
+          variant="outlined" 
+          color="primary"
+          onClick={() => window.open(ReporteInspeccionPDF, '_blank')} 
+          startIcon={<DescriptionIcon />}
+          sx={{ fontWeight: 900, borderRadius: 3, px: 3, textTransform: 'none' }}
+        >
+          Ver Reporte de Inspección (PDF)
+        </Button>
         <Button 
           variant="contained" 
           color="primary"
@@ -937,8 +945,8 @@ const RectificacionTramite = () => {
         icon={<CheckCircleIcon fontSize="inherit" />}
         sx={{ mb: 4, borderRadius: 3, borderLeft: '8px solid #2e7d32', fontWeight: 700 }}
       >
-        <AlertTitle sx={{ fontWeight: 950 }}>INSPECCIÓN APROBADA CON OBSERVACIONES</AlertTitle>
-        El inspector ha aprobado la habilitación, pero ha dejado observaciones obligatorias que deben ser subsanadas mediante un trámite administrativo adicional.
+        <AlertTitle sx={{ fontWeight: 950 }}>{acta3Data.estado}</AlertTitle>
+        El inspector ha aprobado la habilitación sin observaciones. El trámite de inspección ha sido completado exitosamente.
       </Alert>
 
       <Accordion
@@ -954,83 +962,20 @@ const RectificacionTramite = () => {
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#0ea5e9' }} />}>
           <Typography sx={{ fontWeight: 900, color: '#1e293b', fontSize: '1.25rem', py: 1 }}>
-            RESUMEN DE OBSERVACIONES (ACTA FINAL)
+            CONCLUSIÓN FINAL DEL ACTA
           </Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ px: 3, pb: 4, bgcolor: '#f8fafc' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             
-            {/* GRUPO DATOS DEL TRAMITE (ACTA FINAL) */}
-            <Box>
-              {["ARQUITECTURA", "SERVICIOS", "SALAS Y CAMAS", "RRHH Y JS", "EQUIPAMIENTO", "DOCUMENTOS ADJUNTOS"].some(cat => 
-                acta3Data.hallazgos.some(h => (cat === "SERVICIOS" && h.tipo.includes("SERVICIO")) || (cat === "ARQUITECTURA" && !h.tipo.includes("SERVICIO")))
-              ) && (
-                <Typography variant="overline" sx={{ fontWeight: 900, color: '#64748b', ml: 1, mb: 1, display: 'block' }}>DATOS DEL TRÁMITE</Typography>
-              )}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {["ARQUITECTURA", "SERVICIOS", "SALAS Y CAMAS", "RRHH Y JS", "EQUIPAMIENTO", "DOCUMENTOS ADJUNTOS"].map((category) => {
-                  const items = acta3Data.hallazgos.filter(h => 
-                    (category === "SERVICIOS" && h.tipo.includes("SERVICIO")) ||
-                    (category === "ARQUITECTURA" && !h.tipo.includes("SERVICIO")) // Simplificación para mock
-                  );
-                  if (items.length === 0) return null;
-                  return (
-                    <Accordion key={category} variant="outlined" sx={{ borderRadius: '12px !important', bgcolor: 'white' }}>
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography sx={{ fontWeight: 900, color: "#1e293b", fontSize: '0.85rem' }}>{category}</Typography>
-                        <Chip label={items.length} size="small" color="error" sx={{ ml: 2, height: 20, fontWeight: 900, fontSize: '0.7rem' }} />
-                      </AccordionSummary>
-                      <AccordionDetails sx={{ p: 0 }}>
-                        {items.map((row) => (
-                          <Box 
-                            key={row.id} 
-                            sx={{ 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'space-between', 
-                              borderTop: '1px solid #f1f5f9', 
-                              py: 2, 
-                              px: 2,
-                              transition: 'all 0.2s',
-                              '&:hover': { 
-                                bgcolor: '#fef2f2', 
-                                boxShadow: 'inset 4px 0 0 #ef4444' 
-                              }
-                            }}
-                          >
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flex: 1, pr: 2 }}>
-                              {/* 1. REQUISITO */}
-                              <Typography sx={{ fontWeight: 850, color: '#1e293b', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                                {row.elemento}
-                              </Typography>
-                              
-                              {/* 3. ICONO + OBSERVACIÓN */}
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mt: 0.2 }}>
-                                <ErrorIcon sx={{ color: '#ef4444', fontSize: '0.95rem' }} />
-                                <Typography sx={{ color: '#ef4444', fontWeight: 650, fontSize: '0.8rem' }}>
-                                  {row.obs}
-                                </Typography>
-                              </Box>
-                            </Box>
-
-                          </Box>
-                        ))}
-                      </AccordionDetails>
-                    </Accordion>
-                  );
-                })}
-              </Box>
-            </Box>
-
-            {/* SECCIÓN FINAL: CONCLUSIÓN Y FOTOS (ACTA FINAL) */}
-            <Box sx={{ mt: 2, pt: 3, borderTop: '1px dashed #cbd5e1' }}>
+            <Box sx={{ pt: 1 }}>
               <Box sx={{ mb: 4 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#1e293b", mb: 1.5, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <MessageIcon sx={{ color: '#f59e0b' }} /> Conclusión Final del Acta
+                  <MessageIcon sx={{ color: '#0ea5e9' }} /> Observación General
                 </Typography>
-                <Paper variant="outlined" sx={{ p: 2, bgcolor: '#fffbeb', border: '1px solid #fef3c7', borderRadius: 3 }}>
-                  <Typography variant="body2" sx={{ color: '#92400e', fontWeight: 600, fontStyle: 'italic', lineHeight: 1.6 }}>
-                    "{acta?.generalObs || "Conclusión final del proceso de inspección."}"
+                <Paper variant="outlined" sx={{ p: 2, bgcolor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 3 }}>
+                  <Typography variant="body2" sx={{ color: '#166534', fontWeight: 600, fontStyle: 'italic', lineHeight: 1.6 }}>
+                    "{acta3Data.obsInspector}"
                   </Typography>
                 </Paper>
               </Box>

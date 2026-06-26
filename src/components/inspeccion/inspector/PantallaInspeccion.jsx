@@ -54,6 +54,8 @@ import ScienceIcon from "@mui/icons-material/Science";
 import { Message as MessageIcon } from "@mui/icons-material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
+import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
 import {
   Dialog,
   DialogTitle,
@@ -107,6 +109,58 @@ const PantallaInspeccion = ({
   const [activeView, setActiveView] = useState("INSPECCION"); // "REVISION" o "INSPECCION"
   const [historyAnchorEl, setHistoryAnchorEl] = useState(null);
   const historyMenuOpen = Boolean(historyAnchorEl);
+
+  const [autoFillAnchorEl, setAutoFillAnchorEl] = useState(null);
+  const autoFillMenuOpen = Boolean(autoFillAnchorEl);
+
+  const [closeActaModalOpen, setCloseActaModalOpen] = useState(false);
+  const [closeActaAction, setCloseActaAction] = useState(""); 
+  const [closeActaNote, setCloseActaNote] = useState("");
+
+  const [expandedSectionsGenerales, setExpandedSectionsGenerales] = useState({});
+  const [expandedSectionsTramite, setExpandedSectionsTramite] = useState({});
+  const [allGeneralesExpanded, setAllGeneralesExpanded] = useState(true);
+  const [allTramiteExpanded, setAllTramiteExpanded] = useState(true);
+
+  const isGeneralesExpanded = (id) => expandedSectionsGenerales[id] !== false;
+  const isTramiteExpanded = (id) => expandedSectionsTramite[id] !== false;
+
+  const handleToggleAllGenerales = () => {
+    const expand = !allGeneralesExpanded;
+    setAllGeneralesExpanded(expand);
+    const newState = {};
+    if (config?.servicios) {
+      const gen = config.servicios.find(s => s.name === "DATOS GENERALES");
+      if (gen?.sections) {
+        gen.sections.forEach((s, index) => {
+          const sectionKey = s.id || `gen_sec_${index}`;
+          newState[sectionKey] = expand;
+        });
+      }
+    }
+    setExpandedSectionsGenerales(newState);
+  };
+
+  const handleToggleAllTramite = (e) => {
+    e.stopPropagation();
+    const expand = !allTramiteExpanded;
+    setAllTramiteExpanded(expand);
+    const newState = {};
+    if (config?.servicios) {
+      const other = config.servicios.filter(s => s.name !== "DATOS GENERALES");
+      other.forEach((s, index) => {
+        const sectionKey = s.id || `other_sec_${index}`;
+        newState[sectionKey] = expand;
+      });
+    }
+    setExpandedSectionsTramite(newState);
+  };
+
+  const handleOpenCloseActa = (action) => {
+    setCloseActaAction(action);
+    setCloseActaNote("");
+    setCloseActaModalOpen(true);
+  };
 
   const handleHistoryClick = (event) => {
     setHistoryAnchorEl(event.currentTarget);
@@ -475,6 +529,27 @@ const PantallaInspeccion = ({
     (obsDatosTramite?.length || 0) > 0 ||
     (generalObs || "").trim().length > 0;
 
+  const getFormatoInspeccion = () => {
+    if (!config) return "PRESENCIAL";
+    let formatoId = null;
+    config.servicios?.forEach(srv => {
+      const srvFields = srv.sections ? getFlatFields(srv.sections) : srv.fields || [];
+      srvFields.forEach(f => {
+        if (f.label && f.label.toUpperCase().includes("FORMATO INSPECCIÓN")) {
+          formatoId = f.id;
+        }
+      });
+    });
+    
+    if (formatoId && inspectorData[formatoId]) {
+       const val = typeof inspectorData[formatoId] === 'object' ? inspectorData[formatoId].value : inspectorData[formatoId];
+       if (typeof val === 'string') return val.toUpperCase();
+    }
+    return "PRESENCIAL";
+  };
+
+  const actualFormatoInspeccion = getFormatoInspeccion();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -586,6 +661,81 @@ const PantallaInspeccion = ({
     );
   };
 
+
+  const handleAutoFillClick = (event) => {
+    setAutoFillAnchorEl(event.currentTarget);
+  };
+
+  const handleAutoFillClose = () => {
+    setAutoFillAnchorEl(null);
+  };
+
+  const handleAutoFill = (mode) => {
+    if (!config) return;
+    handleAutoFillClose();
+    
+    const newInspectorData = { ...inspectorData };
+    let hasOneObs = false;
+
+    const fillFields = (fields) => {
+      fields.forEach((f, idx) => {
+        let value = null;
+        let obs = "";
+
+        if (f.type === "boolean" || f.type === "checkbox") {
+          value = true;
+          if (mode === "many" && idx % 7 === 0) {
+            value = false;
+            obs = "No cumple con el requerimiento.";
+          } else if (mode === "one" && !hasOneObs) {
+            value = false;
+            obs = "Observación única de prueba.";
+            hasOneObs = true;
+          }
+        } else if (f.type === "text" || f.type === "textarea") {
+          value = "Texto de prueba auto-completado";
+          if (mode === "many" && idx % 5 === 0) {
+             obs = "Observación automática de prueba.";
+          }
+        } else if (f.type === "number") {
+          value = 3;
+        } else if (f.type === "select" || f.type === "radio" || f.type === "toggle") {
+          if (Array.isArray(f.options) && f.options.length > 0) {
+            value = typeof f.options[0] === 'object' ? f.options[0].value : f.options[0];
+          } else if (typeof f.options === 'string') {
+            value = f.options.split(',')[0].trim();
+          } else {
+            value = "Opción A";
+          }
+        } else if (f.type === "date") {
+          value = new Date().toISOString().split('T')[0];
+        } else {
+          value = "Valor genérico";
+        }
+
+        if (value !== null) {
+          newInspectorData[f.id] = { value, obs };
+        }
+      });
+    };
+
+    if (datosGeneralesSrv) {
+      const genFields = datosGeneralesSrv.sections
+        ? getFlatFields(datosGeneralesSrv.sections)
+        : datosGeneralesSrv.fields || [];
+      fillFields(genFields);
+    }
+
+    otherServices.forEach(srv => {
+      const srvFields = srv.sections
+        ? getFlatFields(srv.sections)
+        : srv.fields || [];
+      fillFields(srvFields);
+    });
+
+    setInspectorData(newInspectorData);
+  };
+
   return (
     <Box
       sx={{
@@ -601,7 +751,6 @@ const PantallaInspeccion = ({
         pb: 6,
       }}
     >
-      {/* Header Estilizado según Screenshot */}
       <Paper
         elevation={0}
         sx={{
@@ -615,29 +764,53 @@ const PantallaInspeccion = ({
           width: '100%'
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 950, color: '#0f172a', mb: 1, letterSpacing: -1.5 }}>
-          {inspectorData["f-nomtcemx"] || "SANATORIO ALLENDE"}
-        </Typography>
-        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-          <Box sx={{ bgcolor: '#0090d0', color: 'white', borderRadius: 1.5, p: 0.4, display: 'flex' }}>
-            <LocalHospitalIcon sx={{ fontSize: 20 }} />
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <Box>
+            <Typography variant="h3" sx={{ fontWeight: 950, color: '#0f172a', mb: 1, letterSpacing: -1.5 }}>
+              {inspectorData["f-nomtcemx"] || "SANATORIO ALLENDE"}
+            </Typography>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+              <Box sx={{ bgcolor: '#0090d0', color: 'white', borderRadius: 1.5, p: 0.4, display: 'flex' }}>
+                <LocalHospitalIcon sx={{ fontSize: 20 }} />
+              </Box>
+              <Typography variant="caption" sx={{ fontWeight: 850, color: '#64748b', letterSpacing: 1.5, textTransform: 'uppercase' }}>
+                {tipologia}
+              </Typography>
+
+              <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 20, my: 'auto' }} />
+
+              <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b' }}>
+                DIRECTOR TÉCNICO: <Box component="span" sx={{ color: '#0f172a', fontWeight: 900 }}>{directorTecnico.nombre} {directorTecnico.apellido}</Box>
+              </Typography>
+
+              <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 20, my: 'auto' }} />
+
+              <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b' }}>
+                DNI: <Box component="span" sx={{ color: '#0f172a', fontWeight: 900 }}>{directorTecnico.dni}</Box>
+              </Typography>
+            </Stack>
           </Box>
-          <Typography variant="caption" sx={{ fontWeight: 850, color: '#64748b', letterSpacing: 1.5, textTransform: 'uppercase' }}>
-            {tipologia}
-          </Typography>
-
-          <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 20, my: 'auto' }} />
-
-          <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b' }}>
-            DIRECTOR TÉCNICO: <Box component="span" sx={{ color: '#0f172a', fontWeight: 900 }}>{directorTecnico.nombre} {directorTecnico.apellido}</Box>
-          </Typography>
-
-          <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 20, my: 'auto' }} />
-
-          <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b' }}>
-            DNI: <Box component="span" sx={{ color: '#0f172a', fontWeight: 900 }}>{directorTecnico.dni}</Box>
-          </Typography>
-        </Stack>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            <Button 
+              variant="outlined" 
+              color="secondary" 
+              onClick={handleAutoFillClick}
+              endIcon={<KeyboardArrowDownIcon />}
+              sx={{ fontWeight: 'bold' }}
+            >
+              Auto-Completar
+            </Button>
+            <Menu
+              anchorEl={autoFillAnchorEl}
+              open={autoFillMenuOpen}
+              onClose={handleAutoFillClose}
+            >
+              <MenuItem onClick={() => handleAutoFill("none")}>Ninguna observación</MenuItem>
+              <MenuItem onClick={() => handleAutoFill("one")}>Una observación de tipo No</MenuItem>
+              <MenuItem onClick={() => handleAutoFill("many")}>Muchas observaciones</MenuItem>
+            </Menu>
+          </Box>
+        </Box>
       </Paper>
 
       {/* Selector de Acta / Revisión / Historial */}
@@ -756,35 +929,29 @@ const PantallaInspeccion = ({
         <>
 
           {datosGeneralesSrv && (
-            <Accordion
-              expanded={expandedDatosGenerales}
-              onChange={() => setExpandedDatosGenerales(!expandedDatosGenerales)}
+            <Paper
               sx={{
-                mb: 2,
-                boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-                borderRadius: "12px !important",
-                "&:before": { display: "none" },
+                mb: 4,
+                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                borderRadius: "12px",
                 border: "1px solid #e2e8f0",
+                overflow: "hidden"
               }}
             >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />}
-                sx={{ px: { xs: 2, sm: 3 }, py: 0.5 }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "100%",
-                    pr: 2,
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 900, color: "#1e293b" }}
-                  >
-                    DATOS GENERALES
-                  </Typography>
+              <Box sx={{ px: { xs: 2, sm: 3 }, py: 2, bgcolor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                <Box sx={{ display: "flex", flexDirection: "column", width: "100%", pr: 2 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b", textTransform: "uppercase" }}>
+                      DATOS GENERALES
+                    </Typography>
+                    <Box>
+                      <Tooltip title={allGeneralesExpanded ? "Contraer todos" : "Desplegar todos"}>
+                        <IconButton size="small" onClick={handleToggleAllGenerales} sx={{ color: '#64748b' }}>
+                          {allGeneralesExpanded ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Box>
                   {renderProgressBar(
                     getCompletionStats(
                       datosGeneralesSrv.sections
@@ -794,24 +961,72 @@ const PantallaInspeccion = ({
                     ),
                   )}
                 </Box>
-              </AccordionSummary>
-              <AccordionDetails
+              </Box>
+              <Box
                 sx={{
                   px: { xs: 2, sm: 3 },
-                  py: 2,
+                  py: 3,
                   bgcolor: "#ffffff",
-                  borderTop: "1px solid #e2e8f0",
                 }}
               >
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
                   {datosGeneralesSrv.sections
-                    ? datosGeneralesSrv.sections.map((sec) => {
+                    ? datosGeneralesSrv.sections.map((sec, index) => {
                       const sectionStats = getCompletionStats(sec.fields, inspectorData);
+                      const sectionKey = sec.id || `gen_sec_${index}`;
+                      if (index === 0) {
+                        return (
+                          <Box
+                            key={sectionKey}
+                            sx={{
+                              border: "1px solid #e2e8f0",
+                              borderRadius: "12px",
+                              overflow: "hidden",
+                              bgcolor: "#ffffff",
+                            }}
+                          >
+                            <Box sx={{ bgcolor: "#f8fafc", px: 2, py: 1.5, borderBottom: "1px solid #e2e8f0", display: "flex", flexDirection: "column" }}>
+                              <Typography
+                                variant="subtitle2"
+                                sx={{
+                                  fontWeight: 800,
+                                  color: "#475569",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.8rem",
+                                }}
+                              >
+                                {sec.name}
+                              </Typography>
+                              {renderProgressBar(sectionStats)}
+                            </Box>
+                            <Box sx={{ py: 2, px: 2 }}>
+                              <Box
+                                sx={{
+                                  display: "grid",
+                                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                                  gap: 2,
+                                }}
+                              >
+                                {sec.fields.map((field) => (
+                                  <FieldItem
+                                    key={field.id}
+                                    field={field}
+                                    value={inspectorData[field.id]}
+                                    onChange={handleFieldChange}
+                                    onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "GENERAL")}
+                                  />
+                                ))}
+                              </Box>
+                            </Box>
+                          </Box>
+                        );
+                      }
                       return (
                         <Accordion
-                          key={sec.id}
+                          key={sectionKey}
                           elevation={0}
-                          defaultExpanded
+                          expanded={isGeneralesExpanded(sectionKey)}
+                          onChange={() => setExpandedSectionsGenerales(prev => ({ ...prev, [sectionKey]: !isGeneralesExpanded(sectionKey) }))}
                           sx={{
                             border: "1px solid #e2e8f0",
                             borderRadius: "12px !important",
@@ -820,9 +1035,7 @@ const PantallaInspeccion = ({
                           }}
                         >
                           <AccordionSummary
-                            expandIcon={
-                              <ExpandMoreIcon sx={{ color: "#0ea5e9" }} />
-                            }
+                            expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />}
                             sx={{
                               bgcolor: "#f8fafc",
                               "& .MuiAccordionSummary-content": {
@@ -865,20 +1078,30 @@ const PantallaInspeccion = ({
                         </Accordion>
                       );
                     })
-                    : datosGeneralesSrv.fields?.map((field) => (
-                      <FieldItem
-                        key={field.id}
-                        field={field}
-                        value={inspectorData[field.id]}
-                        onChange={handleFieldChange}
-                        onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "GENERAL")}
-                        infraEfector={infraEfector}
-                        serviciosEfector={serviciosEfector}
-                      />
-                    ))}
+                    : (
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                          gap: 2,
+                        }}
+                      >
+                        {datosGeneralesSrv.fields?.map((field) => (
+                          <FieldItem
+                            key={field.id}
+                            field={field}
+                            value={inspectorData[field.id]}
+                            onChange={handleFieldChange}
+                            onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "GENERAL")}
+                            infraEfector={infraEfector}
+                            serviciosEfector={serviciosEfector}
+                          />
+                        ))}
+                      </Box>
+                    )}
                 </Box>
-              </AccordionDetails>
-            </Accordion>
+              </Box>
+            </Paper>
           )}
 
           <Accordion
@@ -904,13 +1127,34 @@ const PantallaInspeccion = ({
                   pr: 2,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 900, color: "#1e293b" }}
-                >
-                  DATOS DEL TRÁMITE
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 700 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 900, color: "#1e293b" }}
+                  >
+                    DATOS DEL TRÁMITE
+                  </Typography>
+                  <Box>
+                    <Tooltip title={allTramiteExpanded ? "Contraer todos" : "Desplegar todos"}>
+                      <Box
+                        onClick={handleToggleAllTramite}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          p: 0.5,
+                          borderRadius: '50%',
+                          color: '#64748b',
+                          cursor: 'pointer',
+                          '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.04)' }
+                        }}
+                      >
+                        {allTramiteExpanded ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
+                      </Box>
+                    </Tooltip>
+                  </Box>
+                </Box>
+                <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 700, mt: 0.5 }}>
                   Valores declarados en el trámite
                 </Typography>
               </Box>
@@ -1094,10 +1338,12 @@ const PantallaInspeccion = ({
 
                   if (!matchedSections || matchedSections.length === 0) return null;
 
+                  const sectionKey = srv.id || `other_sec_${index}`;
                   return (
                     <Accordion
-                      key={srv.id}
-                      defaultExpanded
+                      key={sectionKey}
+                      expanded={isTramiteExpanded(sectionKey)}
+                      onChange={() => setExpandedSectionsTramite(prev => ({ ...prev, [sectionKey]: !isTramiteExpanded(sectionKey) }))}
                       sx={{
                         mb: 1,
                         boxShadow: "none",
@@ -1518,7 +1764,7 @@ const PantallaInspeccion = ({
           </Box>
 
           {/* Visualización de Firmas */}
-          {(signatures.representative.data || signatures.inspector.data) && (
+          {actualFormatoInspeccion !== "VIRTUAL" && (signatures.representative.data || signatures.inspector.data) && (
             <Box
               sx={{
                 mb: 4,
@@ -1569,7 +1815,7 @@ const PantallaInspeccion = ({
           )}
 
           <Stack direction="row" spacing={3} sx={{ mt: 2 }}>
-            {!(signatures.representative.data && signatures.inspector.data) ? (
+            {actualFormatoInspeccion !== "VIRTUAL" && !(signatures.representative.data && signatures.inspector.data) ? (
               <Button
                 fullWidth
                 variant="outlined"
@@ -1600,6 +1846,7 @@ const PantallaInspeccion = ({
                   fullWidth
                   variant="contained"
                   size="large"
+                  onClick={() => handleOpenCloseActa("APROBAR")}
                   sx={{
                     py: 2.5,
                     borderRadius: 8,
@@ -1618,6 +1865,7 @@ const PantallaInspeccion = ({
                     fullWidth
                     variant="contained"
                     size="large"
+                    onClick={() => handleOpenCloseActa("NO APROBAR")}
                     sx={{
                       py: 2.5,
                       borderRadius: 8,
@@ -1647,6 +1895,67 @@ const PantallaInspeccion = ({
         }}
         onSave={handleSaveSignature}
       />
+
+      <Dialog
+        open={closeActaModalOpen}
+        onClose={() => setCloseActaModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: { borderRadius: 4, p: 2 }
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 900, color: '#1e293b', pb: 1 }}>
+          Nota de Cierre - {closeActaAction}
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: '#64748b', mb: 3 }}>
+            Ingrese una nota final antes de {closeActaAction.toLowerCase()} la inspección.
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            placeholder="Escriba la nota de cierre..."
+            value={closeActaNote}
+            onChange={(e) => setCloseActaNote(e.target.value)}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 3,
+                bgcolor: "#f8fafc",
+                "&.Mui-focused": { bgcolor: "white" }
+              }
+            }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ pt: 2, px: 3, pb: 2 }}>
+          <Button 
+            onClick={() => setCloseActaModalOpen(false)} 
+            sx={{ color: '#64748b', fontWeight: 700 }}
+          >
+            CANCELAR
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setCloseActaModalOpen(false);
+              alert(`Acta cerrada (${closeActaAction}) con éxito.\nNota: ${closeActaNote}`);
+              window.location.href = "/home-inspector";
+            }}
+            sx={{
+              bgcolor: closeActaAction === "APROBAR" ? "#059669" : "#ef4444",
+              fontWeight: 800,
+              borderRadius: 2,
+              px: 3,
+              "&:hover": {
+                bgcolor: closeActaAction === "APROBAR" ? "#047857" : "#dc2626"
+              }
+            }}
+          >
+            CONFIRMAR
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
