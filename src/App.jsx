@@ -14,6 +14,7 @@ import JefeServicioConfig from './components/backoffice/JefeServicioConfig';
 import ConfiguradorInspeccionRouter from './components/inspeccion/admin/configurador/ConfiguradorRouter';
 import ServiciosConfig from './components/backoffice/ServiciosConfig';
 import PantallaInspeccion from './components/inspeccion/inspector/PantallaInspeccion';
+import HomeInspector from './components/inspeccion/inspector/HomeInspector';
 import Layout from './components/ui/Layout';
 import RoleSelection from './components/ui/RoleSelection';
 import { RoleProvider } from './context/RoleContext';
@@ -79,7 +80,8 @@ function App() {
           <Route path="/home-efector/*" element={<HomeEfector />} />
 
           {/* RUTA INSPECTOR: Pantalla de Tablet */}
-          <Route path="/inspector/*" element={<Layout><PantallaInspeccion /></Layout>} />
+          <Route path="/inspector" element={<Layout><HomeInspector /></Layout>} />
+          <Route path="/inspector/:id" element={<Layout><PantallaInspeccion /></Layout>} />
           
           {/* FALLBACK: Solo si no entra en ninguna de las de arriba */}
           <Route path="*" element={<Navigate to="/" replace />} />

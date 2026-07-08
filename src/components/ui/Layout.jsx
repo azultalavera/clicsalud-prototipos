@@ -58,65 +58,78 @@ const Layout = ({ children }) => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      {/* HEADER SUPERIOR (Z-Index alto para estar sobre la barra) */}
-      <AppBar 
-        position="fixed" 
-        sx={{ 
-          backgroundColor: '#0090d0', 
-          boxShadow: 'none', 
-          zIndex: (theme) => theme.zIndex.drawer + 1 
-        }}
-      >
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton color="inherit" sx={{ mr: 2 }} onClick={toggleDrawer}>
-              <MenuIcon />
-            </IconButton>
-            <Typography 
-              variant="h6" 
-              onClick={() => navigate('/')}
-              sx={{ 
-                fontWeight: 'bold', 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 1,
-                cursor: 'pointer',
-                '&:hover': { opacity: 0.9 }
-              }}
-            >
-              Ministerio de <span style={{ fontWeight: 900 }}>SALUD</span> 
-              <span style={{ fontSize: '1.2rem', fontWeight: 300, ml: 2 }}>| ClicSALUD</span>
-            </Typography>
-          </Box>
-          
-          {/* Selector de Roles Eliminado */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 500, color: 'white', opacity: 0.9 }}>
-              {ROLES.find(r => r.id === activeRole)?.label || 'Efector'}
-            </Typography>
-            <IconButton onClick={handleMenuClick} sx={{ p: 0 }}>
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'white', color: '#0090d0', border: '2px solid white' }}>C</Avatar>
-            </IconButton>
+      {/* HEADER SUPERIOR (Oculto para el inspector) */}
+      {!isInspector && (
+        <AppBar 
+          position="fixed" 
+          sx={{ 
+            backgroundColor: '#0090d0', 
+            boxShadow: 'none', 
+            zIndex: (theme) => theme.zIndex.drawer + 1 
+          }}
+        >
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton color="inherit" sx={{ mr: 2 }} onClick={toggleDrawer}>
+                <MenuIcon />
+              </IconButton>
+              
+              {/* Logotipo del Ministerio siempre visible */}
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Escudo_de_la_Provincia_de_C%C3%B3rdoba.svg/1200px-Escudo_de_la_Provincia_de_C%C3%B3rdoba.svg.png" 
+                alt="Logotipo Ministerio de Salud" 
+                style={{ height: 32, cursor: 'pointer', marginRight: 12 }}
+                onClick={() => navigate('/')}
+              />
+
+              {!isInspector && (
+                <Typography 
+                  variant="h6" 
+                  onClick={() => navigate('/')}
+                  sx={{ 
+                    fontWeight: 'bold', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 1,
+                    cursor: 'pointer',
+                    '&:hover': { opacity: 0.9 }
+                  }}
+                >
+                  Ministerio de <span style={{ fontWeight: 900 }}>SALUD</span> 
+                  <span style={{ fontSize: '1.2rem', fontWeight: 300, ml: 2 }}>| ClicSALUD</span>
+                </Typography>
+              )}
+            </Box>
             
-            <Menu anchorEl={anchorEl} open={openMenu} onClose={() => handleMenuClose()} PaperProps={{ sx: { width: 200, mt: 1 } }}>
-              <MenuItem onClick={() => handleMenuClose('/')}>
-                <ListItemIcon><AdminPanelSettingsIcon fontSize="small" /></ListItemIcon>
-                Administrador
-              </MenuItem>
-              <MenuItem onClick={() => handleMenuClose('/home-efector')}>
-                <ListItemIcon><LocalHospitalIcon fontSize="small" /></ListItemIcon>
-                Efector
-              </MenuItem>
-              <MenuItem onClick={() => handleMenuClose('/inspector')}>
-                <ListItemIcon><TabletMacIcon fontSize="small" /></ListItemIcon>
-                Inspector (Tablet)
-              </MenuItem>
-              <Divider />
-              <MenuItem onClick={() => handleMenuClose('/login')}>Cerrar Sesión</MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
+            {/* Selector de Roles Eliminado */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 500, color: 'white', opacity: 0.9 }}>
+                {ROLES.find(r => r.id === activeRole)?.label || 'Efector'}
+              </Typography>
+              <IconButton onClick={handleMenuClick} sx={{ p: 0 }}>
+                <Avatar sx={{ width: 32, height: 32, bgcolor: 'white', color: '#0090d0', border: '2px solid white' }}>C</Avatar>
+              </IconButton>
+              
+              <Menu anchorEl={anchorEl} open={openMenu} onClose={() => handleMenuClose()} PaperProps={{ sx: { width: 200, mt: 1 } }}>
+                <MenuItem onClick={() => handleMenuClose('/')}>
+                  <ListItemIcon><AdminPanelSettingsIcon fontSize="small" /></ListItemIcon>
+                  Administrador
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuClose('/home-efector')}>
+                  <ListItemIcon><LocalHospitalIcon fontSize="small" /></ListItemIcon>
+                  Efector
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuClose('/inspector')}>
+                  <ListItemIcon><TabletMacIcon fontSize="small" /></ListItemIcon>
+                  Inspector (Tablet)
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={() => handleMenuClose('/login')}>Cerrar Sesión</MenuItem>
+              </Menu>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      )}
 
       {/* BARRA LATERAL (Drawer) - Oculta en Efector e Inspector */}
       {!hideSidebar && (
@@ -189,12 +202,12 @@ const Layout = ({ children }) => {
         sx={{ 
           flexGrow: 1, 
           p: isInspector ? 0 : 4, 
-          mt: 8, 
+          mt: isInspector ? 0 : 8, 
           backgroundImage: isInspector ? 'none' : `url(${fondoOndas})`, 
-          backgroundColor: isInspector ? '#ffffff' : 'transparent',
+          backgroundColor: isInspector ? '#f8fafc' : 'transparent', // Light grey app background
           backgroundAttachment: 'fixed', 
           backgroundSize: 'cover',
-          minHeight: 'calc(100vh - 64px)'
+          minHeight: isInspector ? '100vh' : 'calc(100vh - 64px)'
         }}
       >
         {children}

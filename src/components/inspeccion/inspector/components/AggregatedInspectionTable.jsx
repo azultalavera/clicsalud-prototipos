@@ -106,11 +106,11 @@ const AggregatedInspectionTable = ({ category, services, inspectorData, infraEfe
             } else {
               (sec.fields || []).forEach(f => {
                 const isJefeFld = normalize(f.label || f.name).includes("JEFE");
-                fields.push({ 
-                  ...f, 
-                  _srvName: srv.name, 
-                  _type: (isJefeSec || isJefeFld) ? "JEFES DE SERVICIO" : "RECURSOS HUMANOS", 
-                  isExtra: true 
+                fields.push({
+                  ...f,
+                  _srvName: srv.name,
+                  _type: (isJefeSec || isJefeFld) ? "JEFES DE SERVICIO" : "RECURSOS HUMANOS",
+                  isExtra: true
                 });
               });
             }
@@ -123,17 +123,17 @@ const AggregatedInspectionTable = ({ category, services, inspectorData, infraEfe
     if (category === "RECURSOS HUMANOS" && rrhhEfector) {
       const configuredKeys = new Set(fields.map(f => `${normalize(f._srvName)}|${normalize(f.label || f.name)}`));
       const activeSrvNames = new Set((services || []).map(s => normalize(s.name)));
-      
+
       const extrasMap = {};
 
       rrhhEfector.forEach(r => {
         const isMatchedSrv = activeSrvNames.has(normalize(r.origen));
         const srvName = isMatchedSrv ? r.origen : "OTROS (FUERA DE SERVICIO)";
-        
+
         const isJefe = r.isJefe || normalize(r.especialidad || "").includes("JEFE") || normalize(r.tipoPlantel || "").includes("JEFE");
         const label = isJefe ? "JEFE DE SERVICIO" : (r.especialidad || r.tipoPlantel);
         const key = `${normalize(srvName)}|${normalize(label)}`;
-        
+
         if (!configuredKeys.has(key)) {
           if (!extrasMap[key]) {
             extrasMap[key] = {
@@ -151,7 +151,7 @@ const AggregatedInspectionTable = ({ category, services, inspectorData, infraEfe
           }
         }
       });
-      
+
       Object.values(extrasMap).forEach(f => fields.push(f));
     }
 
@@ -233,15 +233,15 @@ const AggregatedInspectionTable = ({ category, services, inspectorData, infraEfe
             const bLabel = normalize(b.label || b.name);
             const aIsJefe = a._type === "JEFES DE SERVICIO";
             const bIsJefe = b._type === "JEFES DE SERVICIO";
-            
+
             if (aIsJefe && !bIsJefe) return -1;
             if (!aIsJefe && bIsJefe) return 1;
-            
+
             const aIsMed = aLabel.includes("MEDIC");
             const bIsMed = bLabel.includes("MEDIC");
             if (aIsMed && !bIsMed) return -1;
             if (!aIsMed && bIsMed) return 1;
-            
+
             return aLabel.localeCompare(bLabel);
           }),
           icon: <PeopleIcon />,

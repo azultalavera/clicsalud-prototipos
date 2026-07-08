@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -6,65 +7,40 @@ import {
   Divider,
   TextField,
   MenuItem,
-  Stack, Grid,
+  Stack,
   Button,
-  ToggleButton,
-  ToggleButtonGroup,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Chip,
   LinearProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Checkbox,
   Paper,
-  Autocomplete,
   Tooltip,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlined";
-import DomainIcon from "@mui/icons-material/Domain";
-import PeopleIcon from "@mui/icons-material/People";
-import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-import BedIcon from "@mui/icons-material/Bed";
-import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import CloudUpload from "@mui/icons-material/CloudUpload";
-import Close from "@mui/icons-material/Close";
-import Delete from "@mui/icons-material/Delete";
-import DriveFileRenameOutline from "@mui/icons-material/DriveFileRenameOutline";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import DescriptionIcon from "@mui/icons-material/Description";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutlined";
-import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import ReportProblemIcon from "@mui/icons-material/ReportProblem";
-import ErrorIcon from "@mui/icons-material/Error";
-import InfoIcon from "@mui/icons-material/Info";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import LockIcon from "@mui/icons-material/Lock";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import HistoryIcon from "@mui/icons-material/History";
-import ScienceIcon from "@mui/icons-material/Science";
-import { Message as MessageIcon } from "@mui/icons-material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
-import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
-import {
+  IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  IconButton,
   Menu,
+  Switch,
+  Snackbar,
+  Alert,
+  Grid,
+  Checkbox
 } from "@mui/material";
-
+import HistoryIcon from "@mui/icons-material/History";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import Close from "@mui/icons-material/Close";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import WarningIcon from "@mui/icons-material/Warning";
+import ErrorIcon from "@mui/icons-material/Error";
+import LockIcon from "@mui/icons-material/Lock";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import CheckIcon from "@mui/icons-material/Check";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import HomeIcon from "@mui/icons-material/Home";
+import logoMinisterio from "../../../assets/logo/e1756780-3abd-4b92-a58c-ae3db6a864fe.jpeg";
 
 import {
   normalize,
@@ -73,16 +49,25 @@ import {
 } from "./components/utils";
 
 import FieldItem from "./components/FieldItem";
-import VerificationTable from "./components/VerificationTable";
 import ServicesTable from "./components/ServicesTable";
 import PlansTable from "./components/PlansTable";
 import DocumentsTable from "./components/DocumentsTable";
 import AggregatedInspectionTable from "./components/AggregatedInspectionTable";
-import ObservationDialog from "./components/ObservationDialog";
 import FileViewerModal from "./components/FileViewerModal";
 import PhotoViewer from "./components/PhotoViewer";
 import RevisionActaView from "./components/RevisionActaView";
-import SignatureModal from "./components/SignatureModal";
+
+// --- WIZARD STEPS DEFINITION ---
+const WIZARD_STEPS = [
+  { id: "DG", label: "Bioseguridad y Grales.", category: "A" },
+  { id: "ARQ", label: "Paso Arquitectura", category: "B" },
+  { id: "SRV", label: "Paso Servicios", category: "B" },
+  { id: "EQP", label: "Paso Equipamiento", category: "B" },
+  { id: "CAM", label: "Salas y Camas", category: "B" },
+  { id: "RRHH", label: "Paso Personal", category: "B" },
+  { id: "DOC", label: "Documentos Adjuntos", category: "B" },
+  { id: "CIERRE", label: "Cierre y Firmas", category: "B" }
+];
 
 const PantallaInspeccion = ({
   serviciosEfector: propsServicios,
@@ -91,16 +76,58 @@ const PantallaInspeccion = ({
   jefesEfector: propsJefes,
   equiposEfector: propsEquipos,
 }) => {
+  const { id } = useParams(); // Obtenemos el ID de la inspección desde la URL (ej: inspeccion_allende)
+  const navigate = useNavigate();
+
+  // --- PERSISTENCIA DINÁMICA SEGÚN EL ID DEL ESTABLECIMIENTO ---
+  const dataKey = id ? `inspector_data_${id}` : "inspector_data";
+  const genObsKey = id ? `obs_datos_generales_${id}` : "obs_datos_generales";
+  const traObsKey = id ? `obs_datos_tramite_${id}` : "obs_datos_tramite";
+  const manualObsKey = id ? `general_obs_${id}` : "general_obs";
+  const photosKey = id ? `inspector_photos_by_component_${id}` : "inspector_photos_by_component";
+  const stepKey = id ? `current_step_${id}` : "current_step";
+  const cidiLevelKey = id ? `cidi_level_${id}` : "cidi_level";
+  const cuilKey = id ? `cuil_responsable_${id}` : "cuil_responsable";
+  const signaturesKey = id ? `signatures_${id}` : "signatures";
+  const testigosKey = id ? `testigos_${id}` : "testigos";
+  const negativaKey = id ? `negativa_firma_${id}` : "negativa_firma";
+
   const [loading, setLoading] = useState(true);
   const [config, setConfig] = useState(null);
+  
   const [inspectorData, setInspectorData] = useState({});
   const [viewerFile, setViewerFile] = useState(null);
   const [obsDatosGenerales, setObsDatosGenerales] = useState([]);
   const [obsDatosTramite, setObsDatosTramite] = useState([]);
   const [generalObs, setGeneralObs] = useState("");
   const [attachments, setAttachments] = useState([]);
-  const [signatureModalOpen, setSignatureModalOpen] = useState(false);
-  const [signatureStep, setSignatureStep] = useState(0); // 0: cerrado, 1: responsable, 2: inspector
+  
+  // Paso actual del Wizard
+  const [currentStep, setCurrentStep] = useState(0);
+
+  // Evidencia Fotográfica Transversal por ID de Componente
+  const [photosByComponent, setPhotosByComponent] = useState({});
+  
+  // Modal de Fotos
+  const [photoManagerField, setPhotoManagerField] = useState(null);
+
+  // Bottom Sheet para Trigger Forzado (Bioseguridad)
+  const [forcedModal, setForcedModal] = useState({ open: false, fieldId: null, label: "" });
+
+  // Control de CiDi y CUIL
+  const [cuilResponsable, setCuilResponsable] = useState("");
+  const [cidiLevel, setCidiLevel] = useState(null); // null, 1, 2
+  const [cidiChecking, setCidiChecking] = useState(false);
+  const [cidiBlocked, setCidiBlocked] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // Testigos y Negativa a Firmar
+  const [negativaFirma, setNegativaFirma] = useState(false);
+  const [testigos, setTestigos] = useState({
+    t1: { cuil: "", nombre: "", firma: null },
+    t2: { cuil: "", nombre: "", firma: null }
+  });
+
   const [signatures, setSignatures] = useState({
     representative: { data: null, name: "" },
     inspector: { data: null, name: "" },
@@ -117,141 +144,14 @@ const PantallaInspeccion = ({
   const [closeActaAction, setCloseActaAction] = useState(""); 
   const [closeActaNote, setCloseActaNote] = useState("");
 
-  const [expandedSectionsGenerales, setExpandedSectionsGenerales] = useState({});
-  const [expandedSectionsTramite, setExpandedSectionsTramite] = useState({});
-  const [allGeneralesExpanded, setAllGeneralesExpanded] = useState(true);
-  const [allTramiteExpanded, setAllTramiteExpanded] = useState(true);
-
-  const isGeneralesExpanded = (id) => expandedSectionsGenerales[id] !== false;
-  const isTramiteExpanded = (id) => expandedSectionsTramite[id] !== false;
-
-  const handleToggleAllGenerales = () => {
-    const expand = !allGeneralesExpanded;
-    setAllGeneralesExpanded(expand);
-    const newState = {};
-    if (config?.servicios) {
-      const gen = config.servicios.find(s => s.name === "DATOS GENERALES");
-      if (gen?.sections) {
-        gen.sections.forEach((s, index) => {
-          const sectionKey = s.id || `gen_sec_${index}`;
-          newState[sectionKey] = expand;
-        });
-      }
-    }
-    setExpandedSectionsGenerales(newState);
-  };
-
-  const handleToggleAllTramite = (e) => {
-    e.stopPropagation();
-    const expand = !allTramiteExpanded;
-    setAllTramiteExpanded(expand);
-    const newState = {};
-    if (config?.servicios) {
-      const other = config.servicios.filter(s => s.name !== "DATOS GENERALES");
-      other.forEach((s, index) => {
-        const sectionKey = s.id || `other_sec_${index}`;
-        newState[sectionKey] = expand;
-      });
-    }
-    setExpandedSectionsTramite(newState);
-  };
-
-  const handleOpenCloseActa = (action) => {
-    setCloseActaAction(action);
-    setCloseActaNote("");
-    setCloseActaModalOpen(true);
-  };
-
-  const handleHistoryClick = (event) => {
-    setHistoryAnchorEl(event.currentTarget);
-  };
-  const handleHistoryClose = () => {
-    setHistoryAnchorEl(null);
-  };
-
-  const [obsDialog, setObsDialog] = useState({
-    open: false,
-    fieldId: null,
-    label: "",
-    value: "",
-    category: "TRAMITE", // Nueva prop: GENERAL or TRAMITE
-  });
-
-  const handleOpenObsDialog = (fieldId, label, currentValue, category = "TRAMITE") => {
-    setObsDialog({
-      open: true,
-      fieldId,
-      label,
-      value: currentValue || "",
-      category,
-    });
-  };
-
-  const handleSaveObs = (text) => {
-    const currentData = inspectorData[obsDialog.fieldId];
-    const isObject = currentData && typeof currentData === 'object' && !Array.isArray(currentData);
-
-    // Actualizar dato individual preservando el valor actual
-    handleFieldChange(obsDialog.fieldId, {
-      ...(isObject ? currentData : { value: currentData }),
-      obs: text,
-    });
-
-    setObsDialog({ ...obsDialog, open: false });
-  };
-
-  const [viewerPhoto, setViewerPhoto] = useState(null);
-  const [targetPhotoField, setTargetPhotoField] = useState(null);
-
-  const photoInputRef = useRef(null);
-  const fileInputRef = useRef(null);
-
-  const handleFileSelect = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length === 0) return;
-
-    const file = files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64String = reader.result;
-
-      // Si tenemos un campo objetivo, guardamos la foto ahí
-      if (targetPhotoField) {
-        handleFieldChange(targetPhotoField, {
-          ...(typeof inspectorData[targetPhotoField] === 'object' ? inspectorData[targetPhotoField] : { value: inspectorData[targetPhotoField] }),
-          photo: base64String
-        });
-        setTargetPhotoField(null);
-      } else {
-        // Si no, es una foto global
-        setAttachments((prev) => [...prev, file]);
-        const currentPhotos = JSON.parse(localStorage.getItem("inspector_photos") || "[]");
-        localStorage.setItem("inspector_photos", JSON.stringify([...currentPhotos, { name: file.name, data: base64String }]));
-      }
-    };
-    reader.readAsDataURL(file);
-    e.target.value = null; // Reset input
-  };
-
-  const handleSaveSignature = (dataUrl, name = "") => {
-    if (signatureStep === 1) {
-      setSignatures((prev) => ({ ...prev, representative: { data: dataUrl, name } }));
-      setSignatureStep(2);
-    } else {
-      setSignatures((prev) => ({ ...prev, inspector: { data: dataUrl, name: name || "ING. GUSTAVO SOSA" } }));
-      setSignatureStep(0);
-      setSignatureModalOpen(false);
-    }
-  };
-
-  const [expandedDatosGenerales, setExpandedDatosGenerales] = useState(true);
-  const [expandedEstablecimiento, setExpandedEstablecimiento] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("ARQUITECTURA");
   const [serviciosEfector, setServiciosEfector] = useState([]);
   const [infraEfector, setInfraEfector] = useState({});
   const [rrhhEfector, setRrhhEfector] = useState([]);
   const [equiposEfector, setEquiposEfector] = useState([]);
   const [tipologia, setTipologia] = useState("CLÍNICAS, SANATORIOS Y HOSPITALES");
+  
+  // DT y Nombre cargados dinámicamente desde caché de HomeInspector
+  const [efectorNombre, setEfectorNombre] = useState("SANATORIO ALLENDE");
   const [directorTecnico, setDirectorTecnico] = useState({ nombre: "JUAN CARLOS", apellido: "PÉREZ", dni: "20.455.123" });
 
   const datosGeneralesSrv = React.useMemo(() =>
@@ -275,9 +175,7 @@ const PantallaInspeccion = ({
 
         if (nSrvName === nEffSrv) return true;
         
-        // Búsqueda de sub-cadena para casos como "UCO (Unidad Coronaria)"
         if (nSrvName.includes(nEffSrv) || nEffSrv.includes(nSrvName)) {
-           // Evitar falsos positivos entre tipos de terapias
            const isPed = (str) => str.includes("PEDIAT") || str.includes("UTIP");
            const isNeo = (str) => str.includes("NEONAT") || str.includes("UTIN");
            const isUco = (str) => str.includes("CORONARI") || str.includes("UCO");
@@ -297,15 +195,24 @@ const PantallaInspeccion = ({
     }) || [];
   }, [config, serviciosEfector, infraEfector]);
 
+  // Cargar caché local e inicializaciones según el ID de establecimiento
   useEffect(() => {
+    // Cargar Plus Jakarta Sans
+    const fontLink = document.createElement("link");
+    fontLink.href = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap";
+    fontLink.rel = "stylesheet";
+    document.head.appendChild(fontLink);
+
     const loadFromCache = () => {
       const cachedSrv = localStorage.getItem("efector_servicios");
       const cachedInfra = localStorage.getItem("efector_infra");
       const cachedRrhh = localStorage.getItem("efector_rrhh");
       const cachedJefes = localStorage.getItem("efector_jefes");
       const cachedEquipos = localStorage.getItem("efector_equipos");
+      
       const cachedTipo = localStorage.getItem("efector_tipo");
       const cachedDT = localStorage.getItem("efector_dt");
+      const cachedNombre = localStorage.getItem("efector_nombre");
 
       if (cachedSrv) setServiciosEfector(JSON.parse(cachedSrv));
       if (cachedInfra) setInfraEfector(JSON.parse(cachedInfra));
@@ -314,7 +221,6 @@ const PantallaInspeccion = ({
       if (cachedRrhh) rrhhList = JSON.parse(cachedRrhh);
       if (cachedJefes) {
         const jefes = JSON.parse(cachedJefes);
-        // Asegurar que tengan el flag o tipo para identificarlos
         rrhhList = [...rrhhList, ...jefes.map(j => ({ ...j, isJefe: true }))];
       }
       setRrhhEfector(rrhhList);
@@ -322,9 +228,9 @@ const PantallaInspeccion = ({
       if (cachedEquipos) setEquiposEfector(JSON.parse(cachedEquipos));
       if (cachedTipo) setTipologia(cachedTipo);
       if (cachedDT) setDirectorTecnico(JSON.parse(cachedDT));
+      if (cachedNombre) setEfectorNombre(cachedNombre);
     };
 
-    // 1. Prioridad: Props
     if (propsServicios) {
       setServiciosEfector(propsServicios);
       setInfraEfector(propsInfra || {});
@@ -334,18 +240,23 @@ const PantallaInspeccion = ({
         rrhhList = [...rrhhList, ...propsJefes.map(j => ({ ...j, isJefe: true }))];
       }
       setRrhhEfector(rrhhList);
-      
       setEquiposEfector(propsEquipos || []);
     } else {
-      // 2. Fallback: LocalStorage
       loadFromCache();
     }
 
-    // 4. Cargar persistencia
-    const savedData = localStorage.getItem("inspector_data");
-    const savedGenObs = localStorage.getItem("obs_datos_generales");
-    const savedTraObs = localStorage.getItem("obs_datos_tramite");
-    const savedManualObs = localStorage.getItem("general_obs");
+    // Carga de estados de inspección específicos del ID
+    const savedData = localStorage.getItem(dataKey);
+    const savedGenObs = localStorage.getItem(genObsKey);
+    const savedTraObs = localStorage.getItem(traObsKey);
+    const savedManualObs = localStorage.getItem(manualObsKey);
+    const savedPhotos = localStorage.getItem(photosKey);
+    const savedStep = localStorage.getItem(stepKey);
+    const savedCidi = localStorage.getItem(cidiLevelKey);
+    const savedCuil = localStorage.getItem(cuilKey);
+    const savedSignatures = localStorage.getItem(signaturesKey);
+    const savedTestigos = localStorage.getItem(testigosKey);
+    const savedNegativa = localStorage.getItem(negativaKey);
 
     if (savedData) setInspectorData(JSON.parse(savedData));
     else {
@@ -359,8 +270,31 @@ const PantallaInspeccion = ({
       try { setObsDatosTramite(JSON.parse(savedTraObs)); } catch (e) { setObsDatosTramite([]); }
     }
     if (savedManualObs) setGeneralObs(savedManualObs);
+    
+    if (savedPhotos) {
+      try { setPhotosByComponent(JSON.parse(savedPhotos)); } catch (e) { setPhotosByComponent({}); }
+    } else {
+      setPhotosByComponent({});
+    }
 
-    // 3. Escuchar cambios en otras pestañas (Sincronización automática)
+    if (savedStep) setCurrentStep(Number(savedStep));
+    else setCurrentStep(0);
+
+    if (savedCidi) setCidiLevel(Number(savedCidi));
+    else setCidiLevel(null);
+
+    if (savedCuil) setCuilResponsable(savedCuil);
+    else setCuilResponsable("");
+
+    if (savedSignatures) setSignatures(JSON.parse(savedSignatures));
+    else setSignatures({ representative: { data: null, name: "" }, inspector: { data: null, name: "" } });
+
+    if (savedTestigos) setTestigos(JSON.parse(savedTestigos));
+    else setTestigos({ t1: { cuil: "", nombre: "", firma: null }, t2: { cuil: "", nombre: "", firma: null } });
+
+    if (savedNegativa) setNegativaFirma(savedNegativa === "true");
+    else setNegativaFirma(false);
+
     const handleStorageChange = (e) => {
       if (e.key?.startsWith("efector_")) {
         loadFromCache();
@@ -368,26 +302,54 @@ const PantallaInspeccion = ({
     };
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
-  }, [propsServicios, propsInfra, propsRrhh, propsEquipos]);
+  }, [propsServicios, propsInfra, propsRrhh, propsEquipos, id, dataKey]);
 
-  // Guardar datos automáticamente
+  // Persistir datos específicos por ID
   useEffect(() => {
     if (Object.keys(inspectorData).length > 0) {
-      localStorage.setItem("inspector_data", JSON.stringify(inspectorData));
+      localStorage.setItem(dataKey, JSON.stringify(inspectorData));
     }
-  }, [inspectorData]);
+  }, [inspectorData, dataKey]);
 
   useEffect(() => {
-    localStorage.setItem("general_obs", generalObs);
-  }, [generalObs]);
+    localStorage.setItem(manualObsKey, generalObs);
+  }, [generalObs, manualObsKey]);
 
-  // Sincronización automática de sumarios de observaciones
+  useEffect(() => {
+    localStorage.setItem(photosKey, JSON.stringify(photosByComponent));
+  }, [photosByComponent, photosKey]);
+
+  useEffect(() => {
+    localStorage.setItem(stepKey, String(currentStep));
+  }, [currentStep, stepKey]);
+
+  useEffect(() => {
+    if (cidiLevel !== null) localStorage.setItem(cidiLevelKey, String(cidiLevel));
+    else localStorage.removeItem(cidiLevelKey);
+  }, [cidiLevel, cidiLevelKey]);
+
+  useEffect(() => {
+    localStorage.setItem(cuilKey, cuilResponsable);
+  }, [cuilResponsable, cuilKey]);
+
+  useEffect(() => {
+    localStorage.setItem(signaturesKey, JSON.stringify(signatures));
+  }, [signatures, signaturesKey]);
+
+  useEffect(() => {
+    localStorage.setItem(testigosKey, JSON.stringify(testigos));
+  }, [testigos, testigosKey]);
+
+  useEffect(() => {
+    localStorage.setItem(negativaKey, String(negativaFirma));
+  }, [negativaFirma, negativaKey]);
+
+  // Sincronización de sumarios de observaciones
   useEffect(() => {
     if (!config) return;
 
     const extractValue = (val) => (val && typeof val === 'object' && !Array.isArray(val) ? val.value : val);
     const extractObs = (val) => (val && typeof val === 'object' && !Array.isArray(val) ? val.obs : "");
-    const extractPhoto = (val) => (val && typeof val === 'object' && !Array.isArray(val) ? val.photo : null);
 
     // 1. Datos Generales
     let genSummary = [];
@@ -399,20 +361,19 @@ const PantallaInspeccion = ({
       const fieldData = inspectorData[f.id];
       const val = extractValue(fieldData);
       const obs = extractObs(fieldData);
-
-      const photo = extractPhoto(fieldData);
+      const hasPhoto = photosByComponent[f.id] && photosByComponent[f.id].length > 0;
 
       if ((f.type === 'boolean' || f.type === 'checkbox') && val === false) {
-        genSummary.push({ id: f.id, label: f.label, text: `NO CUMPLE${obs ? ` (${obs})` : ''}`, type: 'ERROR', hasPhoto: !!photo, photo });
+        genSummary.push({ id: f.id, label: f.label, text: `NO CUMPLE${obs ? ` (${obs})` : ''}`, type: 'ERROR', hasPhoto });
       } else if (obs) {
-        genSummary.push({ id: f.id, label: f.label, text: obs, type: 'OBS', hasPhoto: !!photo, photo });
+        genSummary.push({ id: f.id, label: f.label, text: obs, type: 'OBS', hasPhoto });
       }
     });
     setObsDatosGenerales(genSummary);
 
     // 2. Datos Trámite
     let traSummary = [];
-    let emplazamientos = []; // Nuevos emplazamientos para el efector
+    let emplazamientos = [];
 
     (config.servicios || []).forEach(srv => {
       const isGeneralSrv = normalize(srv.name).includes("DATOS GENERALES");
@@ -426,18 +387,14 @@ const PantallaInspeccion = ({
         const isDoc = f.id?.includes('doc') || f.label?.toUpperCase().includes('DOCUMENTO');
         let isIrregularidadTramite = false;
         let razonIrregular = "";
+        const hasPhoto = photosByComponent[f.id] && photosByComponent[f.id].length > 0;
 
-        const photo = extractPhoto(fieldData);
-
-        // Regla 1: Datos Generales / Otros (Boolean NO CUMPLE) -> OBSERVACIÓN DE ACTA
         if ((f.type === 'boolean' || f.type === 'checkbox') && val === false) {
-          traSummary.push({ id: f.id, label: f.label, service: srv.name, text: `NO CUMPLE${obs ? ` (${obs})` : ''}`, type: 'ERROR', hasPhoto: !!photo, photo });
+          traSummary.push({ id: f.id, label: f.label, service: srv.name, text: `NO CUMPLE${obs ? ` (${obs})` : ''}`, type: 'ERROR', hasPhoto });
         } else if (obs && !isDoc) {
-          // Observaciones manuales en campos normales -> OBSERVACIÓN DE ACTA
-          traSummary.push({ id: f.id, label: f.label, service: srv.name, text: obs, type: 'OBS', hasPhoto: !!photo, photo });
+          traSummary.push({ id: f.id, label: f.label, service: srv.name, text: obs, type: 'OBS', hasPhoto });
         }
 
-        // Regla 2: Camas y Salas (Actual > Declarado) -> IRREGULARIDAD TRÁMITE
         const isCamaSala = f.label?.toUpperCase().includes('CAMA') || f.label?.toUpperCase().includes('SALA') || f.label?.toUpperCase().includes('HABITACIÓN');
         if (isCamaSala && typeof val === 'number') {
           const declarado = infraEfector[f.label] || 0;
@@ -447,7 +404,6 @@ const PantallaInspeccion = ({
           }
         }
 
-        // Regla 3: Equipamiento (Actual < Declarado) -> IRREGULARIDAD TRÁMITE
         const isEquip = f.label?.toUpperCase().includes('EQUIPO') || f.label?.toUpperCase().includes('EQUIPAMIENTO') || f.id?.includes('eq');
         if (isEquip && typeof val === 'number') {
           const equipoMatch = equiposEfector?.filter(e => e.equipamiento === f.label && e.origen === srv.name) || [];
@@ -458,7 +414,6 @@ const PantallaInspeccion = ({
           }
         }
 
-        // Regla 4: Documentos (Cualquier observación) -> IRREGULARIDAD TRÁMITE
         if (isDoc && obs) {
           isIrregularidadTramite = true;
           razonIrregular = obs;
@@ -472,29 +427,28 @@ const PantallaInspeccion = ({
             observacion: razonIrregular,
             valorObservado: val,
             tipoObs: "IRREGULARIDAD",
-            estado: "PENDIENTE DE SUBIR"
+            estado: "PENDIENTE"
           });
         }
       });
     });
 
-    // 3. Escaneo de IDs Manuales (Planos, Documentos, Infraestructura Literal)
     Object.keys(inspectorData).forEach(key => {
-      if (key.startsWith('plan_auth_') || key.startsWith('doc_auth_') || key.startsWith('infra_literal_')) {
+      if (key.startsWith('plan_auth_') || key.startsWith('doc_auth_') || key.startsWith('infra_literal_') || key === 'dt_presente_fisico') {
         const data = inspectorData[key];
         const isPlan = key.startsWith('plan_auth_');
         const isDoc = key.startsWith('doc_auth_');
         const isInfra = key.startsWith('infra_literal_');
+        const hasPhoto = photosByComponent[key] && photosByComponent[key].length > 0;
 
-        if (data && (data.observado || data.obs)) {
-          // Si ya existe en el summary (por alguna razón), no duplicar
+        if (data && (data.observado || data.obs || data.coincideRealidad === false || data.existe === false)) {
           if (traSummary.find(item => item.id === key)) return;
 
           let label = "";
           let service = "";
 
           if (isPlan) {
-            label = `PLANO: ${key.replace('plan_auth_', '').replace('_', '.')}`;
+            label = `PLANO: ${key.replace('plan_auth_', '').replace(/_/g, '.')}`;
             service = "ARQUITECTURA";
           } else if (isDoc) {
             label = `DOCUMENTO: ${key.replace('doc_auth_', '').replace(/_/g, ' ')}`;
@@ -502,27 +456,29 @@ const PantallaInspeccion = ({
           } else if (isInfra) {
             label = key.replace('infra_literal_', '').replace(/_/g, ' ');
             service = "SALAS Y CAMAS";
+          } else if (key === 'dt_presente_fisico') {
+            label = "DIRECTOR TÉCNICO AUSENTE";
+            service = "RECURSOS HUMANOS";
           }
 
           traSummary.push({
             id: key,
             label,
             service,
-            text: data.obs || "NO CUMPLE",
+            text: data.obs || "INCOMPATIBLE / NO CUMPLE",
             type: 'OBS',
-            hasPhoto: !!data.photo,
-            photo: data.photo
+            hasPhoto
           });
         }
       }
     });
 
+    setObsDatosGenerales(genSummary);
     setObsDatosTramite(traSummary);
-
-    localStorage.setItem("obs_datos_generales", JSON.stringify(genSummary));
-    localStorage.setItem("obs_datos_tramite", JSON.stringify(traSummary));
-    localStorage.setItem("inspector_emplazamientos", JSON.stringify(emplazamientos));
-  }, [inspectorData, config, datosGeneralesSrv, otherServices]);
+    localStorage.setItem(genObsKey, JSON.stringify(genSummary));
+    localStorage.setItem(traObsKey, JSON.stringify(traSummary));
+    localStorage.setItem(`inspector_emplazamientos_${id || "default"}`, JSON.stringify(emplazamientos));
+  }, [inspectorData, config, datosGeneralesSrv, otherServices, photosByComponent, id, genObsKey, traObsKey]);
 
   const hasObservations =
     (obsDatosGenerales?.length || 0) > 0 ||
@@ -550,6 +506,7 @@ const PantallaInspeccion = ({
 
   const actualFormatoInspeccion = getFormatoInspeccion();
 
+  // Carga de configuración de la API mock
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -574,8 +531,23 @@ const PantallaInspeccion = ({
     fetchData();
   }, [tipologia]);
 
-
+  // Manejo de cambios de campos
   const handleFieldChange = (fieldId, newValue) => {
+    const fieldObj = datosGeneralesSrv?.sections 
+      ? getFlatFields(datosGeneralesSrv.sections).find(f => f.id === fieldId) 
+      : datosGeneralesSrv?.fields?.find(f => f.id === fieldId);
+    
+    const isBioseguridad = fieldObj && (fieldObj.type === "boolean" || fieldObj.type === "checkbox");
+    
+    if (isBioseguridad && newValue === false) {
+      setForcedModal({
+        open: true,
+        fieldId,
+        label: fieldObj.label
+      });
+      return;
+    }
+
     setInspectorData((prev) => {
       const current = prev[fieldId] || {};
       if (newValue && typeof newValue === 'object' && !Array.isArray(newValue)) {
@@ -585,87 +557,67 @@ const PantallaInspeccion = ({
     });
   };
 
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          bgcolor: "#ffffffff",
-        }}
-      >
-        <CircularProgress size={80} thickness={4} />
-      </Box>
-    );
-  }
+  // Guardado de Trigger Forzado (Modal)
+  const handleSaveForcedObs = (fieldId, text, photosArray) => {
+    setInspectorData((prev) => ({
+      ...prev,
+      [fieldId]: { value: false, obs: text, observado: true }
+    }));
+    
+    if (photosArray.length > 0) {
+      setPhotosByComponent(prev => ({
+        ...prev,
+        [fieldId]: photosArray
+      }));
+    }
 
-  const allServiceNames = config?.servicios?.map((s) => s.name) || [];
-
-  const PESTAÑAS = [
-    {
-      id: "ARQUITECTURA",
-      label: "ARQUITECTURA",
-      icon: <DomainIcon sx={{ fontSize: 28 }} />,
-    },
-    {
-      id: "SERVICIOS",
-      label: "SERVICIOS",
-      icon: <LocalHospitalIcon sx={{ fontSize: 28 }} />,
-    },
-    {
-      id: "SALAS Y CAMAS",
-      label: "SALAS Y CAMAS",
-      icon: <BedIcon sx={{ fontSize: 28 }} />,
-    },
-    {
-      id: "RECURSOS HUMANOS",
-      label: "RRHH y JS",
-      icon: <PeopleIcon sx={{ fontSize: 28 }} />,
-    },
-    {
-      id: "EQUIPAMIENTO",
-      label: "EQUIPAMIENTO",
-      icon: <MedicalServicesIcon sx={{ fontSize: 28 }} />,
-    },
-    {
-      id: "DOCUMENTACION",
-      label: "DOCUMENTOS ADJUNTOS",
-      icon: <DescriptionIcon sx={{ fontSize: 28 }} />,
-    },
-  ];
-
-  const renderProgressBar = (stats) => {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          mt: 0.5,
-        }}
-      >
-        <Chip
-          label={`${stats.percent}%`}
-          size="small"
-          sx={{
-            fontWeight: 800,
-            fontSize: "0.75rem",
-            bgcolor: stats.percent === 100 ? "#def7ed" : "#f1f5f9",
-            color: stats.percent === 100 ? "#065f46" : "#64748b",
-            height: 20,
-            "& .MuiChip-label": { px: 1 }
-          }}
-        />
-      </Box>
-    );
+    setForcedModal({ open: false, fieldId: null, label: "" });
   };
 
+  // Cancelado de Trigger Forzado: se revierte a SÍ (true)
+  const handleCancelForcedObs = () => {
+    const fid = forcedModal.fieldId;
+    setInspectorData((prev) => ({
+      ...prev,
+      [fid]: { value: true, obs: "", observado: false }
+    }));
+    setForcedModal({ open: false, fieldId: null, label: "" });
+  };
+
+  // Simulación de cruce de datos CiDi
+  const handleVerifyCidi = () => {
+    if (!cuilResponsable) return;
+    setCidiChecking(true);
+    setTimeout(() => {
+      setCidiChecking(false);
+      const lastChar = cuilResponsable.slice(-1);
+      if (lastChar === "2") {
+        setCidiLevel(2);
+        setCidiBlocked(false);
+      } else {
+        setCidiLevel(1);
+        setCidiBlocked(true);
+        setSnackbarOpen(true);
+      }
+    }, 1500);
+  };
+
+  const handleOpenCloseActa = (action) => {
+    setCloseActaAction(action);
+    setCloseActaNote("");
+    setCloseActaModalOpen(true);
+  };
+
+  const handleHistoryClick = (event) => {
+    setHistoryAnchorEl(event.currentTarget);
+  };
+  const handleHistoryClose = () => {
+    setHistoryAnchorEl(null);
+  };
 
   const handleAutoFillClick = (event) => {
     setAutoFillAnchorEl(event.currentTarget);
   };
-
   const handleAutoFillClose = () => {
     setAutoFillAnchorEl(null);
   };
@@ -686,31 +638,20 @@ const PantallaInspeccion = ({
           value = true;
           if (mode === "many" && idx % 7 === 0) {
             value = false;
-            obs = "No cumple con el requerimiento.";
+            obs = "No cumple con bioseguridad básica.";
           } else if (mode === "one" && !hasOneObs) {
             value = false;
-            obs = "Observación única de prueba.";
+            obs = "Observación de prueba.";
             hasOneObs = true;
           }
         } else if (f.type === "text" || f.type === "textarea") {
-          value = "Texto de prueba auto-completado";
-          if (mode === "many" && idx % 5 === 0) {
-             obs = "Observación automática de prueba.";
-          }
+          value = "Datos completados";
         } else if (f.type === "number") {
           value = 3;
         } else if (f.type === "select" || f.type === "radio" || f.type === "toggle") {
-          if (Array.isArray(f.options) && f.options.length > 0) {
-            value = typeof f.options[0] === 'object' ? f.options[0].value : f.options[0];
-          } else if (typeof f.options === 'string') {
-            value = f.options.split(',')[0].trim();
-          } else {
-            value = "Opción A";
-          }
+          value = "Si";
         } else if (f.type === "date") {
           value = new Date().toISOString().split('T')[0];
-        } else {
-          value = "Valor genérico";
         }
 
         if (value !== null) {
@@ -736,84 +677,246 @@ const PantallaInspeccion = ({
     setInspectorData(newInspectorData);
   };
 
+  // --- RENDER FIRMAS EMBEBIDAS PARA CIERRE ---
+  const SignaturePad = ({ label, onSave, onClear }) => {
+    const canvasRef = useRef(null);
+    const [isDrawing, setIsDrawing] = useState(false);
+    const [hasSigned, setHasSigned] = useState(false);
+
+    useEffect(() => {
+      if (canvasRef.current) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        ctx.lineWidth = 3;
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#0f172a";
+      }
+    }, []);
+
+    const getPointerPos = (e) => {
+      const canvas = canvasRef.current;
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top,
+      };
+    };
+
+    const startDrawing = (e) => {
+      const { x, y } = getPointerPos(e);
+      const ctx = canvasRef.current.getContext("2d");
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      setIsDrawing(true);
+      if (e.touches) e.preventDefault();
+    };
+
+    const draw = (e) => {
+      if (!isDrawing) return;
+      const { x, y } = getPointerPos(e);
+      const ctx = canvasRef.current.getContext("2d");
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      if (e.touches) e.preventDefault();
+    };
+
+    const stopDrawing = () => {
+      if (isDrawing) {
+        canvasRef.current.getContext("2d").closePath();
+        setIsDrawing(false);
+        setHasSigned(true);
+        onSave(canvasRef.current.toDataURL());
+      }
+    };
+
+    const clear = () => {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setHasSigned(false);
+      onClear();
+    };
+
+    return (
+      <Card variant="outlined" sx={{ p: 2, borderRadius: 3, bgcolor: "white", textAlign: "center", position: "relative" }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 900, mb: 1, color: "#475569", textTransform: "uppercase", fontSize: "0.75rem" }}>
+          {label}
+        </Typography>
+        <Box 
+          sx={{ 
+            border: "2px dashed #cbd5e1", 
+            borderRadius: 2, 
+            height: 120, 
+            position: "relative",
+            bgcolor: "#f8fafc",
+            touchAction: "none"
+          }}
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+          onTouchStart={startDrawing}
+          onTouchMove={draw}
+          onTouchEnd={stopDrawing}
+        >
+          <canvas ref={canvasRef} width={280} height={120} style={{ width: "100%", height: "100%" }} />
+          {!hasSigned && (
+            <Box sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
+              <Typography variant="caption" sx={{ color: "#94a3b8", fontWeight: 700, letterSpacing: 0.5 }}>
+                FIRME CON EL DEDO AQUÍ
+              </Typography>
+            </Box>
+          )}
+        </Box>
+        <Button size="small" color="error" onClick={clear} sx={{ mt: 1, fontWeight: 800, textTransform: "none" }}>
+          Limpiar trazo
+        </Button>
+      </Card>
+    );
+  };
+
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
-        minHeight: "calc(100vh - 64px)",
-        width: "89%",
-        bgcolor: "#ffffff",
+        minHeight: "100vh",
+        width: "100%",
+        bgcolor: "#f4f6fa",
+        background: "linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%)",
         overflowX: "hidden",
         mx: "auto",
-        maxWidth: 850,
-        pt: 2,
-        pb: 6,
+        maxWidth: "none",
+        px: { xs: 3, sm: 6 },
+        pt: 4,
+        pb: 8,
+        position: "relative",
+        fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif"
       }}
     >
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          mb: 4,
-          borderRadius: 4,
-          borderLeft: '8px solid #0090d0',
-          bgcolor: 'white',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-          border: '1px solid #e2e8f0',
-          width: '100%'
-        }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <Box>
-            <Typography variant="h3" sx={{ fontWeight: 950, color: '#0f172a', mb: 1, letterSpacing: -1.5 }}>
-              {inspectorData["f-nomtcemx"] || "SANATORIO ALLENDE"}
-            </Typography>
-            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-              <Box sx={{ bgcolor: '#0090d0', color: 'white', borderRadius: 1.5, p: 0.4, display: 'flex' }}>
-                <LocalHospitalIcon sx={{ fontSize: 20 }} />
-              </Box>
-              <Typography variant="caption" sx={{ fontWeight: 850, color: '#64748b', letterSpacing: 1.5, textTransform: 'uppercase' }}>
-                {tipologia}
-              </Typography>
-
-              <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 20, my: 'auto' }} />
-
-              <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b' }}>
-                DIRECTOR TÉCNICO: <Box component="span" sx={{ color: '#0f172a', fontWeight: 900 }}>{directorTecnico.nombre} {directorTecnico.apellido}</Box>
-              </Typography>
-
-              <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 20, my: 'auto' }} />
-
-              <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b' }}>
-                DNI: <Box component="span" sx={{ color: '#0f172a', fontWeight: 900 }}>{directorTecnico.dni}</Box>
-              </Typography>
-            </Stack>
+      {/* HARD BLOCK OVERLAY DE CIDI PRIVADO */}
+      {cidiBlocked && (
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            bgcolor: "rgba(15, 23, 42, 0.95)",
+            zIndex: 9999,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            p: 4,
+            textAlign: "center",
+            borderRadius: 4
+          }}
+        >
+          <Box sx={{ bgcolor: "#ef4444", color: "white", p: 3, borderRadius: "50%", mb: 3 }}>
+            <LockIcon sx={{ fontSize: 60 }} />
           </Box>
+          <Typography variant="h4" sx={{ fontWeight: 950, color: "white", mb: 2 }}>
+            SISTEMA BLOQUEADO
+          </Typography>
+          <Typography variant="body1" sx={{ color: "#cbd5e1", maxWidth: 500, mb: 4, lineHeight: 1.6, fontWeight: 600 }}>
+            El Responsable del Establecimiento debe contar con <b>Ciudadano Digital Nivel 2 verificado</b> para firmar el acta.
+          </Typography>
+          <Paper variant="outlined" sx={{ p: 2.5, mb: 4, bgcolor: "#1e293b", borderColor: "#334155", color: "white", textAlign: "left" }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 900, mb: 1, color: "#f87171" }}>
+              INFORMACIÓN DETALLADA (API CiDi):
+            </Typography>
+            <Typography variant="caption" sx={{ fontFamily: "monospace", display: "block" }}>
+              CUIL Responsable: {cuilResponsable}<br />
+              Nivel de Ciudadano Digital: Nivel 1 (No verificado)<br />
+              Estado de Firma: Inhabilitada permanentemente
+            </Typography>
+          </Paper>
+          <Button
+            variant="contained"
+            color="info"
+            onClick={() => {
+              setCidiBlocked(false);
+              setCidiLevel(null);
+              setCuilResponsable("");
+            }}
+            sx={{ fontWeight: 900, px: 4, py: 1.5, borderRadius: 3 }}
+          >
+            Volver a Validar CUIL
+          </Button>
+        </Box>
+      )}
+
+      {/* HEADER PRINCIPAL REVERSIONADO */}
+      <Box sx={{ mb: 5, borderBottom: "1px solid rgba(226, 232, 240, 0.8)", pb: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 3 }}>
+          <Box>
+            {/* Breadcrumb / Back Link */}
+            <Button
+              variant="text"
+              startIcon={<ArrowBackIcon />}
+              onClick={() => navigate("/inspector")}
+              sx={{ 
+                color: "#64748b", 
+                fontWeight: 750, 
+                fontSize: "0.85rem", 
+                p: 0, 
+                mb: 1.5,
+                minWidth: 0,
+                textTransform: "none",
+                "&:hover": { bgcolor: "transparent", color: "#0284c7" }
+              }}
+            >
+              Volver al Panel
+            </Button>
+            <Typography 
+              variant="h3" 
+              sx={{ 
+                fontWeight: 900, 
+                color: "#0f172a", 
+                letterSpacing: "-1.5px", 
+                lineHeight: 1.1,
+                fontSize: { xs: "2.2rem", sm: "2.8rem" },
+                mb: 1
+              }}
+            >
+              {efectorNombre}
+            </Typography>
+            <Typography variant="body1" sx={{ color: "#64748b", fontWeight: 600, fontSize: "0.95rem" }}>
+              {tipologia} • DT: <Box component="span" sx={{ fontWeight: 800, color: "#475569" }}>{directorTecnico.nombre} {directorTecnico.apellido}</Box>
+            </Typography>
+          </Box>
+          
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            <img 
+              src={logoMinisterio} 
+              alt="Logo Ministerio" 
+              style={{ height: 48, objectFit: "contain", marginRight: 8 }}
+            />
             <Button 
               variant="outlined" 
-              color="secondary" 
+              color="primary" 
               onClick={handleAutoFillClick}
               endIcon={<KeyboardArrowDownIcon />}
-              sx={{ fontWeight: 'bold' }}
+              sx={{ fontWeight: 'bold', borderRadius: 2 }}
             >
-              Auto-Completar
+              Autocompletar
             </Button>
             <Menu
               anchorEl={autoFillAnchorEl}
               open={autoFillMenuOpen}
               onClose={handleAutoFillClose}
             >
-              <MenuItem onClick={() => handleAutoFill("none")}>Ninguna observación</MenuItem>
-              <MenuItem onClick={() => handleAutoFill("one")}>Una observación de tipo No</MenuItem>
-              <MenuItem onClick={() => handleAutoFill("many")}>Muchas observaciones</MenuItem>
+              <MenuItem onClick={() => handleAutoFill("none")}>Operativo sin observaciones</MenuItem>
+              <MenuItem onClick={() => handleAutoFill("one")}>Con una observación</MenuItem>
+              <MenuItem onClick={() => handleAutoFill("many")}>Con múltiples irregularidades</MenuItem>
             </Menu>
           </Box>
         </Box>
-      </Paper>
+      </Box>
 
-      {/* Selector de Acta / Revisión / Historial */}
+      {/* SELECTOR DE HISTORIAL Y VISTAS */}
       <Box
         sx={{
           bgcolor: '#ebeef2',
@@ -828,19 +931,17 @@ const PantallaInspeccion = ({
       >
         <Button
           onClick={handleHistoryClick}
-          startIcon={<HistoryIcon sx={{ color: '#0ea5e9' }} />}
-          endIcon={historyMenuOpen ? <KeyboardArrowUpIcon sx={{ color: '#0ea5e9' }} /> : <KeyboardArrowDownIcon sx={{ color: '#0ea5e9' }} />}
+          startIcon={<HistoryIcon sx={{ color: '#0090d0' }} />}
+          endIcon={historyMenuOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           sx={{
             bgcolor: historyMenuOpen ? 'white' : 'transparent',
             borderRadius: 5,
-            px: 3,
-            py: 1,
+            px: 2.5,
+            py: 0.8,
             fontWeight: 900,
-            color: '#0ea5e9',
+            color: '#0090d0',
             boxShadow: historyMenuOpen ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
-            textTransform: 'uppercase',
-            fontSize: '0.85rem',
-            letterSpacing: '0.02em',
+            fontSize: '0.8rem',
             '&:hover': { bgcolor: historyMenuOpen ? '#ffffff' : 'rgba(0,0,0,0.04)' }
           }}
         >
@@ -851,35 +952,9 @@ const PantallaInspeccion = ({
           anchorEl={historyAnchorEl}
           open={historyMenuOpen}
           onClose={handleHistoryClose}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              mt: 1.5,
-              borderRadius: 4,
-              minWidth: 180,
-              boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)',
-              border: '1px solid #f1f5f9',
-              '& .MuiMenuItem-root': {
-                fontWeight: 800,
-                color: '#64748b',
-                fontSize: '0.9rem',
-                py: 1.5,
-                px: 3,
-                mx: 1,
-                borderRadius: 2,
-                '&:hover': {
-                  bgcolor: '#f0f9ff',
-                  color: '#0ea5e9'
-                }
-              }
-            }
-          }}
-          transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
         >
-          <MenuItem onClick={handleHistoryClose} sx={{ bgcolor: '#f0f9ff !important', color: '#0ea5e9 !important' }}>ACTA 1</MenuItem>
-          <MenuItem onClick={handleHistoryClose}>ACTA 2</MenuItem>
-          <MenuItem onClick={handleHistoryClose}>ACTA 3</MenuItem>
+          <MenuItem onClick={handleHistoryClose} sx={{ color: '#0090d0 !important' }}>ACTA 1 - APROBADO</MenuItem>
+          <MenuItem onClick={handleHistoryClose}>ACTA 2 - IRREGULAR</MenuItem>
         </Menu>
 
         <Button
@@ -889,16 +964,15 @@ const PantallaInspeccion = ({
             flex: 1,
             borderRadius: 5,
             fontWeight: 900,
-            py: 1,
+            py: 0.8,
             color: activeView === "REVISION" ? "#0f172a" : "#64748b",
             bgcolor: activeView === "REVISION" ? "white" : "transparent",
             boxShadow: activeView === "REVISION" ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
-            textTransform: 'none',
-            fontSize: '0.85rem',
+            fontSize: '0.8rem',
             '&:hover': { bgcolor: activeView === "REVISION" ? 'white' : 'rgba(0,0,0,0.04)' }
           }}
         >
-          ACTA 4: REVISIÓN
+          REVISIÓN DE RESUMEN
         </Button>
         <Button
           variant="text"
@@ -907,1010 +981,741 @@ const PantallaInspeccion = ({
             flex: 1,
             borderRadius: 5,
             fontWeight: 900,
-            py: 1,
+            py: 0.8,
             color: activeView === "INSPECCION" ? "#0f172a" : "#64748b",
             bgcolor: activeView === "INSPECCION" ? "white" : "transparent",
             boxShadow: activeView === "INSPECCION" ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
-            textTransform: 'none',
-            fontSize: '0.85rem',
+            fontSize: '0.8rem',
             '&:hover': { bgcolor: activeView === "INSPECCION" ? 'white' : 'rgba(0,0,0,0.04)' }
           }}
         >
-          ACTA 5: INSPECCIÓN
+          ASISTENTE DE INSPECCIÓN
         </Button>
       </Box>
 
+      {/* VIEW REVISION */}
       {activeView === "REVISION" ? (
         <RevisionActaView
           obsGenerales={obsDatosGenerales}
           obsTramite={obsDatosTramite}
         />
       ) : (
-        <>
-
-          {datosGeneralesSrv && (
-            <Paper
+        /* VIEW INSPECCION (MOBILE WIZARD FLOW) */
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          
+          {/* HEADER DUAL (APARTADO A / APARTADO B SEGMENTED CONTROL) */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5, mb: 1 }}>
+            <Button
+              variant="contained"
+              onClick={() => setCurrentStep(0)}
               sx={{
-                mb: 4,
-                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0",
-                overflow: "hidden"
+                py: 2,
+                borderRadius: 4,
+                fontWeight: 900,
+                fontSize: "0.85rem",
+                bgcolor: WIZARD_STEPS[currentStep].category === "A" ? "#0090d0" : "#cbd5e1",
+                color: WIZARD_STEPS[currentStep].category === "A" ? "white" : "#64748b",
+                "&:hover": { bgcolor: WIZARD_STEPS[currentStep].category === "A" ? "#007bb0" : "#94a3b8" }
               }}
             >
-              <Box sx={{ px: { xs: 2, sm: 3 }, py: 2, bgcolor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-                <Box sx={{ display: "flex", flexDirection: "column", width: "100%", pr: 2 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b", textTransform: "uppercase" }}>
-                      DATOS GENERALES
-                    </Typography>
-                    <Box>
-                      <Tooltip title={allGeneralesExpanded ? "Contraer todos" : "Desplegar todos"}>
-                        <IconButton size="small" onClick={handleToggleAllGenerales} sx={{ color: '#64748b' }}>
-                          {allGeneralesExpanded ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </Box>
-                  {renderProgressBar(
-                    getCompletionStats(
-                      datosGeneralesSrv.sections
-                        ? getFlatFields(datosGeneralesSrv.sections)
-                        : datosGeneralesSrv.fields,
-                      inspectorData
-                    ),
-                  )}
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  px: { xs: 2, sm: 3 },
-                  py: 3,
-                  bgcolor: "#ffffff",
-                }}
-              >
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                  {datosGeneralesSrv.sections
-                    ? datosGeneralesSrv.sections.map((sec, index) => {
-                      const sectionStats = getCompletionStats(sec.fields, inspectorData);
-                      const sectionKey = sec.id || `gen_sec_${index}`;
-                      if (index === 0) {
-                        return (
-                          <Box
-                            key={sectionKey}
-                            sx={{
-                              border: "1px solid #e2e8f0",
-                              borderRadius: "12px",
-                              overflow: "hidden",
-                              bgcolor: "#ffffff",
-                            }}
-                          >
-                            <Box sx={{ bgcolor: "#f8fafc", px: 2, py: 1.5, borderBottom: "1px solid #e2e8f0", display: "flex", flexDirection: "column" }}>
-                              <Typography
-                                variant="subtitle2"
-                                sx={{
-                                  fontWeight: 800,
-                                  color: "#475569",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.8rem",
-                                }}
-                              >
-                                {sec.name}
-                              </Typography>
-                              {renderProgressBar(sectionStats)}
-                            </Box>
-                            <Box sx={{ py: 2, px: 2 }}>
-                              <Box
-                                sx={{
-                                  display: "grid",
-                                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                                  gap: 2,
-                                }}
-                              >
-                                {sec.fields.map((field) => (
-                                  <FieldItem
-                                    key={field.id}
-                                    field={field}
-                                    value={inspectorData[field.id]}
-                                    onChange={handleFieldChange}
-                                    onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "GENERAL")}
-                                  />
-                                ))}
-                              </Box>
-                            </Box>
-                          </Box>
-                        );
-                      }
-                      return (
-                        <Accordion
-                          key={sectionKey}
-                          elevation={0}
-                          expanded={isGeneralesExpanded(sectionKey)}
-                          onChange={() => setExpandedSectionsGenerales(prev => ({ ...prev, [sectionKey]: !isGeneralesExpanded(sectionKey) }))}
-                          sx={{
-                            border: "1px solid #e2e8f0",
-                            borderRadius: "12px !important",
-                            overflow: "hidden",
-                            "&:before": { display: "none" },
-                          }}
-                        >
-                          <AccordionSummary
-                            expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />}
-                            sx={{
-                              bgcolor: "#f8fafc",
-                              "& .MuiAccordionSummary-content": {
-                                flexDirection: "column",
-                              },
-                            }}
-                          >
-                            <Typography
-                              variant="subtitle2"
-                              sx={{
-                                fontWeight: 800,
-                                color: "#475569",
-                                textTransform: "uppercase",
-                                fontSize: "0.8rem",
-                              }}
-                            >
-                              {sec.name}
-                            </Typography>
-                            {renderProgressBar(sectionStats)}
-                          </AccordionSummary>
-                          <AccordionDetails sx={{ py: 2 }}>
-                            <Box
-                              sx={{
-                                display: "grid",
-                                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                                gap: 2,
-                              }}
-                            >
-                              {sec.fields.map((field) => (
-                                <FieldItem
-                                  key={field.id}
-                                  field={field}
-                                  value={inspectorData[field.id]}
-                                  onChange={handleFieldChange}
-                                  onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "GENERAL")}
-                                />
-                              ))}
-                            </Box>
-                          </AccordionDetails>
-                        </Accordion>
-                      );
-                    })
-                    : (
-                      <Box
-                        sx={{
-                          display: "grid",
-                          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                          gap: 2,
-                        }}
-                      >
-                        {datosGeneralesSrv.fields?.map((field) => (
+              APARTADO A: DATOS GENERALES
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => setCurrentStep(1)}
+              sx={{
+                py: 2,
+                borderRadius: 4,
+                fontWeight: 900,
+                fontSize: "0.85rem",
+                bgcolor: WIZARD_STEPS[currentStep].category === "B" ? "#0090d0" : "#cbd5e1",
+                color: WIZARD_STEPS[currentStep].category === "B" ? "white" : "#64748b",
+                "&:hover": { bgcolor: WIZARD_STEPS[currentStep].category === "B" ? "#007bb0" : "#94a3b8" }
+              }}
+            >
+              APARTADO B: DATOS TRÁMITE
+            </Button>
+          </Box>
+
+          {/* STEPPER PROGRESS BAR */}
+          <Box sx={{ bgcolor: "#f8fafc", p: 2, borderRadius: 3, border: "1px solid #e2e8f0" }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+              <Typography variant="caption" sx={{ fontWeight: 900, color: "#475569" }}>
+                PASO {currentStep + 1} DE {WIZARD_STEPS.length}
+              </Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: 950, color: "#0090d0" }}>
+                {WIZARD_STEPS[currentStep].label.toUpperCase()}
+              </Typography>
+            </Box>
+            <LinearProgress
+              variant="determinate"
+              value={((currentStep + 1) / WIZARD_STEPS.length) * 100}
+              sx={{ height: 8, borderRadius: 4, bgcolor: "#cbd5e1", "& .MuiLinearProgress-bar": { bgcolor: "#0090d0" } }}
+            />
+          </Box>
+
+          {/* STEP CONTROLLER RENDERING */}
+          <Box sx={{ minHeight: 350, pt: 1 }}>
+            
+            {/* PASO 0: DATOS GENERALES (APARTADO A) */}
+            {currentStep === 0 && datosGeneralesSrv && (
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 900, color: "#1e293b", borderLeft: "4px solid #0090d0", pl: 1.5 }}>
+                  Formulario de Bioseguridad y Estado General
+                </Typography>
+
+                {datosGeneralesSrv.sections ? (
+                  datosGeneralesSrv.sections.map((sec, sIdx) => (
+                    <Paper key={sIdx} variant="outlined" sx={{ p: 3, borderRadius: 4, borderColor: "#e2e8f0" }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#475569", textTransform: "uppercase", fontSize: "0.8rem", mb: 2, borderBottom: "1px solid #f1f5f9", pb: 1 }}>
+                        {sec.name}
+                      </Typography>
+                      
+                      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 3 }}>
+                        {sec.fields.map((field) => (
                           <FieldItem
                             key={field.id}
                             field={field}
                             value={inspectorData[field.id]}
                             onChange={handleFieldChange}
-                            onOpenObs={(fid, lbl, val) => handleOpenObsDialog(fid, lbl, val, "GENERAL")}
-                            infraEfector={infraEfector}
-                            serviciosEfector={serviciosEfector}
+                            onOpenObs={(fid, lbl, val) => handleFieldChange(fid, { value: false, obs: val })}
+                            photos={photosByComponent[field.id]}
+                            onOpenPhotos={(fid, lbl) => setPhotoManagerField({ id: fid, label: lbl })}
                           />
                         ))}
                       </Box>
-                    )}
-                </Box>
-              </Box>
-            </Paper>
-          )}
-
-          <Accordion
-            expanded={expandedEstablecimiento}
-            onChange={() => setExpandedEstablecimiento(!expandedEstablecimiento)}
-            sx={{
-              mb: 2,
-              boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-              borderRadius: "12px !important",
-              "&:before": { display: "none" },
-              border: "1px solid #e2e8f0",
-            }}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon sx={{ color: "#0ea5e9" }} />}
-              sx={{ px: { xs: 2, sm: 3 }, py: 0.5 }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  pr: 2,
-                }}
-              >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 900, color: "#1e293b" }}
-                  >
-                    DATOS DEL TRÁMITE
-                  </Typography>
-                  <Box>
-                    <Tooltip title={allTramiteExpanded ? "Contraer todos" : "Desplegar todos"}>
-                      <Box
-                        onClick={handleToggleAllTramite}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          p: 0.5,
-                          borderRadius: '50%',
-                          color: '#64748b',
-                          cursor: 'pointer',
-                          '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.04)' }
-                        }}
-                      >
-                        {allTramiteExpanded ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
-                      </Box>
-                    </Tooltip>
-                  </Box>
-                </Box>
-                <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 700, mt: 0.5 }}>
-                  Valores declarados en el trámite
-                </Typography>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails sx={{ px: { xs: 2, sm: 3 }, py: 2, bgcolor: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  mb: 3,
-                  px: { xs: 1, sm: 4 },
-                  width: "100%",
-                  position: "relative",
-                }}
-              >
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 24,
-                    left: 40,
-                    right: 40,
-                    height: 2,
-                    bgcolor: "#e2e8f0",
-                    zIndex: 0,
-                  }}
-                />
-
-                {PESTAÑAS.map((tab) => {
-                  const isSelected = selectedCategory === tab.id;
-                  return (
-                    <Box
-                      key={tab.id}
-                      onClick={() => setSelectedCategory(tab.id)}
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        cursor: "pointer",
-                        zIndex: 1,
-                        flex: 1,
-                        minWidth: 0,
-                        gap: 0.5,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: "50%",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          bgcolor: isSelected ? "#0ea5e9" : "#ffffff",
-                          color: isSelected ? "white" : "#64748b",
-                          border: "2px solid",
-                          borderColor: isSelected ? "#0ea5e9" : "#cbd5e1",
-                          boxShadow: isSelected
-                            ? "0 4px 10px rgba(14,165,233,0.3)"
-                            : "none",
-                          transition: "all 0.2s",
-                        }}
-                      >
-                        {tab.icon}
-                      </Box>
-                      <Typography
-                        align="center"
-                        sx={{
-                          fontWeight: 800,
-                          fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.8rem" },
-                          color: isSelected ? "#0f172a" : "#64748b",
-                          lineHeight: 1.1,
-                        }}
-                      >
-                        {tab.label}
-                      </Typography>
+                    </Paper>
+                  ))
+                ) : (
+                  <Paper variant="outlined" sx={{ p: 3, borderRadius: 4 }}>
+                    <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 3 }}>
+                      {datosGeneralesSrv.fields?.map((field) => (
+                        <FieldItem
+                          key={field.id}
+                          field={field}
+                          value={inspectorData[field.id]}
+                          onChange={handleFieldChange}
+                          photos={photosByComponent[field.id]}
+                          onOpenPhotos={(fid, lbl) => setPhotoManagerField({ id: fid, label: lbl })}
+                        />
+                      ))}
                     </Box>
-                  );
-                })}
+                  </Paper>
+                )}
               </Box>
+            )}
 
+            {/* PASO 1: ARQUITECTURA */}
+            {currentStep === 1 && (
+              <PlansTable
+                inspectorData={inspectorData}
+                onChange={handleFieldChange}
+                onOpenViewer={setViewerFile}
+                onOpenPhotos={(fid, lbl) => setPhotoManagerField({ id: fid, label: lbl })}
+                photosByComponent={photosByComponent}
+              />
+            )}
 
-              <Box
-                sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1 }}
-              >
-                {/* Casos especiales globales según categoría */}
-                {selectedCategory === "ARQUITECTURA" && (
-                  <Box sx={{ mb: 4 }}>
-                    <PlansTable
-                      inspectorData={inspectorData}
-                      onChange={handleFieldChange}
-                      onOpenObs={handleOpenObsDialog}
-                      onOpenViewer={setViewerFile}
-                    />
-                  </Box>
-                )}
+            {/* PASO 2: SERVICIOS */}
+            {currentStep === 2 && (
+              <ServicesTable
+                inspectorData={inspectorData}
+                onChange={handleFieldChange}
+                serviciosEfector={serviciosEfector}
+                onOpenPhotos={(fid, lbl) => setPhotoManagerField({ id: fid, label: lbl })}
+                photosByComponent={photosByComponent}
+              />
+            )}
 
-                {selectedCategory === "DOCUMENTACION" && (
-                  <Box sx={{ mb: 4 }}>
-                    <DocumentsTable
-                      inspectorData={inspectorData}
-                      onChange={handleFieldChange}
-                      onOpenObs={handleOpenObsDialog}
-                      onOpenViewer={setViewerFile}
-                    />
-                  </Box>
-                )}
+            {/* PASO 3: EQUIPAMIENTO */}
+            {currentStep === 3 && (
+              <AggregatedInspectionTable
+                category="EQUIPAMIENTO"
+                services={otherServices}
+                inspectorData={inspectorData}
+                equiposEfector={equiposEfector}
+                onChange={handleFieldChange}
+                onOpenPhotos={(fid, lbl) => setPhotoManagerField({ id: fid, label: lbl })}
+                photosByComponent={photosByComponent}
+              />
+            )}
 
-                {selectedCategory === "SERVICIOS" && (
-                  <Box sx={{ mb: 4 }}>
-                    <ServicesTable
-                      inspectorData={inspectorData}
-                      onChange={handleFieldChange}
-                      onOpenObs={handleOpenObsDialog}
-                      serviciosEfector={serviciosEfector}
-                    />
-                  </Box>
-                )}
+            {/* PASO 4: SALAS Y CAMAS */}
+            {currentStep === 4 && (
+              <AggregatedInspectionTable
+                category="SALAS Y CAMAS"
+                services={otherServices}
+                inspectorData={inspectorData}
+                infraEfector={infraEfector}
+                onChange={handleFieldChange}
+                onOpenPhotos={(fid, lbl) => setPhotoManagerField({ id: fid, label: lbl })}
+                photosByComponent={photosByComponent}
+              />
+            )}
 
+            {/* PASO 5: PERSONAL */}
+            {currentStep === 5 && (
+              <AggregatedInspectionTable
+                category="RECURSOS HUMANOS"
+                services={otherServices}
+                inspectorData={inspectorData}
+                rrhhEfector={rrhhEfector}
+                onChange={handleFieldChange}
+                onOpenPhotos={(fid, lbl) => setPhotoManagerField({ id: fid, label: lbl })}
+                photosByComponent={photosByComponent}
+              />
+            )}
 
-                {(selectedCategory === "EQUIPAMIENTO" || selectedCategory === "SALAS Y CAMAS" || selectedCategory === "RECURSOS HUMANOS") && (
-                  <Box sx={{ mb: 4 }}>
-                    <AggregatedInspectionTable
-                      category={selectedCategory}
-                      services={otherServices}
-                      inspectorData={inspectorData}
-                      infraEfector={infraEfector}
-                      equiposEfector={equiposEfector}
-                      rrhhEfector={rrhhEfector}
-                      onChange={handleFieldChange}
-                      onOpenObs={handleOpenObsDialog}
-                    />
-                  </Box>
-                )}
+            {/* PASO 6: DOCUMENTOS ADJUNTOS */}
+            {currentStep === 6 && (
+              <DocumentsTable
+                inspectorData={inspectorData}
+                onChange={handleFieldChange}
+                onOpenPhotos={(fid, lbl) => setPhotoManagerField({ id: fid, label: lbl })}
+                photosByComponent={photosByComponent}
+              />
+            )}
 
-                <FileViewerModal
-                  file={viewerFile}
-                  onClose={() => setViewerFile(null)}
-                />
+            {/* PASO 7: CIERRE Y FIRMAS */}
+            {currentStep === 7 && (
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                
+                <Card variant="outlined" sx={{ p: 2.5, borderRadius: 3, border: "1px solid #bae6fd", bgcolor: "#f0f9ff" }}>
+                  <Typography variant="body2" sx={{ fontWeight: 800, color: "#0369a1" }}>
+                    FORMATO DE INSPECCIÓN ACTUAL: <b>{actualFormatoInspeccion}</b>
+                  </Typography>
+                </Card>
 
-                {otherServices.map((srv) => {
-                  let matchedSections = [];
-
-                  if (selectedCategory === "SERVICIOS") {
-                    if (srv.sections) {
-                      matchedSections = srv.sections.filter((sec) => {
-                        const n = sec.name.toUpperCase();
-                        return (
-                          !n.includes("ARQUITECTURA") &&
-                          !n.includes("EQUIPAMIENTO") &&
-                          !n.includes("RECURSOS") &&
-                          !n.includes("RRHH") &&
-                          !n.includes("JEFE")
-                        );
-                      });
-                    }
-                  } else {
-                    if (srv.sections) {
-                      const keyword =
-                        selectedCategory === "RECURSOS HUMANOS"
-                          ? "RECURSOS"
-                          : selectedCategory === "SALAS Y CAMAS"
-                            ? "SALA"
-                            : selectedCategory === "DOCUMENTACION"
-                              ? "DOCUMENTO"
-                              : selectedCategory;
-                      
-                      matchedSections = srv.sections.filter((sec) => {
-                        const n = sec.name.toUpperCase();
-                        const isMatch =
-                          n.includes(keyword) ||
-                          (selectedCategory === "DOCUMENTACION" && n.includes("DOCUMENTA")) ||
-                          (selectedCategory === "RECURSOS HUMANOS" && n.includes("JEFE")) ||
-                          (selectedCategory === "SALAS Y CAMAS" && n.includes("CAMA"));
-
-                        if (!isMatch || ["DOCUMENTACION", "EQUIPAMIENTO", "SALAS Y CAMAS", "RECURSOS HUMANOS"].includes(selectedCategory)) return false;
-                        return sec.fields && sec.fields.length > 0;
-                      });
-                    }
-                  }
-
-                  if (!matchedSections || matchedSections.length === 0) return null;
-
-                  const sectionKey = srv.id || `other_sec_${index}`;
-                  return (
-                    <Accordion
-                      key={sectionKey}
-                      expanded={isTramiteExpanded(sectionKey)}
-                      onChange={() => setExpandedSectionsTramite(prev => ({ ...prev, [sectionKey]: !isTramiteExpanded(sectionKey) }))}
-                      sx={{
-                        mb: 1,
-                        boxShadow: "none",
-                        borderRadius: "12px !important",
-                        border: "1px solid #e2e8f0",
-                        "&:before": { display: "none" },
-                      }}
-                    >
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon sx={{ color: "#475569" }} />}
+                {actualFormatoInspeccion === "VIRTUAL" ? (
+                  <Card variant="outlined" sx={{ p: 3, borderRadius: 4, textAlign: "center", bgcolor: "#f8fafc" }}>
+                    <VerifiedUserIcon sx={{ fontSize: 50, color: "#10b981", mb: 1.5 }} />
+                    <Typography variant="h6" sx={{ fontWeight: 900, color: "#1e293b", mb: 1 }}>
+                      Inspección Virtual Habilitada
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#64748b", maxWidth: 500, mx: "auto", mb: 3 }}>
+                      Las firmas físicas presenciales han sido diferidas. El cierre del acta se ejecutará mediante autenticación de token institucional.
+                    </Typography>
+                  </Card>
+                ) : (
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", bgcolor: "#f8fafc", p: 2, borderRadius: 3, border: "1px solid #e2e8f0" }}>
+                      <Box>
+                        <Typography sx={{ fontWeight: 900, color: "#1e293b", fontSize: "0.95rem" }}>
+                          El Responsable se niega a firmar
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: "#64748b", fontWeight: 600 }}>
+                          Active esta opción si el efector rechaza firmar el acta. Desbloqueará firmas de testigos.
+                        </Typography>
+                      </Box>
+                      <Switch
+                        checked={negativaFirma}
+                        onChange={(e) => setNegativaFirma(e.target.checked)}
                         sx={{
-                          bgcolor: "#f8fafc",
-                          px: 3,
-                          "&.Mui-expanded": {
-                            borderBottom: "1px solid #e2e8f0",
-                          },
-                          "& .MuiAccordionSummary-content": {
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            width: '100%',
-                            pr: 2
-                          }
+                          "& .MuiSwitch-switchBase.Mui-checked": { color: "#ef4444" },
+                          "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": { bgcolor: "#ef4444" }
                         }}
-                      >
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                          <LocalHospitalIcon sx={{ color: "#64748b", fontSize: 20 }} />
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontWeight: 900,
-                              color: "#1e293b",
-                              fontSize: "1rem",
-                              textTransform: "uppercase"
-                            }}
-                          >
-                            {srv.name}
+                      />
+                    </Box>
+
+                    {!negativaFirma ? (
+                      <Card variant="outlined" sx={{ p: 3, borderRadius: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#1e293b" }}>
+                          Validación CiDi del Responsable
+                        </Typography>
+                        
+                        <Box sx={{ bgcolor: "#f8fafc", p: 1.5, borderRadius: 2, border: "1px dashed #cbd5e1", mb: 1 }}>
+                          <Typography variant="caption" sx={{ fontWeight: 900, color: "#64748b", display: "block", mb: 0.5 }}>
+                            CUILs de simulación CiDi:
+                          </Typography>
+                          <Typography variant="caption" sx={{ display: "block" }}>
+                            • <b>20-22222222-2</b>: CiDi Nivel 2 verificado (Éxito)
+                          </Typography>
+                          <Typography variant="caption" sx={{ display: "block" }}>
+                            • <b>20-11111111-2</b>: CiDi Nivel 1 (Bloqueo de Interfaz)
                           </Typography>
                         </Box>
-                        {renderProgressBar(getCompletionStats(getFlatFields(matchedSections), inspectorData))}
-                      </AccordionSummary>
-                      <AccordionDetails sx={{ p: 3 }}>
-                        {matchedSections.map((section) => {
-                          const sectionFields = section.fields.filter((f) => {
-                            if (section.name.toUpperCase().includes("SALA") || section.name.toUpperCase().includes("CAMA")) {
-                              const label = f.label || f.name;
-                              const uLabel = label.toUpperCase();
-                              const isGenericLabel = uLabel.includes("CAMAS") || uLabel.includes("SALAS") || uLabel.includes("HABITACION") || (uLabel.includes("N") && uLabel.includes("DE"));
-                              if (isGenericLabel && infraEfector && (infraEfector[srv.name] || infraEfector[srv.id])) return true;
-                              return infraEfector && (infraEfector[label] > 0);
-                            }
-                            return true;
-                          });
-                          const sectionStats = getCompletionStats(sectionFields, inspectorData);
 
-                          return (
-                            <Box key={section.id} sx={{ mb: 4 }}>
-                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, borderBottom: "1px solid #f1f5f9", pb: 1 }}>
-                                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#64748b", textTransform: "uppercase" }}>
-                                  {section.name}
-                                </Typography>
-                                {renderProgressBar(sectionStats)}
-                              </Box>
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                          <TextField
+                            fullWidth
+                            label="CUIL del Responsable"
+                            placeholder="Ingrese CUIL del firmante"
+                            value={cuilResponsable}
+                            onChange={(e) => setCuilResponsable(e.target.value)}
+                            size="small"
+                          />
+                          <Button
+                            variant="contained"
+                            onClick={handleVerifyCidi}
+                            disabled={cidiChecking || !cuilResponsable}
+                            sx={{ fontWeight: 900, px: 3, bgcolor: "#1e293b" }}
+                          >
+                            {cidiChecking ? <CircularProgress size={20} color="inherit" /> : "Validar"}
+                          </Button>
+                        </Box>
 
-                              {(section.name.includes("EQUIPAMIENTO") ||
-                                section.name.includes("RECURSOS") ||
-                                section.name.includes("RRHH") ||
-                                section.name.includes("SALA") ||
-                                section.name.includes("CAMA")) ? (
-                                <VerificationTable
-                                  fields={sectionFields}
-                                  inspectorData={inspectorData}
-                                  onChange={handleFieldChange}
-                                  onOpenObs={handleOpenObsDialog}
-                                  infraEfector={infraEfector}
-                                  rrhhEfector={rrhhEfector}
-                                  equiposEfector={equiposEfector}
-                                  currentSrvName={srv.name}
-                                />
-                              ) : (
-                                <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" }, gap: 3 }}>
-                                  {section.fields?.map((field) => (
-                                    <FieldItem
-                                      key={field.id}
-                                      field={field}
-                                      value={inspectorData[field.id]}
-                                      onChange={handleFieldChange}
-                                      infraEfector={infraEfector}
-                                      serviciosEfector={serviciosEfector}
-                                    />
-                                  ))}
-                                </Box>
-                              )}
+                        {cidiLevel === 2 && (
+                          <Paper variant="outlined" sx={{ p: 2, bgcolor: "#def7ed", borderColor: "#10b98140", display: "flex", alignItems: "center", gap: 1.5 }}>
+                            <CheckCircleIcon sx={{ color: "#10b981" }} />
+                            <Box>
+                              <Typography sx={{ fontWeight: 900, color: "#065f46", fontSize: "0.85rem" }}>
+                                Responsable Verificado (CiDi Nivel 2)
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: "#065f46" }}>
+                                {directorTecnico.nombre} {directorTecnico.apellido} - DNI {cuilResponsable.slice(3, 11)}
+                              </Typography>
                             </Box>
-                          );
-                        })}
-                      </AccordionDetails>
-                    </Accordion>
-                  )
-                })}
-              </Box>
-            </AccordionDetails>
-          </Accordion>
+                          </Paper>
+                        )}
+                      </Card>
+                    ) : (
+                      <Card variant="outlined" sx={{ p: 3, borderRadius: 4, display: "flex", flexDirection: "column", gap: 3, borderColor: "#fca5a5", bgcolor: "#fffbfa" }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#b91c1c", display: "flex", alignItems: "center", gap: 0.5 }}>
+                          <WarningIcon /> Firma de Testigos por Negativa de Responsable
+                        </Typography>
 
-          <ObservationDialog
-            open={obsDialog.open}
-            label={obsDialog.label}
-            value={obsDialog.value}
-            onClose={() => setObsDialog({ ...obsDialog, open: false })}
-            onSave={handleSaveObs}
-          />
+                        {/* Testigo 1 */}
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, bgcolor: "white", p: 2, borderRadius: 2.5, border: "1px solid #fca5a540" }}>
+                          <Typography variant="caption" sx={{ fontWeight: 900, color: "#334155" }}>DATOS TESTIGO 1</Typography>
+                          <Grid container spacing={2}>
+                            <Grid size={6}>
+                              <TextField
+                                label="Nombre y Apellido"
+                                size="small"
+                                fullWidth
+                                value={testigos.t1.nombre}
+                                onChange={(e) => setTestigos(prev => ({ ...prev, t1: { ...prev.t1, nombre: e.target.value } }))}
+                              />
+                            </Grid>
+                            <Grid size={6}>
+                              <TextField
+                                label="CUIL Testigo 1"
+                                size="small"
+                                fullWidth
+                                value={testigos.t1.cuil}
+                                onChange={(e) => setTestigos(prev => ({ ...prev, t1: { ...prev.t1, cuil: e.target.value } }))}
+                              />
+                            </Grid>
+                          </Grid>
+                          <SignaturePad 
+                            label="Firma Testigo 1"
+                            onSave={(img) => setTestigos(prev => ({ ...prev, t1: { ...prev.t1, firma: img } }))}
+                            onClear={() => setTestigos(prev => ({ ...prev, t1: { ...prev.t1, firma: null } }))}
+                          />
+                        </Box>
 
-          <PhotoViewer
-            open={!!viewerPhoto}
-            photo={viewerPhoto}
-            onClose={() => setViewerPhoto(null)}
-          />
+                        {/* Testigo 2 */}
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, bgcolor: "white", p: 2, borderRadius: 2.5, border: "1px solid #fca5a540" }}>
+                          <Typography variant="caption" sx={{ fontWeight: 900, color: "#334155" }}>DATOS TESTIGO 2</Typography>
+                          <Grid container spacing={2}>
+                            <Grid size={6}>
+                              <TextField
+                                label="Nombre y Apellido"
+                                size="small"
+                                fullWidth
+                                value={testigos.t2.nombre}
+                                onChange={(e) => setTestigos(prev => ({ ...prev, t2: { ...prev.t2, nombre: e.target.value } }))}
+                              />
+                            </Grid>
+                            <Grid size={6}>
+                              <TextField
+                                label="CUIL Testigo 2"
+                                size="small"
+                                fullWidth
+                                value={testigos.t2.cuil}
+                                onChange={(e) => setTestigos(prev => ({ ...prev, t2: { ...prev.t2, cuil: e.target.value } }))}
+                              />
+                            </Grid>
+                          </Grid>
+                          <SignaturePad 
+                            label="Firma Testigo 2"
+                            onSave={(img) => setTestigos(prev => ({ ...prev, t2: { ...prev.t2, firma: img } }))}
+                            onClear={() => setTestigos(prev => ({ ...prev, t2: { ...prev.t2, firma: null } }))}
+                          />
+                        </Box>
+                      </Card>
+                    )}
 
-          {/* Resumen de Observaciones en Acordeón */}
-          <Accordion
-            defaultExpanded
-            sx={{
-              mt: 4,
-              borderRadius: '16px !important',
-              border: '1px solid #e2e8f0',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-              '&:before': { display: 'none' }
-            }}
-          >
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#0ea5e9' }} />}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', width: "100%", pr: 2 }}>
-                <Typography sx={{ fontWeight: 900, color: '#1e293b', fontSize: '1.25rem' }}>
-                  RESUMEN DE OBSERVACIONES
-                </Typography>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails sx={{ px: 3, pb: 4, bgcolor: '#fcfcfc' }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 3 }}>
+                      {!negativaFirma && (
+                        <SignaturePad
+                          label="Firma Responsable del Establecimiento"
+                          onSave={(img) => setSignatures(prev => ({ ...prev, representative: { data: img, name: `${directorTecnico.nombre} ${directorTecnico.apellido}` } }))}
+                          onClear={() => setSignatures(prev => ({ ...prev, representative: { data: null, name: "" } }))}
+                        />
+                      )}
 
-                {/* Cuadro de Conclusión General (Estilo Acta 1/3) */}
-                {generalObs && (
-                  <Paper sx={{ p: 3, borderRadius: 4, border: '1px solid #FFE0B2', bgcolor: '#FFF9E6', display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                    <MessageIcon sx={{ color: '#92400e', mt: 0.5 }} />
-                    <Box>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 950, color: '#92400e', mb: 0.5, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                        Conclusión General de la Inspección
-                      </Typography>
-                      <Typography variant="body1" sx={{ color: '#92400e', fontWeight: 600, lineHeight: 1.6, fontSize: '0.95rem' }}>
-                        "{generalObs}"
-                      </Typography>
+                      <SignaturePad
+                        label="Firma Inspector Interviniente"
+                        onSave={(img) => setSignatures(prev => ({ ...prev, inspector: { data: img, name: "ING. GUSTAVO SOSA" } }))}
+                        onClear={() => setSignatures(prev => ({ ...prev, inspector: { data: null, name: "" } }))}
+                      />
                     </Box>
-                  </Paper>
+
+                  </Box>
                 )}
 
-                <Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                    <Box sx={{ bgcolor: '#0ea5e9', color: 'white', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <InfoIcon sx={{ fontSize: 18 }} />
-                    </Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#1e293b", fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: 1 }}>
-                      OBSERVACIONES DE DATOS GENERALES
-                    </Typography>
-                  </Box>
-
-                  <Paper variant="outlined" sx={{ overflow: 'hidden', borderRadius: 4, border: '1px solid #e2e8f0' }}>
-                    <Box sx={{ bgcolor: '#f8fafc', p: 1.5, borderBottom: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr auto', px: 3 }}>
-                      <Typography variant="caption" sx={{ fontWeight: 900, color: '#64748b' }}>DETALLE DEL HALLAZGO / ELEMENTO</Typography>
-                      <Typography variant="caption" sx={{ fontWeight: 900, color: '#64748b' }}>EVIDENCIA</Typography>
-                    </Box>
-                    <Box sx={{ p: 0 }}>
-                      {obsDatosGenerales.length === 0 ? (
-                        <Box sx={{ p: 3, textAlign: 'center' }}>
-                          <Typography sx={{ color: "#94a3b8", fontStyle: "italic", fontSize: "0.85rem" }}>No hay observaciones pendientes.</Typography>
-                        </Box>
-                      ) : (
-                        <Box component="ul" sx={{ m: 0, p: 0, listStyle: 'none' }}>
-                          {obsDatosGenerales.map((obs, idx) => (
-                            <Box component="li" key={idx} sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              borderBottom: idx === obsDatosGenerales.length - 1 ? 'none' : '1px solid #f1f5f9',
-                              py: 2,
-                              px: 3,
-                              '&:hover': { bgcolor: '#f8fafc' }
-                            }}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                <Typography sx={{ fontWeight: 800, color: obs.type === 'ERROR' ? '#ef4444' : '#475569', fontSize: '0.85rem' }}>{obs.label}</Typography>
-                                <Typography sx={{ fontWeight: 500, color: '#64748b', fontSize: '0.85rem' }}>: {obs.text}</Typography>
-                              </Box>
-                              <IconButton
-                                size="small"
-                                onClick={() => {
-                                  if (obs.hasPhoto) {
-                                    setViewerPhoto(obs.photo);
-                                  } else {
-                                    setTargetPhotoField(obs.id);
-                                    photoInputRef.current.click();
-                                  }
-                                }}
-                                sx={{ ml: 1, color: obs.hasPhoto ? '#0ea5e9' : '#94a3b8', '&:hover': { color: '#0ea5e9' } }}
-                              >
-                                {obs.hasPhoto ? <VisibilityIcon sx={{ fontSize: 18 }} /> : <PhotoCamera sx={{ fontSize: 18 }} />}
-                              </IconButton>
-                            </Box>
-                          ))}
-                        </Box>
-                      )}
-                    </Box>
-                  </Paper>
+                {/* OBSERVACIONES GENERALES FINAL */}
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 900, mb: 1, color: "#1e293b" }}>
+                    Observaciones Generales de Cierre de Acta
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={4}
+                    placeholder="Conclusión final técnico-legal de la inspección..."
+                    value={generalObs}
+                    onChange={(e) => setGeneralObs(e.target.value)}
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3, bgcolor: "#f8fafc" } }}
+                  />
                 </Box>
 
-                <Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                    <Box sx={{ bgcolor: '#ef4444', color: 'white', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <ReportProblemIcon sx={{ fontSize: 18 }} />
-                    </Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 900, color: "#1e293b", fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: 1 }}>
-                      OBSERVACIONES DE DATOS DEL TRÁMITE
-                    </Typography>
-                  </Box>
-
-                  <Paper variant="outlined" sx={{ overflow: 'hidden', borderRadius: 4, border: '1px solid #e2e8f0' }}>
-                    <Box sx={{ bgcolor: '#f8fafc', p: 1.5, borderBottom: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr auto', px: 3 }}>
-                      <Typography variant="caption" sx={{ fontWeight: 900, color: '#64748b' }}>DETALLE TÉCNICO / SERVICIO</Typography>
-                      <Typography variant="caption" sx={{ fontWeight: 900, color: '#64748b' }}>EVIDENCIA</Typography>
-                    </Box>
-                    <Box sx={{ p: 0 }}>
-                      {obsDatosTramite.length === 0 ? (
-                        <Box sx={{ p: 3, textAlign: 'center' }}>
-                          <Typography sx={{ color: "#94a3b8", fontStyle: "italic", fontSize: "0.85rem" }}>No hay observaciones pendientes.</Typography>
-                        </Box>
-                      ) : (
-                        <Box component="ul" sx={{ m: 0, p: 0, listStyle: 'none' }}>
-                          {obsDatosTramite.map((obs, idx) => (
-                            <Box component="li" key={idx} sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              borderBottom: idx === obsDatosTramite.length - 1 ? 'none' : '1px solid #f1f5f9',
-                              py: 2,
-                              px: 3,
-                              '&:hover': { bgcolor: '#f8fafc' }
-                            }}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                <Chip
-                                  label={obs.service}
-                                  size="small"
-                                  sx={{
-                                    fontWeight: 900,
-                                    fontSize: '0.6rem',
-                                    bgcolor: '#f1f5f9',
-                                    color: '#475569',
-                                    height: 18,
-                                    borderRadius: 1
-                                  }}
-                                />
-                                <Typography sx={{ fontWeight: 800, color: obs.type === 'ERROR' ? '#ef4444' : '#475569', fontSize: '0.85rem' }}>{obs.label}</Typography>
-                                <Typography sx={{ fontWeight: 500, color: '#64748b', fontSize: '0.85rem' }}>: {obs.text}</Typography>
-                              </Box>
-                              <IconButton
-                                size="small"
-                                onClick={() => {
-                                  if (obs.hasPhoto) {
-                                    setViewerPhoto(obs.photo);
-                                  } else {
-                                    setTargetPhotoField(obs.id);
-                                    photoInputRef.current.click();
-                                  }
-                                }}
-                                sx={{ ml: 1, color: obs.hasPhoto ? '#0ea5e9' : '#94a3b8', '&:hover': { color: '#0ea5e9' } }}
-                              >
-                                {obs.hasPhoto ? <VisibilityIcon sx={{ fontSize: 18 }} /> : <PhotoCamera sx={{ fontSize: 18 }} />}
-                              </IconButton>
-                            </Box>
-                          ))}
-                        </Box>
-                      )}
-                    </Box>
-                  </Paper>
-                </Box>
-
-              </Box>
-            </AccordionDetails>
-          </Accordion>
-
-          <Box sx={{ mt: 5, mb: 2 }}>
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: 950, color: "#1e293b", mb: 2, textTransform: 'uppercase', letterSpacing: 1 }}
-            >
-              Observaciones Generales del Acta
-            </Typography>
-            <TextField
-              fullWidth
-              multiline
-              rows={6}
-              placeholder="Escriba aquí la conclusión general de la inspección..."
-              value={generalObs}
-              onChange={(e) => setGeneralObs(e.target.value)}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 4,
-                  bgcolor: "#f8fafc",
-                  border: "2px solid #e2e8f0",
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  "&:hover": { borderColor: "#cbd5e1" },
-                  "&.Mui-focused": { borderColor: "#0ea5e9" },
-                },
-              }}
-            />
-          </Box>
-
-          <Box sx={{ mt: 5, mb: 6 }}>
-            <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-              <Button
-                variant="outlined"
-                onClick={() => photoInputRef.current.click()}
-                startIcon={<PhotoCamera />}
-                sx={{
-                  borderRadius: 4,
-                  textTransform: "none",
-                  fontWeight: 800,
-                  px: 3,
-                  py: 1.5,
-                  borderColor: "#e2e8f0",
-                  color: "#475569",
-                  "&:hover": { bgcolor: "#f1f5f9", borderColor: "#cbd5e1" },
-                }}
-              >
-                Abrir Cámara
-              </Button>
-              <input
-                ref={photoInputRef}
-                type="file"
-                hidden
-                accept="image/*"
-                capture="environment"
-                onChange={handleFileSelect}
-              />
-
-
-            </Box>
-
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2.5 }}>
-              {attachments.map((file, idx) => (
-                <Paper
-                  key={idx}
-                  elevation={0}
-                  sx={{
-                    p: 0.5,
-                    borderRadius: 4,
-                    position: "relative",
-                    width: 110,
-                    height: 110,
-                    border: "2px solid #e2e8f0",
-                    bgcolor: "#f8fafc",
-                    overflow: "visible",
-                  }}
-                >
-                  {file.type.startsWith("image/") ? (
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt="preview"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        borderRadius: "12px",
-                      }}
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100%",
-                        p: 1,
-                        textAlign: "center",
-                      }}
-                    >
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontWeight: 700,
-                          color: "#64748b",
-                          wordBreak: "break-all",
-                          fontSize: "0.65rem",
-                        }}
-                      >
-                        {file.name}
-                      </Typography>
-                    </Box>
-                  )}
-                  <IconButton
-                    size="small"
-                    onClick={() =>
-                      setAttachments(attachments.filter((_, i) => i !== idx))
-                    }
-                    sx={{
-                      position: "absolute",
-                      top: -12,
-                      right: -12,
-                      bgcolor: "#ef4444",
-                      color: "white",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                      "&:hover": { bgcolor: "#dc2626" },
-                      "& .MuiSvgIcon-root": { fontSize: 16 },
-                    }}
-                  >
-                    <Close />
-                  </IconButton>
-                </Paper>
-              ))}
-            </Box>
-          </Box>
-
-          {/* Visualización de Firmas */}
-          {actualFormatoInspeccion !== "VIRTUAL" && (signatures.representative.data || signatures.inspector.data) && (
-            <Box
-              sx={{
-                mb: 4,
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 3,
-                p: 3,
-                bgcolor: "#f8fafc",
-                borderRadius: 6,
-                border: "1px solid #e2e8f0",
-              }}
-            >
-              <Box sx={{ textAlign: "center" }}>
-                <Typography
-                  variant="caption"
-                  sx={{ fontWeight: 800, color: "#64748b", textTransform: "uppercase", display: 'block', mb: 1 }}
-                >
-                  Firma Responsable
-                </Typography>
-                <Box sx={{ height: 100, bgcolor: "white", borderRadius: 3, border: "1px solid #e2e8f0", overflow: 'hidden', mb: 1.5 }}>
-                  {signatures.representative.data && <img src={signatures.representative.data} alt="firma responsable" style={{ height: '100%' }} />}
-                </Box>
-                <Typography sx={{ fontWeight: 900, color: '#1e293b', fontSize: '0.85rem' }}>
-                  {signatures.representative.name || "---"}
-                </Typography>
-                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 700, display: 'block' }}>
-                  Aclaración Responsable
-                </Typography>
-              </Box>
-              <Box sx={{ textAlign: "center" }}>
-                <Typography
-                  variant="caption"
-                  sx={{ fontWeight: 800, color: "#64748b", textTransform: "uppercase", display: 'block', mb: 1 }}
-                >
-                  Firma Inspector
-                </Typography>
-                <Box sx={{ height: 100, bgcolor: "white", borderRadius: 3, border: "1px solid #e2e8f0", overflow: 'hidden', mb: 1.5 }}>
-                  {signatures.inspector.data && <img src={signatures.inspector.data} alt="firma inspector" style={{ height: '100%' }} />}
-                </Box>
-                <Typography sx={{ fontWeight: 900, color: '#1e293b', fontSize: '0.85rem' }}>
-                  {signatures.inspector.name || "---"}
-                </Typography>
-                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 700, display: 'block' }}>
-                  Inspector Interviniente
-                </Typography>
-              </Box>
-            </Box>
-          )}
-
-          <Stack direction="row" spacing={3} sx={{ mt: 2 }}>
-            {actualFormatoInspeccion !== "VIRTUAL" && !(signatures.representative.data && signatures.inspector.data) ? (
-              <Button
-                fullWidth
-                variant="outlined"
-                size="large"
-                onClick={() => {
-                  setSignatureStep(1);
-                  setSignatureModalOpen(true);
-                }}
-                startIcon={<DriveFileRenameOutline />}
-                sx={{
-                  py: 2.5,
-                  borderRadius: 8,
-                  fontWeight: 900,
-                  fontSize: "1.1rem",
-                  color: "#0ea5e9",
-                  border: "3px solid #0ea5e9",
-                  "&:hover": {
-                    border: "3px solid #0284c7",
-                    bgcolor: "#f0f9ff",
-                  },
-                }}
-              >
-                FIRMAR ACTA
-              </Button>
-            ) : (
-              <>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  size="large"
-                  onClick={() => handleOpenCloseActa("APROBAR")}
-                  sx={{
-                    py: 2.5,
-                    borderRadius: 8,
-                    fontWeight: 900,
-                    fontSize: "1.1rem",
-                    bgcolor: "#059669",
-                    boxShadow: "0 10px 15px -3px rgba(5, 150, 105, 0.3)",
-                    "&:hover": { bgcolor: "#047857" },
-                  }}
-                >
-                  APROBAR
-                </Button>
-
-                {hasObservations && (
+                {/* BOTONES DE CIERRE FINAL */}
+                <Stack direction="row" spacing={3} sx={{ mt: 2 }}>
                   <Button
                     fullWidth
                     variant="contained"
                     size="large"
-                    onClick={() => handleOpenCloseActa("NO APROBAR")}
+                    disabled={actualFormatoInspeccion !== "VIRTUAL" && !negativaFirma && cidiLevel !== 2}
+                    onClick={() => handleOpenCloseActa("APROBAR")}
                     sx={{
-                      py: 2.5,
-                      borderRadius: 8,
+                      py: 2,
+                      borderRadius: 3,
                       fontWeight: 900,
-                      fontSize: "1.1rem",
-                      bgcolor: "#ef4444",
-                      boxShadow: "0 10px 15px -3px rgba(239, 68, 68, 0.3)",
-                      "&:hover": { bgcolor: "#dc2626" },
+                      bgcolor: "#059669",
+                      "&:hover": { bgcolor: "#047857" }
                     }}
                   >
-                    NO APROBAR
+                    APROBAR ACTA
                   </Button>
-                )}
-              </>
-            )}
-          </Stack>
 
-        </>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    size="large"
+                    disabled={actualFormatoInspeccion !== "VIRTUAL" && !negativaFirma && cidiLevel !== 2}
+                    onClick={() => handleOpenCloseActa("NO APROBAR")}
+                    sx={{
+                      py: 2,
+                      borderRadius: 3,
+                      fontWeight: 900,
+                      bgcolor: "#ef4444",
+                      "&:hover": { bgcolor: "#dc2626" }
+                    }}
+                  >
+                    RECHAZAR ACTA
+                  </Button>
+                </Stack>
+
+              </Box>
+            )}
+
+          </Box>
+
+          {/* NAVEGACIÓN INFERIOR WIZARD */}
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 4, pt: 3, borderTop: "1px solid #e2e8f0" }}>
+            <Button
+              variant="outlined"
+              startIcon={<ArrowBackIcon />}
+              disabled={currentStep === 0}
+              onClick={() => setCurrentStep(prev => prev - 1)}
+              sx={{ fontWeight: 800, borderRadius: 3, py: 1.2, px: 3 }}
+            >
+              Volver
+            </Button>
+            
+            <Button
+              variant="contained"
+              endIcon={currentStep === WIZARD_STEPS.length - 1 ? <CheckIcon /> : <ArrowForwardIcon />}
+              disabled={currentStep === WIZARD_STEPS.length - 1}
+              onClick={() => setCurrentStep(prev => prev + 1)}
+              sx={{ fontWeight: 900, borderRadius: 3, py: 1.2, px: 3, bgcolor: "#0090d0", "&:hover": { bgcolor: "#007bb0" } }}
+            >
+              Siguiente
+            </Button>
+          </Box>
+
+        </Box>
       )}
 
-      <SignatureModal
-        open={signatureModalOpen}
-        step={signatureStep}
-        onClose={() => {
-          setSignatureModalOpen(false);
-          setSignatureStep(0);
-        }}
-        onSave={handleSaveSignature}
+      {/* VISOR DE PLANOS */}
+      <FileViewerModal
+        file={viewerFile}
+        onClose={() => setViewerFile(null)}
       />
 
+      {/* GESTOR DE EVIDENCIA FOTOGRÁFICA (HASTA 5 FOTOS POR COMPONENTE) */}
+      <Dialog
+        open={!!photoManagerField}
+        onClose={() => setPhotoManagerField(null)}
+        fullWidth
+        maxWidth="xs"
+        PaperProps={{ sx: { borderRadius: 4, p: 2 } }}
+      >
+        <DialogTitle sx={{ fontWeight: 950, color: "#1e293b", pb: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <PhotoCamera sx={{ color: "#0090d0" }} />
+            Evidencia Fotográfica
+          </Box>
+          <IconButton size="small" onClick={() => setPhotoManagerField(null)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ color: "#64748b", mb: 2, fontWeight: 550 }}>
+            Cargue hasta 5 fotografías para el componente: <b>{photoManagerField?.label}</b>
+          </Typography>
+
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1.5, mb: 3 }}>
+            {photoManagerField && (photosByComponent[photoManagerField.id] || []).map((img, idx) => (
+              <Box key={idx} sx={{ width: "100%", height: 75, position: "relative", border: "1px solid #cbd5e1", borderRadius: 2, overflow: "hidden" }}>
+                <img src={img} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="evidencia" />
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    const currentPhotos = photosByComponent[photoManagerField.id] || [];
+                    setPhotosByComponent(prev => ({
+                      ...prev,
+                      [photoManagerField.id]: currentPhotos.filter((_, i) => i !== idx)
+                    }));
+                  }}
+                  sx={{
+                    position: "absolute",
+                    top: 2,
+                    right: 2,
+                    bgcolor: "rgba(239, 68, 68, 0.9)",
+                    color: "white",
+                    p: 0.2,
+                    "&:hover": { bgcolor: "#dc2626" }
+                  }}
+                >
+                  <Close sx={{ fontSize: 12 }} />
+                </IconButton>
+              </Box>
+            ))}
+
+            {(!photoManagerField || (photosByComponent[photoManagerField.id] || []).length < 5) && (
+              <Box
+                component="label"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 75,
+                  border: "2px dashed #cbd5e1",
+                  borderRadius: 2,
+                  cursor: "pointer",
+                  bgcolor: "#f8fafc",
+                  "&:hover": { borderColor: "#0ea5e9" }
+                }}
+              >
+                <PhotoCamera sx={{ color: "#94a3b8" }} />
+                <Typography variant="caption" sx={{ color: "#94a3b8", fontSize: "0.65rem", fontWeight: 700 }}>Añadir</Typography>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  hidden
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      const base64 = reader.result;
+                      const currentPhotos = photosByComponent[photoManagerField.id] || [];
+                      setPhotosByComponent(prev => ({
+                        ...prev,
+                        [photoManagerField.id]: [...currentPhotos, base64]
+                      }));
+                    };
+                    reader.readAsDataURL(file);
+                    e.target.value = null;
+                  }}
+                />
+              </Box>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button variant="contained" onClick={() => setPhotoManagerField(null)} sx={{ borderRadius: 2, fontWeight: 900, px: 3, bgcolor: "#1e293b" }}>
+            Guardar Evidencia
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* TRIGGER FORZADO: BOTTOM SHEET DE EVIDENCIA DE BIOSEGURIDAD */}
+      <Dialog
+        open={forcedModal.open}
+        onClose={() => {}} 
+        disableEscapeKeyDown
+        scroll="paper"
+        PaperProps={{
+          sx: {
+            position: 'fixed',
+            bottom: 0,
+            m: 0,
+            width: '100%',
+            maxWidth: 'sm',
+            borderRadius: '24px 24px 0 0',
+            p: 2,
+          }
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 950, color: "#ef4444", borderBottom: "1px solid #fee2e2", pb: 1, display: "flex", gap: 1, alignItems: "center" }}>
+          <WarningIcon /> Incumplimiento Crítico Registrado
+        </DialogTitle>
+        <DialogContent sx={{ pt: 2 }}>
+          <Typography variant="body2" sx={{ color: "#475569", mb: 3, fontWeight: 600 }}>
+            Ha marcado <b>NO</b> en: <Box component="span" sx={{ color: "#ef4444", fontWeight: 900 }}>{forcedModal.label}</Box>.<br />
+            Para continuar, es obligatorio ingresar una descripción detallada del hallazgo y adjuntar al menos una foto de la infracción.
+          </Typography>
+
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="caption" sx={{ fontWeight: 900, color: "#334155", display: "block", mb: 1 }}>
+              Descripción del Hallazgo / Infracción (mínimo 3 caracteres) *
+            </Typography>
+            <TextField
+              id="forced-obs-input"
+              fullWidth
+              multiline
+              rows={3}
+              placeholder="Describa en detalle la infracción de bioseguridad..."
+              onChange={(e) => {
+                const text = e.target.value;
+                document.getElementById("forced-save-btn").disabled = text.trim().length < 3 || (photosByComponent[forcedModal.fieldId] || []).length === 0;
+              }}
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+            />
+          </Box>
+
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="caption" sx={{ fontWeight: 900, color: "#334155", display: "block", mb: 1 }}>
+              Fotos de Evidencia (Mínimo 1 foto obligatoria) *
+            </Typography>
+
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+              {forcedModal.fieldId && (photosByComponent[forcedModal.fieldId] || []).map((img, idx) => (
+                <Box key={idx} sx={{ width: 75, height: 75, position: "relative", border: "1px solid #cbd5e1", borderRadius: 2, overflow: "hidden" }}>
+                  <img src={img} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="infracción" />
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      const currentPhotos = photosByComponent[forcedModal.fieldId] || [];
+                      const updated = currentPhotos.filter((_, i) => i !== idx);
+                      setPhotosByComponent(prev => ({ ...prev, [forcedModal.fieldId]: updated }));
+                      
+                      const obsTextVal = document.getElementById("forced-obs-input").value;
+                      document.getElementById("forced-save-btn").disabled = obsTextVal.trim().length < 3 || updated.length === 0;
+                    }}
+                    sx={{ position: "absolute", top: 2, right: 2, bgcolor: "rgba(239, 68, 68, 0.9)", color: "white", p: 0.2 }}
+                  >
+                    <Close sx={{ fontSize: 12 }} />
+                  </IconButton>
+                </Box>
+              ))}
+
+              {(!forcedModal.fieldId || (photosByComponent[forcedModal.fieldId] || []).length < 5) && (
+                <Box
+                  component="label"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 75,
+                    height: 75,
+                    border: "2px dashed #fca5a5",
+                    borderRadius: 2,
+                    cursor: "pointer",
+                    bgcolor: "#fffbfa",
+                    "&:hover": { borderColor: "#ef4444" }
+                  }}
+                >
+                  <PhotoCamera sx={{ color: "#ef4444" }} />
+                  <Typography variant="caption" sx={{ color: "#ef4444", fontSize: "0.6rem", fontWeight: 700 }}>Añadir</Typography>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    hidden
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        const base64 = reader.result;
+                        const currentPhotos = photosByComponent[forcedModal.fieldId] || [];
+                        const updated = [...currentPhotos, base64];
+                        setPhotosByComponent(prev => ({
+                          ...prev,
+                          [forcedModal.fieldId]: updated
+                        }));
+                        
+                        const obsTextVal = document.getElementById("forced-obs-input").value;
+                        document.getElementById("forced-save-btn").disabled = obsTextVal.trim().length < 3 || updated.length === 0;
+                      };
+                      reader.readAsDataURL(file);
+                      e.target.value = null;
+                    }}
+                  />
+                </Box>
+              )}
+            </Box>
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ p: 3, borderTop: "1px solid #fee2e2", justifyContent: "space-between" }}>
+          <Button
+            variant="text"
+            color="inherit"
+            onClick={handleCancelForcedObs}
+            sx={{ fontWeight: 800, color: "#64748b" }}
+          >
+            Volver a "SÍ"
+          </Button>
+          <Button
+            id="forced-save-btn"
+            variant="contained"
+            disabled
+            onClick={() => {
+              const textVal = document.getElementById("forced-obs-input").value;
+              handleSaveForcedObs(forcedModal.fieldId, textVal, photosByComponent[forcedModal.fieldId] || []);
+            }}
+            sx={{ fontWeight: 900, bgcolor: "#ef4444", "&:hover": { bgcolor: "#dc2626" } }}
+          >
+            Registrar Infracción
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* SNACKBAR DE AVISO DE BLOQUEO CIDI */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity="error" sx={{ width: '100%', fontWeight: 800, borderRadius: 3 }}>
+          Firma Inhabilitada: El responsable no tiene Ciudadano Digital Nivel 2 verificado.
+        </Alert>
+      </Snackbar>
+
+      {/* DIALOG DE CONFIRMACIÓN DE NOTA DE CIERRE */}
       <Dialog
         open={closeActaModalOpen}
         onClose={() => setCloseActaModalOpen(false)}
         maxWidth="sm"
         fullWidth
-        PaperProps={{
-          sx: { borderRadius: 4, p: 2 }
-        }}
+        PaperProps={{ sx: { borderRadius: 4, p: 2 } }}
       >
         <DialogTitle sx={{ fontWeight: 900, color: '#1e293b', pb: 1 }}>
-          Nota de Cierre - {closeActaAction}
+          Nota de Cierre - Acta {closeActaAction === "APROBAR" ? "Aprobada" : "Rechazada"}
         </DialogTitle>
         <DialogContent>
-          <Typography sx={{ color: '#64748b', mb: 3 }}>
-            Ingrese una nota final antes de {closeActaAction.toLowerCase()} la inspección.
+          <Typography sx={{ color: '#64748b', mb: 3, fontWeight: 550 }}>
+            Ingrese una nota final justificativa para la conclusión de la inspección.
           </Typography>
           <TextField
             fullWidth
@@ -1919,48 +1724,34 @@ const PantallaInspeccion = ({
             placeholder="Escriba la nota de cierre..."
             value={closeActaNote}
             onChange={(e) => setCloseActaNote(e.target.value)}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 3,
-                bgcolor: "#f8fafc",
-                "&.Mui-focused": { bgcolor: "white" }
-              }
-            }}
+            sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3, bgcolor: "#f8fafc" } }}
           />
         </DialogContent>
         <DialogActions sx={{ pt: 2, px: 3, pb: 2 }}>
-          <Button 
-            onClick={() => setCloseActaModalOpen(false)} 
-            sx={{ color: '#64748b', fontWeight: 700 }}
-          >
+          <Button onClick={() => setCloseActaModalOpen(false)} sx={{ color: '#64748b', fontWeight: 800 }}>
             CANCELAR
           </Button>
           <Button
             variant="contained"
             onClick={() => {
               setCloseActaModalOpen(false);
-              alert(`Acta cerrada (${closeActaAction}) con éxito.\nNota: ${closeActaNote}`);
-              window.location.href = "/home-inspector";
+              alert(`Acta concluida (${closeActaAction}) con éxito.\nNota final: ${closeActaNote}`);
+              navigate("/inspector"); // Al cerrar volvemos al home
             }}
             sx={{
               bgcolor: closeActaAction === "APROBAR" ? "#059669" : "#ef4444",
-              fontWeight: 800,
-              borderRadius: 2,
+              fontWeight: 900,
+              borderRadius: 2.5,
               px: 3,
-              "&:hover": {
-                bgcolor: closeActaAction === "APROBAR" ? "#047857" : "#dc2626"
-              }
+              "&:hover": { bgcolor: closeActaAction === "APROBAR" ? "#047857" : "#dc2626" }
             }}
           >
-            CONFIRMAR
+            CONFIRMAR CIERRE
           </Button>
         </DialogActions>
       </Dialog>
     </Box>
   );
 };
-
-
-
 
 export default PantallaInspeccion;
