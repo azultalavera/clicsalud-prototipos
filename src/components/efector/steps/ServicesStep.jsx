@@ -107,6 +107,21 @@ const ServicesStep = ({
   const [validationErrors, setValidationErrors] = useState([]);
   const [isReviewed, setIsReviewed] = useState(false);
 
+  const groupedValidationErrors = useMemo(() => {
+    const groups = {};
+    (validationErrors || []).forEach((err) => {
+      if (typeof err === "string") {
+        if (!groups["REQUISITOS"]) groups["REQUISITOS"] = [];
+        groups["REQUISITOS"].push({ isString: true, text: err });
+      } else {
+        const key = err.origen || "GENERAL";
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(err);
+      }
+    });
+    return groups;
+  }, [validationErrors]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -253,16 +268,23 @@ const ServicesStep = ({
       );
       requirements.forEach((req) => {
         const target = req.requerida.trim().toUpperCase();
+        const reqTipoUpper = req.tipoInfra ? req.tipoInfra.trim().toUpperCase() : "";
+
         if (
-          req.tipoInfra.toUpperCase() === "CAMA" ||
-          req.tipoInfra.toUpperCase() === "SALA"
+          reqTipoUpper === "CAMA" ||
+          reqTipoUpper === "SALA"
         ) {
           if (
             (infraSelection[req.requerida] || 0) < (parseInt(req.minimo) || 1)
           ) {
-            errors.push(
-              `${name} requiere al menos ${req.minimo} de ${req.requerida}`,
-            );
+            errors.push({
+              id: `${name}-${req.requerida}`,
+              origen: name,
+              minimo: req.minimo || 1,
+              infraType: reqTipoUpper,
+              target: req.requerida,
+              isInfra: true,
+            });
           }
         } else {
           if (
@@ -270,9 +292,42 @@ const ServicesStep = ({
               (s) => s.trim().toUpperCase() === target,
             )
           ) {
-            errors.push(
-              `${name} requiere declarar el servicio ${req.requerida}`,
-            );
+            let tipoDesc = "SERVICIO";
+            if (
+              reqTipoUpper === "SERVICIO COMPLEMENTARIO" ||
+              reqTipoUpper === "COMPLEMENTARIO"
+            ) {
+              tipoDesc = "SERVICIO COMPLEMENTARIO";
+            } else if (
+              reqTipoUpper === "SERVICIO CON INTERNACION" ||
+              reqTipoUpper === "INTERNACION"
+            ) {
+              tipoDesc = "SERVICIO CON INTERNACIÓN";
+            } else {
+              const allMaster = [
+                ...(masterData.SERVICIO || []),
+                ...(masterData.COMPLEMENTARIO || []),
+                ...(masterData.INTERNACION || []),
+              ];
+              const match = allMaster.find(
+                (m) => (m.nombre || m.servicio || "").trim().toUpperCase() === target,
+              );
+              if (match) {
+                if (match.categoriaId === "COMPLEMENTARIO") {
+                  tipoDesc = "SERVICIO COMPLEMENTARIO";
+                } else if (match.categoriaId === "INTERNACION") {
+                  tipoDesc = "SERVICIO CON INTERNACIÓN";
+                }
+              }
+            }
+
+            errors.push({
+              id: `${name}-${req.requerida}`,
+              origen: name,
+              tipoDesc: tipoDesc,
+              target: req.requerida,
+              isInfra: false,
+            });
           }
         }
       });
@@ -633,10 +688,10 @@ const ServicesStep = ({
                 <Box
                   sx={{
                     mb: 2,
-                    p: 1,
-                    bgcolor: "#fff3e0",
-                    border: "1px solid #ff9800",
-                    borderRadius: "4px",
+                    p: 1.5,
+                    bgcolor: "transparent",
+                    border: "1.5px solid #ff9800",
+                    borderRadius: "6px",
                   }}
                 >
                   <Typography
@@ -647,21 +702,80 @@ const ServicesStep = ({
                       display: "flex",
                       alignItems: "center",
                       gap: 0.5,
-                      mb: 1,
+                      mb: 1.5,
+                      fontSize: "0.78rem",
+                      letterSpacing: "0.4px",
                     }}
                   >
-                    <WarningAmberIcon fontSize="inherit" /> FALTANTES:
+                    <WarningAmberIcon fontSize="small" /> FALTANTES DETECTADOS:
                   </Typography>
-                  {validationErrors.map((err, i) => (
-                    <Typography
-                      key={i}
-                      variant="caption"
-                      display="block"
-                      sx={{ fontSize: "0.62rem", mb: 0.5 }}
-                    >
-                      • {err}
-                    </Typography>
-                  ))}
+
+                  <Stack spacing={1.2}>
+                    {Object.entries(groupedValidationErrors).map(([origen, items]) => (
+                      <Box
+                        key={origen}
+                        sx={{
+                          p: 1.2,
+                          bgcolor: "#f8fafc",
+                          border: "1px solid #e2e8f0",
+                          borderLeft: "3.5px solid #005596",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            fontWeight: 800,
+                            color: "#005596",
+                            display: "block",
+                            mb: 0.6,
+                            fontSize: "0.75rem",
+                            letterSpacing: "0.3px",
+                          }}
+                        >
+                          {origen}
+                        </Typography>
+
+                        <Stack spacing={0.4}>
+                          {items.map((item, idx) => (
+                            <Box
+                              key={idx}
+                              sx={{
+                                display: "flex",
+                                alignItems: "flex-start",
+                                gap: 0.6,
+                                fontSize: "0.72rem",
+                                color: "#334155",
+                                lineHeight: 1.35,
+                              }}
+                            >
+                              <Typography
+                                component="span"
+                                sx={{ color: "#d97706", fontWeight: "bold", fontSize: "0.75rem", mt: "-1px" }}
+                              >
+                                •
+                              </Typography>
+
+                              {item.isString ? (
+                                <Typography variant="caption" sx={{ fontSize: "0.72rem", color: "#334155" }}>
+                                  {item.text}
+                                </Typography>
+                              ) : item.isInfra ? (
+                                <Typography variant="caption" sx={{ fontSize: "0.72rem", color: "#334155" }}>
+                                  Requiere al menos <strong>{item.minimo}</strong>{" "}
+                                  <strong>{item.infraType}</strong> de <strong>{item.target}</strong>
+                                </Typography>
+                              ) : (
+                                <Typography variant="caption" sx={{ fontSize: "0.72rem", color: "#334155" }}>
+                                  Requiere declarar <strong>{item.tipoDesc}</strong>: <strong>{item.target}</strong>
+                                </Typography>
+                              )}
+                            </Box>
+                          ))}
+                        </Stack>
+                      </Box>
+                    ))}
+                  </Stack>
                 </Box>
               )}
               <Button

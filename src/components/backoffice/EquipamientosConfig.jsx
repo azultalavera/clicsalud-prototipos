@@ -511,6 +511,7 @@ const EquipamientosConfig = () => {
                     <TableCell>ORIGEN</TableCell>
                     <TableCell>TIPO DE EQUIPO</TableCell>
                     <TableCell align="center">REGLA</TableCell>
+                    <TableCell align="center">BASE</TableCell>
                     <TableCell align="center">MÍNIMO</TableCell>
                     <TableCell align="center">TRAZABILIDAD</TableCell>
                     <TableCell align="center">ACCIONES</TableCell>
@@ -544,6 +545,7 @@ const EquipamientosConfig = () => {
                         }}
                       />
                     </TableCell>
+                    <TableCell align="center">{row.base ?? 1}</TableCell>
                     <TableCell align="center">{row.cantidadMinima}</TableCell>
                     <TableCell
                       align="center"
@@ -585,7 +587,7 @@ const EquipamientosConfig = () => {
                 {dataFiltrada.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={7}
+                      colSpan={8}
                       sx={{
                         textAlign: "center",
                         py: 6,
@@ -784,20 +786,22 @@ const EquipamientosConfig = () => {
                     }
                   />
                 )}
-                <TextField
-                  disabled={!currentItem.tipologia}
-                  label="Mínimo"
-                  type="number"
-                  variant="standard"
-                  sx={{ width: 100 }}
-                  value={currentItem.cantidadMinima}
-                  onChange={(e) =>
-                    setCurrentItem({
-                      ...currentItem,
-                      cantidadMinima: e.target.value,
-                    })
-                  }
-                />
+                {currentItem.tipoRegla !== "UNICO" && (
+                  <TextField
+                    disabled={!currentItem.tipologia}
+                    label="Mínimo"
+                    type="number"
+                    variant="standard"
+                    sx={{ width: 100 }}
+                    value={currentItem.cantidadMinima}
+                    onChange={(e) =>
+                      setCurrentItem({
+                        ...currentItem,
+                        cantidadMinima: e.target.value,
+                      })
+                    }
+                  />
+                )}
               </Box>
 
               <Box sx={{ mt: 1 }}>

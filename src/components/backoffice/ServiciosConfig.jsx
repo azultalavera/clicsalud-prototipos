@@ -72,11 +72,12 @@ const ServiciosConfig = () => {
   const cargarTodo = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3001/servicios");
-      const json = await res.json();
-      setData(json);
+      const res = await fetch("http://localhost:3001/origenes");
+      const json = res.ok ? await res.json() : [];
+      setData(Array.isArray(json) ? json : []);
     } catch (err) {
       console.error("Error:", err);
+      setData([]);
     }
     setLoading(false);
   };
@@ -88,10 +89,12 @@ const ServiciosConfig = () => {
   const dataFiltrada = useMemo(() => {
     if (!mostrarResultados || !Array.isArray(data)) return [];
     return data.filter((item) => {
+      const nombreServicio = item.nombre || item.servicio || "";
+      const cat = item.categoriaId || item.tipoServicio;
       return (
-        (!filtrosAplicados.tipoServicio || item.tipoServicio === filtrosAplicados.tipoServicio) &&
-        (!filtrosAplicados.servicio || item.servicio.toLowerCase().includes(filtrosAplicados.servicio.toLowerCase())) &&
-        (!filtrosAplicados.tipologia || item.tipologias.includes(filtrosAplicados.tipologia))
+        (!filtrosAplicados.tipoServicio || cat === filtrosAplicados.tipoServicio) &&
+        (!filtrosAplicados.servicio || nombreServicio.toLowerCase().includes(filtrosAplicados.servicio.toLowerCase())) &&
+        (!filtrosAplicados.tipologia || (item.tipologias && item.tipologias.includes(filtrosAplicados.tipologia)))
       );
     });
   }, [data, mostrarResultados, filtrosAplicados]);
@@ -99,14 +102,14 @@ const ServiciosConfig = () => {
   const handleGuardar = async () => {
     const method = isEditing ? "PUT" : "POST";
     const url = isEditing
-      ? `http://localhost:3001/servicios/${currentItem.id}`
-      : "http://localhost:3001/servicios";
+      ? `http://localhost:3001/origenes/${currentItem.id}`
+      : "http://localhost:3001/origenes";
     await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...currentItem,
-        servicio: currentItem.servicio?.toUpperCase()
+        nombre: currentItem.servicio?.toUpperCase() || currentItem.nombre?.toUpperCase()
       }),
     });
     setOpen(false);
@@ -240,7 +243,7 @@ const ServiciosConfig = () => {
                         <IconButton
                           onClick={() => {
                             if (window.confirm("¿Eliminar servicio?"))
-                              fetch(`http://localhost:3001/servicios/${row.id}`, { method: "DELETE" }).then(() => cargarTodo());
+                               fetch(`http://localhost:3001/origenes/${row.id}`, { method: "DELETE" }).then(() => cargarTodo());
                           }}
                           color="error" size="small"
                         >

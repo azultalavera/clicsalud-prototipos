@@ -48,10 +48,10 @@ const opcionesTipologia = [
 
 const categoriasMapper = [
   { label: "SERVICIO", id: "SERVICIO" },
-  { label: "SERVICIO COMPLEMENTARIO", id: "SERVICIOS COMPLEMENTARIOS" },
-  { label: "SERVICIO CON INTERNACION", id: "SERVICIOS CON INTERNACIÓN" },
+  { label: "SERVICIO COMPLEMENTARIO", id: "COMPLEMENTARIO" },
+  { label: "SERVICIO CON INTERNACION", id: "INTERNACION" },
   { label: "SALAS", id: "SALA" },
-  { label: "CAMAS", id: "CAMAS-PUESTOS" },
+  { label: "CAMAS", id: "CAMA" },
   { label: "TIPO DE CONSULTORIO", id: "CONSULTORIO" },
 ];
 
@@ -97,14 +97,16 @@ const Infraestructura = () => {
     try {
       const [resInfra, resOrigenes] = await Promise.all([
         fetch("http://localhost:3001/infraestructura"),
-        fetch("http://localhost:3001/servicios"),
+        fetch("http://localhost:3001/origenes"),
       ]);
-      const jsonInfra = await resInfra.json();
-      const jsonOrigenes = await resOrigenes.json();
-      setData(jsonInfra);
-      setListaMaestraOrigenes(jsonOrigenes);
+      const jsonInfra = resInfra.ok ? await resInfra.json() : [];
+      const jsonOrigenes = resOrigenes.ok ? await resOrigenes.json() : [];
+      setData(Array.isArray(jsonInfra) ? jsonInfra : []);
+      setListaMaestraOrigenes(Array.isArray(jsonOrigenes) ? jsonOrigenes : []);
     } catch (err) {
       console.error("Error:", err);
+      setData([]);
+      setListaMaestraOrigenes([]);
     }
     setLoading(false);
   };
@@ -116,40 +118,91 @@ const Infraestructura = () => {
   // --- LÓGICA DE LISTADOS DINÁMICOS (PARA FILTROS Y MODAL) ---
   // Lógica para obtener el listado de nombres según la categoría elegida
   const getOrigenesPorTipo = (tipoLabel, tipologiaFiltro) => {
-    if (!listaMaestraOrigenes || listaMaestraOrigenes.length === 0) return [];
+    let items = [];
 
-    let filtrados = listaMaestraOrigenes;
+    if (Array.isArray(listaMaestraOrigenes)) {
+      items.push(...listaMaestraOrigenes);
+    }
 
-    // Filtrar por tipología
+    if (Array.isArray(data)) {
+      data.forEach((d) => {
+        if (d.origen) {
+          items.push({
+            nombre: d.origen,
+            categoriaId: d.tipo ? d.tipo.toUpperCase() : "SERVICIO",
+            tipologias: d.tipologia ? [d.tipologia] : [],
+          });
+        }
+        if (d.requerida) {
+          items.push({
+            nombre: d.requerida,
+            categoriaId: d.tipoInfra ? d.tipoInfra.toUpperCase() : "CAMA",
+            tipologias: d.tipologia ? [d.tipologia] : [],
+          });
+        }
+      });
+    }
+
+    let filtrados = items;
+
+    // Filtrar por tipología solo si el elemento especifica tipología
     if (tipologiaFiltro) {
-      filtrados = filtrados.filter(s => s.tipologias && s.tipologias.includes(tipologiaFiltro));
+      filtrados = filtrados.filter(
+        (s) => !s.tipologias || s.tipologias.length === 0 || s.tipologias.includes(tipologiaFiltro)
+      );
     }
 
-    // Filtrar por categoría / tipo de servicio
+    // Filtrar por categoría / tipo de servicio si se especificó
     if (tipoLabel) {
-      const catId = categoriasMapper.find((c) => c.label === tipoLabel)?.id;
-      filtrados = filtrados.filter(s => s.tipoServicio === catId);
+      const catObj = categoriasMapper.find((c) => c.label === tipoLabel);
+      const catId = (catObj ? catObj.id : tipoLabel).toUpperCase();
+
+      filtrados = filtrados.filter((s) => {
+        const itemCat = (s.categoriaId || s.tipoServicio || s.tipoInfra || s.tipo || "").toUpperCase();
+        if (catId === "SERVICIO") {
+          return itemCat === "SERVICIO" || itemCat === "SERVICIOS";
+        }
+        if (catId === "COMPLEMENTARIO") {
+          return itemCat.includes("COMPLEMENTAR");
+        }
+        if (catId === "INTERNACION") {
+          return itemCat.includes("INTERNAC");
+        }
+        if (catId === "SALA") {
+          return itemCat.includes("SALA");
+        }
+        if (catId === "CAMA") {
+          return itemCat.includes("CAMA");
+        }
+        return itemCat === catId || itemCat === tipoLabel.toUpperCase();
+      });
     }
 
-    return [...new Set(filtrados.map((s) => s.servicio))].sort();
+    return [
+      ...new Set(
+        filtrados
+          .map((s) => (s.nombre || s.servicio || s.origen || s.requerida || "").trim())
+          .filter(Boolean)
+      ),
+    ].sort((a, b) => a.localeCompare(b));
   };
 
   const listadoOrigenesFiltro = useMemo(
     () => getOrigenesPorTipo(filtroTipoOrigen, filtroTipologia),
-    [listaMaestraOrigenes, filtroTipoOrigen, filtroTipologia],
+    [listaMaestraOrigenes, data, filtroTipoOrigen, filtroTipologia],
   );
   const listadoRequeridaFiltro = useMemo(
     () => getOrigenesPorTipo(filtroTipoInfra, filtroTipologia),
-    [listaMaestraOrigenes, filtroTipoInfra, filtroTipologia],
+    [listaMaestraOrigenes, data, filtroTipoInfra, filtroTipologia],
   );
 
   const listadoOrigenesModal = useMemo(
     () => getOrigenesPorTipo(currentItem.tipo, currentItem.tipologia),
-    [listaMaestraOrigenes, currentItem.tipo, currentItem.tipologia],
+    [listaMaestraOrigenes, data, currentItem.tipo, currentItem.tipologia],
   );
   const listadoRequeridaModal = useMemo(
     () => getOrigenesPorTipo(currentItem.tipoInfra, currentItem.tipologia),
-    [listaMaestraOrigenes, currentItem.tipoInfra, currentItem.tipologia],
+    [listaMaestraOrigenes, data, currentItem.tipoInfra, currentItem.tipologia],
   );
 
   const dataFiltrada = useMemo(() => {
