@@ -1651,15 +1651,6 @@
       "requerida": "USO TRANSITORIO (Guardia, Onco, CA Quirurg)",
       "tipoInfra": "SALA",
       "minimo": "1"
-    },
-    {
-      "tipologia": "CLÍNICAS, SANATORIO U HOSPITAL PRIVADO",
-      "origen": "ADOLESCENCIA",
-      "tipo": "SERVICIO",
-      "requerida": "FARMACIA",
-      "tipoInfra": "SERVICIO COMPLEMENTARIO",
-      "minimo": 1,
-      "id": "KBaXGDCiZ1I"
     }
   ],
   "categorias": [

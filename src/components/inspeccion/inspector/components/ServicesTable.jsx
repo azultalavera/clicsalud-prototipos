@@ -9,11 +9,12 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Chip,
 } from "@mui/material";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 
-const ServicesTable = ({ inspectorData, onChange, onOpenObs, serviciosEfector }) => {
+const ServicesTable = ({ inspectorData, onChange, onOpenObs, serviciosEfector, serviceStats = {} }) => {
   return (
     <TableContainer
       component={Paper}
@@ -41,7 +42,21 @@ const ServicesTable = ({ inspectorData, onChange, onOpenObs, serviciosEfector })
               <TableRow key={srvName} hover sx={{ "&:last-child td": { border: 0 } }}>
                 <TableCell sx={{ fontWeight: 700, color: "#1e293b", py: 1.5 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {srvName}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      {srvName}
+                      <Chip
+                        label={`${(serviceStats[srvName.toUpperCase()]?.percent ?? 0)}%`}
+                        size="small"
+                        sx={{
+                          fontWeight: 800,
+                          fontSize: '0.75rem',
+                          bgcolor: (serviceStats[srvName.toUpperCase()]?.percent === 100) ? '#def7ed' : '#f1f5f9',
+                          color: (serviceStats[srvName.toUpperCase()]?.percent === 100) ? '#065f46' : '#64748b',
+                          height: 20,
+                          '& .MuiChip-label': { px: 1 }
+                        }}
+                      />
+                    </Box>
                     <IconButton
                       size="small"
                       onClick={() => {

@@ -177,6 +177,8 @@ const PantallaInspeccion = ({
     category: "TRAMITE", // Nueva prop: GENERAL or TRAMITE
   });
 
+  const [noAprObsDialogOpen, setNoAprObsDialogOpen] = useState(false);
+
   const handleOpenObsDialog = (fieldId, label, currentValue, category = "TRAMITE") => {
     setObsDialog({
       open: true,
@@ -296,6 +298,20 @@ const PantallaInspeccion = ({
       });
     }) || [];
   }, [config, serviciosEfector, infraEfector]);
+
+  const serviceStats = React.useMemo(() => {
+    const map = {};
+    if (!config?.servicios) return map;
+    config.servicios.forEach((srv) => {
+      const srvFields = srv.sections ? getFlatFields(srv.sections) : srv.fields || [];
+      const nonTramite = srvFields.filter((f) => {
+        const origin = (f.origin || "").toString().toUpperCase();
+        return !(origin === "TRÁMITE" || origin === "TRAMITE") && !f.tramiteField;
+      });
+      map[(srv.name || "").toUpperCase()] = getCompletionStats(nonTramite, inspectorData);
+    });
+    return map;
+  }, [config, inspectorData]);
 
   useEffect(() => {
     const loadFromCache = () => {
@@ -660,6 +676,7 @@ const PantallaInspeccion = ({
       </Box>
     );
   };
+
 
 
   const handleAutoFillClick = (event) => {
@@ -1132,9 +1149,25 @@ const PantallaInspeccion = ({
                     variant="h6"
                     sx={{ fontWeight: 900, color: "#1e293b" }}
                   >
-                    DATOS DEL TRÁMITE
+                      DATOS DEL TRÁMITE
                   </Typography>
-                  <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      {renderProgressBar(
+                        // porcentaje general para campos a inspeccionar que NO SON del trámite
+                        (function(){
+                          // calcular sobre config.servicios excluyendo DATOS GENERALES
+                          const all = (config?.servicios || []).reduce((acc, srv) => {
+                            const srvFields = srv.sections ? getFlatFields(srv.sections) : srv.fields || [];
+                            const nonTramite = srvFields.filter((f) => {
+                              const origin = (f.origin || "").toString().toUpperCase();
+                              return !(origin === "TRÁMITE" || origin === "TRAMITE") && !f.tramiteField;
+                            });
+                            return acc.concat(nonTramite);
+                          }, []);
+                          return getCompletionStats(all, inspectorData);
+                        })()
+                      )}
+                    </Box>
                     <Tooltip title={allTramiteExpanded ? "Contraer todos" : "Desplegar todos"}>
                       <Box
                         onClick={handleToggleAllTramite}
@@ -1153,7 +1186,6 @@ const PantallaInspeccion = ({
                       </Box>
                     </Tooltip>
                   </Box>
-                </Box>
                 <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 700, mt: 0.5 }}>
                   Valores declarados en el trámite
                 </Typography>
@@ -1270,6 +1302,7 @@ const PantallaInspeccion = ({
                       onChange={handleFieldChange}
                       onOpenObs={handleOpenObsDialog}
                       serviciosEfector={serviciosEfector}
+                      serviceStats={serviceStats}
                     />
                   </Box>
                 )}
@@ -1860,25 +1893,30 @@ const PantallaInspeccion = ({
                   APROBAR
                 </Button>
 
-                {hasObservations && (
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    size="large"
-                    onClick={() => handleOpenCloseActa("NO APROBAR")}
-                    sx={{
-                      py: 2.5,
-                      borderRadius: 8,
-                      fontWeight: 900,
-                      fontSize: "1.1rem",
-                      bgcolor: "#ef4444",
-                      boxShadow: "0 10px 15px -3px rgba(239, 68, 68, 0.3)",
-                      "&:hover": { bgcolor: "#dc2626" },
-                    }}
-                  >
-                    NO APROBAR
-                  </Button>
-                )}
+                <Button
+                  fullWidth
+                  variant="contained"
+                  size="large"
+                  onClick={() => {
+                    if (!hasObservations) {
+                      setNoAprObsDialogOpen(true);
+                      return;
+                    }
+                    handleOpenCloseActa("NO APROBAR");
+                  }}
+                  sx={{
+                    py: 2.5,
+                    borderRadius: 8,
+                    fontWeight: 900,
+                    fontSize: "1.1rem",
+                    bgcolor: "#ef4444",
+                    boxShadow: "0 10px 15px -3px rgba(239, 68, 68, 0.3)",
+                    "&:hover": { bgcolor: "#dc2626" },
+                    display: hasObservations ? 'block' : 'block'
+                  }}
+                >
+                  NO APROBAR
+                </Button>
               </>
             )}
           </Stack>
@@ -1895,6 +1933,23 @@ const PantallaInspeccion = ({
         }}
         onSave={handleSaveSignature}
       />
+
+      <Dialog
+        open={noAprObsDialogOpen}
+        onClose={() => setNoAprObsDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontWeight: 900 }}>No es posible "No aprobar" el acta</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: '#64748b' }}>
+            Para no aprobar un acta debe existir al menos una observación registrada (en datos generales, datos del trámite, o en la conclusión general).
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setNoAprObsDialogOpen(false)} sx={{ color: '#64748b', fontWeight: 700 }}>OK</Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog
         open={closeActaModalOpen}
